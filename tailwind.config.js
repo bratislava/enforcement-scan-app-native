@@ -1,4 +1,5 @@
 const plugin = require('tailwindcss/plugin')
+const colors = require('./tailwind.config.colors')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -8,7 +9,7 @@ module.exports = {
     './hooks/**/*.{js,jsx,ts,tsx}',
     './utils/**/*.{js,jsx,ts,tsx}',
   ],
-  presets: [require("nativewind/preset")],
+  presets: [require('nativewind/preset')],
   plugins: [
     // https://github.com/marklawlor/nativewind/issues/386
     plugin(function ({ matchUtilities, theme }) {
@@ -39,13 +40,18 @@ module.exports = {
       DEFAULT: '8px',
       sm: '4px',
     },
+    colors: colors,
     extend: {
       borderWidth: {
         DEFAULT: '2px',
         px: '1px',
       },
-      // Add fonts here
-      // fontFamily: {},
+      fontFamily: {
+        'belfast-700bold': ['BelfastGrotesk_700Bold'],
+        'inter-400regular': ['Inter_400Regular'],
+        'inter-600semibold': ['Inter_600SemiBold'],
+        'inter-700bold': ['Inter_700Bold'],
+      },
     },
   },
 }

@@ -1,4 +1,4 @@
-# expo-template
+# Enforcement scan app
 
 Starting template for expo mobile app development under the city of Bratislava.
 In general, follow https://docs.expo.dev/, below are some quick references.
