@@ -1,10 +1,10 @@
-import clsx from 'clsx'
 import { router, Stack } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { LayoutChangeEvent, Platform, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import Typography from '@/components/shared/Typography'
+import { clsx } from '@/utils/clsx'
 
 import IconButton from '../shared/IconButton'
 

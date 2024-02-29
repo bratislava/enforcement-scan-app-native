@@ -1,5 +1,6 @@
-import { clsx } from 'clsx'
 import { View } from 'react-native'
+
+import { clsx } from '@/utils/clsx'
 
 type Props = {
   dividerClassname?: string

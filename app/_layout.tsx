@@ -10,6 +10,7 @@ import {
 /* eslint-enable babel/camelcase */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 import OmnipresentComponent from '@/components/special/OmnipresentComponent'
@@ -41,17 +42,19 @@ const RootLayout = () => {
     <QueryClientProvider client={queryClient}>
       <AuthStoreProvider>
         <SafeAreaProvider>
-          <OmnipresentComponent />
-          <Stack
-            screenOptions={{
-              headerBackTitleVisible: false,
-              headerShown: false,
-              headerTitleStyle: {
-                fontFamily: 'BelfastGrotesk_700Bold',
-              },
-              headerTintColor: colors.dark.DEFAULT,
-            }}
-          />
+          <GestureHandlerRootView className="flex-1">
+            <OmnipresentComponent />
+            <Stack
+              screenOptions={{
+                headerBackTitleVisible: false,
+                headerShown: false,
+                headerTitleStyle: {
+                  fontFamily: 'BelfastGrotesk_700Bold',
+                },
+                headerTintColor: colors.dark.DEFAULT,
+              }}
+            />
+          </GestureHandlerRootView>
         </SafeAreaProvider>
       </AuthStoreProvider>
     </QueryClientProvider>

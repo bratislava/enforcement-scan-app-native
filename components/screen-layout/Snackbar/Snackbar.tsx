@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { useCallback } from 'react'
 import { View } from 'react-native'
 import { Shadow } from 'react-native-shadow-2'
@@ -8,6 +7,7 @@ import FlexRow from '@/components/shared/FlexRow'
 import Icon, { IconName } from '@/components/shared/Icon'
 import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
+import { clsx } from '@/utils/clsx'
 
 export type SnackbarTypes = 'danger' | 'warning' | 'success' | 'info'
 

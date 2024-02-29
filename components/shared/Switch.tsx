@@ -1,5 +1,6 @@
-import clsx from 'clsx'
 import { Switch as RNSwitch, SwitchProps as RNSwitchProps } from 'react-native'
+
+import { clsx } from '@/utils/clsx'
 
 type Props = RNSwitchProps
 

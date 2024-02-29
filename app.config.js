@@ -20,13 +20,16 @@ module.exports = {
         backgroundColor: '#ffffff',
       },
     },
+    ios: {
+      bundleIdentifier: 'com.bratislava.enforcement',
+    },
     web: {
       favicon: './assets/favicon.png',
     },
     experiments: {
       tsconfigPaths: true,
     },
-    plugins: ['expo-router'],
+    plugins: ['expo-router', 'expo-camera'],
     extra: {
       eas: {
         projectId: '28f73650-074c-4565-94ac-c5cbe5b9658f',

@@ -1,5 +1,6 @@
-import { clsx } from 'clsx'
 import { Text as TextNative, TextProps } from 'react-native'
+
+import { clsx } from '@/utils/clsx'
 
 export type TypographyProps = TextProps & {
   variant?:

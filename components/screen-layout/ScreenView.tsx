@@ -1,20 +1,17 @@
-import { clsx } from 'clsx'
 import { useNavigation } from 'expo-router'
 import { ScreenProps } from 'expo-router/build/useScreens'
 import { ReactNode, useEffect } from 'react'
-import { Image, View, ViewProps } from 'react-native'
+import { View, ViewProps } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import StackScreenWithHeader from './StackScreenWithHeader'
+import { clsx } from '@/utils/clsx'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module
-const dottedBackground = require('@/assets/images/dotted-background.png')
+import StackScreenWithHeader from './StackScreenWithHeader'
 
 export type ScreenViewProps = {
   children: ReactNode
   title?: string
   contentPosition?: 'default' | 'center'
-  backgroundVariant?: 'white' | 'dots'
   actionButton?: ReactNode
   /**
    * Whether to show the back button in the header
@@ -29,7 +26,6 @@ const ScreenView = ({
   className,
   title,
   contentPosition = 'default',
-  backgroundVariant = 'white',
   actionButton,
   hasBackButton = true,
   options,
@@ -51,10 +47,6 @@ const ScreenView = ({
 
   return (
     <View className="flex-1 bg-white">
-      {backgroundVariant === 'dots' && (
-        <Image source={dottedBackground} className="absolute h-full w-full" />
-      )}
-
       <View
         className={clsx('flex-1', className)}
         style={{
