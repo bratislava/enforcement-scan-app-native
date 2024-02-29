@@ -30,8 +30,8 @@ module.exports = {
       h1: ['24px', '32px'],
       h2: ['20px', '24px'],
       h3: ['16px', '24px'],
-      16: ['16px', '24px'],
-      14: ['14px', '24px'],
+      base: ['16px', '24px'],
+      sm: ['14px', '24px'],
     },
     borderRadius: {
       none: '0',
