@@ -22,7 +22,7 @@ const Typography = ({ variant = 'default', children, className, ...rest }: Typog
       className={clsx(
         'font-inter-400regular text-dark',
         {
-          'text-base font-inter-700bold': variant === 'button',
+          'font-inter-700bold text-base': variant === 'button',
           'font-belfast-700bold text-h1': variant === 'h1',
           'font-belfast-700bold text-h2': variant === 'h2',
           'font-belfast-700bold text-h3': variant === 'h3',

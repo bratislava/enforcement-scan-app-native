@@ -42,8 +42,9 @@ const RootLayout = () => {
     <QueryClientProvider client={queryClient}>
       <AuthStoreProvider>
         <SafeAreaProvider>
-          <GestureHandlerRootView className="flex-1">
+          <GestureHandlerRootView style={{ flex: 1 }}>
             <OmnipresentComponent />
+
             <Stack
               screenOptions={{
                 headerBackTitleVisible: false,

@@ -1,4 +1,4 @@
-import BottomSheet, { BottomSheetTextInput } from '@gorhom/bottom-sheet'
+import BottomSheet from '@gorhom/bottom-sheet'
 import { FlashMode } from 'expo-camera'
 import { useRef } from 'react'
 import { useSharedValue } from 'react-native-reanimated'
@@ -13,6 +13,7 @@ import Field from '@/components/shared/Field'
 type Props = {
   licencePlate?: string
   flashMode: FlashMode
+  isLoading: boolean
   takePicture: () => Promise<void>
   toggleFlashlight: () => void
   onChangeLicencePlate: (plate: string) => void
@@ -21,6 +22,7 @@ type Props = {
 const CameraBottomSheet = ({
   licencePlate,
   flashMode,
+  isLoading,
   takePicture,
   toggleFlashlight,
   onChangeLicencePlate,
@@ -47,14 +49,16 @@ const CameraBottomSheet = ({
         <BottomSheetContent cn="g-2">
           <Field label="EČV">
             <TextInput
-              inputElement={BottomSheetTextInput}
+              isInsideBottomSheet
               accessibilityLabel="Evidenčné číslo vozidla"
               value={licencePlate}
               onChangeText={onChangeLicencePlate}
             />
           </Field>
 
-          <Button onPress={takePicture}>Skenovať</Button>
+          <Button loading={isLoading} onPress={takePicture}>
+            Skenovať
+          </Button>
         </BottomSheetContent>
       </BottomSheet>
     </>

@@ -15,7 +15,7 @@ export type TextInputProps = Omit<TextInputNativeProps, 'editable'> & {
   hasError?: boolean
   isDisabled?: boolean
   leftIcon?: ReactNode
-  inputElement: TextInputType | typeof BottomSheetTextInput
+  isInsideBottomSheet?: boolean
 }
 
 // TODO associate control with label
@@ -31,7 +31,7 @@ const TextInput = forwardRef<TextInputType, TextInputProps>(
       multiline,
       className,
       pointerEvents,
-      inputElement: InputElement = TextInputNative,
+      isInsideBottomSheet,
       ...rest
     },
     ref,
@@ -42,6 +42,8 @@ const TextInput = forwardRef<TextInputType, TextInputProps>(
     const handlePress = useCallback(() => {
       localRef.current?.focus()
     }, [])
+
+    const InputElement = isInsideBottomSheet ? BottomSheetTextInput : TextInputNative
 
     return (
       <Pressable

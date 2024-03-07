@@ -25,9 +25,9 @@ const SelectButton = forwardRef<View, Props>(
           })}
         >
           {value ? (
-            <Typography className="text-base flex-1 font-inter-400regular">{value}</Typography>
+            <Typography className="flex-1 font-inter-400regular text-base">{value}</Typography>
           ) : placeholder ? (
-            <Typography className="text-base flex-1 font-inter-400regular text-placeholder">
+            <Typography className="flex-1 font-inter-400regular text-base text-placeholder">
               {placeholder}
             </Typography>
           ) : null}

@@ -27,7 +27,7 @@ const CameraBottomSheetAttachment = ({ toggleFlashlight, flashMode, ...restProps
       <FlexRow className="flex-1 items-end justify-end p-2.5 pt-0">
         <View>
           <IconButton
-            name={flashMode ? 'flashlight-off' : 'flashlight-on'}
+            name={flashMode === FlashMode.torch ? 'flashlight-off' : 'flashlight-on'}
             accessibilityLabel="Flashlight"
             variant="white-raised"
             onPress={onLocationPress}
