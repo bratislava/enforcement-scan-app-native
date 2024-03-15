@@ -36,7 +36,7 @@ const PermissionsRoute = ({ route, jumpTo }: RouteProps) => {
     if (route.key === 'camera') {
       jumpTo('location')
     } else {
-      router.replace('/sign-in')
+      router.replace('/camera')
     }
   }, [route.key, jumpTo])
 

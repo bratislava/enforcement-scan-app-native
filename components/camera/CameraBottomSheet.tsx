@@ -14,7 +14,7 @@ type Props = {
   licencePlate?: string
   flashMode: FlashMode
   isLoading: boolean
-  takePicture: () => Promise<void>
+  // takePicture: () => Promise<void>
   toggleFlashlight: () => void
   onChangeLicencePlate: (plate: string) => void
 }
@@ -23,7 +23,7 @@ const CameraBottomSheet = ({
   licencePlate,
   flashMode,
   isLoading,
-  takePicture,
+  // takePicture,
   toggleFlashlight,
   onChangeLicencePlate,
 }: Props) => {
@@ -56,7 +56,7 @@ const CameraBottomSheet = ({
             />
           </Field>
 
-          <Button loading={isLoading} onPress={takePicture}>
+          <Button loading={isLoading} onPress={() => {}}>
             Skenovať
           </Button>
         </BottomSheetContent>

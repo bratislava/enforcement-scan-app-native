@@ -23,6 +23,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
+        "ANDROID_SDK_ROOT": "/Users/pavelfilo/Library/Android/sdk"
         // "EXPO_PUBLIC_MAPBOX_KEY": "",
         // "EXPO_PUBLIC_COGNITO_USER_POOL_ID": "",
         // "EXPO_PUBLIC_COGNITO_CLIENT_ID":"",
@@ -33,7 +34,9 @@
     },
     "preview": {
       "distribution": "internal",
-      "env": {}
+      "env": {
+        "ANDROID_SDK_ROOT": "/Users/pavelfilo/Library/Android/sdk"
+      }
     },
     "staging": {
       "autoIncrement": true,

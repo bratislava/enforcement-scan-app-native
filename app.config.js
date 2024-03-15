@@ -23,9 +23,6 @@ module.exports = {
     ios: {
       bundleIdentifier: 'com.bratislava.enforcement',
     },
-    web: {
-      favicon: './assets/favicon.png',
-    },
     experiments: {
       tsconfigPaths: true,
     },
