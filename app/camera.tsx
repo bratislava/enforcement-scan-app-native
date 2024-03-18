@@ -1,9 +1,12 @@
-import { TextRecognitionResult } from '@react-native-ml-kit/text-recognition'
+import TextRecognition, { TextRecognitionResult } from '@react-native-ml-kit/text-recognition'
 import * as tf from '@tensorflow/tfjs'
 import { cameraWithTensors } from '@tensorflow/tfjs-react-native'
 import { Camera, FlashMode } from 'expo-camera'
+import * as FileSystem from 'expo-file-system'
+import { FlipType, manipulateAsync } from 'expo-image-manipulator'
+import * as jpeg from 'jpeg-js'
 import { useEffect, useState } from 'react'
-import { useWindowDimensions, View } from 'react-native'
+import { Image, useWindowDimensions, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import CameraBottomSheet from '@/components/camera/CameraBottomSheet'
@@ -13,17 +16,38 @@ import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 
 const TensorCamera = cameraWithTensors(Camera)
 
-type TypedArray =
-  | Float32Array
-  | Float64Array
-  | Int8Array
-  | Int16Array
-  | Int32Array
-  | Uint8Array
-  | Uint16Array
-  | Uint32Array
-  | BigInt64Array
-  | BigUint64Array
+type EncodingResult = { uri: string; width: number; height: number } | undefined
+
+const encodeJpeg = async (tensor: tf.Tensor3D): Promise<EncodingResult> => {
+  if (!tensor) return
+  const height = tensor?.shape[0]
+  const width = tensor?.shape[1]
+
+  const startTs = Date.now()
+
+  const { concat, util } = tf
+
+  const data = Buffer.from(
+    // @eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    concat([tensor, tf.ones([height, width, 1]).mul(255)], [-1])
+      .slice([0], [height, width, 4])
+      .dataSync(),
+  )
+
+  const rawImageData = { data, width, height }
+  const jpegImageData = jpeg.encode(rawImageData, 40)
+
+  const imgBase64 = util.decodeString(jpegImageData.data, 'base64')
+  const uri = `${FileSystem.cacheDirectory}tensor.jpg`
+  await FileSystem.writeAsStringAsync(uri, imgBase64, {
+    encoding: FileSystem.EncodingType.Base64,
+  })
+
+  const latency = Date.now() - startTs
+  console.log('time to process in seconds:', latency / 1000)
+
+  return { uri, width, height }
+}
 
 const biggestText = (ocr: TextRecognitionResult) => {
   const ocrs = ocr?.blocks
@@ -44,14 +68,16 @@ const biggestText = (ocr: TextRecognitionResult) => {
 
 const HEADER_WITH_PADDING = 64
 const CROPPED_PHOTO_HEIGHT = 150
+const RESIZED_WIDTH = 152
 
 const CameraComp = () => {
-  // const plugin = useTensorflowModel(modelFile)
-  // const model = plugin.state === 'loaded' ? plugin.model : undefined
-
   const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
+
+  const [imageUri, setImageUri] = useState<string>('')
+
+  const [loading, setLoading] = useState(false)
   const [tfReady, setTfReady] = useState(false)
-  const [fps, setFps] = useState<number | null>(null)
+  const [, setTensorsToProcess] = useState<tf.Tensor3D[]>([])
 
   const { width } = useWindowDimensions()
 
@@ -59,40 +85,92 @@ const CameraComp = () => {
 
   const [generatedEcv, setGeneratedEcv] = useState('')
 
-  const [permissions] = useCameraPermission({ autoAsk: true })
+  useCameraPermission({ autoAsk: true })
 
-  console.log(permissions)
+  /**
+   * Get the originY and height of the cropped part for the photo from the camera
+   */
+  const getPhotoOriginY = (photoHeight: number) => {
+    const cameraHeight = (width * 16) / 9
+    // 64 is the height of the header with padding
+    const topHeightRatio = (top + HEADER_WITH_PADDING) / cameraHeight
+    // 200 is the height of the cropped part
+    const croppedHeightRatio = CROPPED_PHOTO_HEIGHT / cameraHeight
+
+    return {
+      originY: photoHeight * topHeightRatio,
+      height: photoHeight * croppedHeightRatio,
+    }
+  }
+
+  const processNextItem = () => {
+    setTensorsToProcess((prevQueue) => {
+      if (prevQueue.length === 0) {
+        return prevQueue // No items to process
+      }
+      // Process the first item in the queue
+      const imageTensor = prevQueue[0]
+      // Process the item here
+      encodeJpeg(imageTensor)
+        .then(async (res) => {
+          if (!res) return
+          const { uri, width: originalWidth, height: originalHeight } = res
+
+          const { originY, height: newHeight } = getPhotoOriginY(originalHeight)
+
+          const croppedPhoto = await manipulateAsync(uri, [
+            {
+              crop: { originX: 0, originY, width: originalWidth, height: newHeight },
+            },
+            {
+              flip: FlipType.Horizontal,
+            },
+          ])
+
+          setImageUri(croppedPhoto.uri)
+          const newOcr = await TextRecognition.recognize(croppedPhoto.uri)
+
+          if (!newOcr) return
+
+          setLoading(false)
+          setGeneratedEcv(
+            biggestText(newOcr)
+              .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
+              .replaceAll(/[^\dA-Z]/g, ''),
+          )
+        })
+        .catch((error) => console.log(error))
+
+      // Remove the processed item from the queue
+      return prevQueue.slice(1)
+    })
+  }
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      processNextItem()
+    }, 100)
+
+    return () => clearInterval(intervalId) // Clean up on component unmount
+  }, [])
 
   useEffect(() => {
     async function prepare() {
       await tf.ready()
 
       setTfReady(true)
-
-      // const loadedModel = await loadTensorflowModel(require('@/models/2.tflite'))
-      // setModel(loadedModel)
-
-      console.log('modelReady')
     }
 
     prepare()
   }, [])
 
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleCameraStream = (images: IterableIterator<tf.Tensor3D>) => {
-    console.log('camera ready')
-    // console.log('imageTensor', imageTensor)
     let a = 0
     const loop = async () => {
       if (a % 100 === 0) {
         const imageTensor = images.next?.().value as tf.Tensor3D
-        console.log('tensor', a, imageTensor)
-        const startTs = Date.now()
-        await Promise.resolve(setTimeout(() => {}, 2000))
-        const ocrResult = model?.runSync([imageTensor])
-        const latency = Date.now() - startTs
-        setFps(Math.floor(1000 / latency))
-        // console.log(ocrResult)
+
+        setTensorsToProcess((prev) => [...prev, imageTensor])
       }
       a += 1
       requestAnimationFrame(loop)
@@ -102,34 +180,36 @@ const CameraComp = () => {
 
   return (
     <View className="h-full flex-1 flex-col">
-      {tfReady && (
-        <TensorCamera
-          ratio="16:9"
-          style={{ height: (width * 16) / 9, zIndex: -1 }}
-          flashMode={flashMode}
-          onReady={handleCameraStream}
-          cameraTextureHeight={(width * 16) / 9}
-          cameraTextureWidth={width}
-          useCustomShadersToResize={false}
-          resizeHeight={200}
-          resizeWidth={152}
-          resizeDepth={3}
-          autorender
-        >
-          <View className="z-10 h-full w-full">
-            <View
-              style={{ paddingTop: top, height: HEADER_WITH_PADDING + top }}
-              className="items-center justify-center bg-dark/80"
-            >
-              <Typography className="text-white" variant="h1">
-                Skenuj tu, FPS: {fps}
-              </Typography>
-            </View>
-            <View style={{ height: CROPPED_PHOTO_HEIGHT }} className="items-center" />
-            <View className="bg-opacity-20 flex-1 items-center bg-dark/80" />
+      <View className="relative">
+        {tfReady && (
+          <TensorCamera
+            ratio="16:9"
+            style={{ height: (width * 16) / 9, zIndex: -20 }}
+            flashMode={flashMode}
+            onReady={handleCameraStream}
+            cameraTextureHeight={(width * 16) / 9}
+            cameraTextureWidth={width}
+            useCustomShadersToResize={false}
+            resizeHeight={(RESIZED_WIDTH * 16) / 9}
+            resizeWidth={RESIZED_WIDTH}
+            resizeDepth={3}
+            autorender
+          />
+        )}
+        <View className="absolute bottom-0 left-0 right-0 top-0 h-full w-full">
+          <View
+            style={{ paddingTop: top, height: HEADER_WITH_PADDING + top }}
+            className="items-center justify-center bg-dark/80"
+          >
+            <Typography className="text-white" variant="h1">
+              Skenuj tu
+            </Typography>
           </View>
-        </TensorCamera>
-      )}
+          <View style={{ height: CROPPED_PHOTO_HEIGHT }} className="items-center" />
+          <View className="bg-opacity-20 flex-1 items-center bg-dark/80" />
+          {imageUri ? <Image src={imageUri} className="h-48 w-48" resizeMode="contain" /> : null}
+        </View>
+      </View>
 
       <CameraBottomSheet
         isLoading={false}

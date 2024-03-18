@@ -56,7 +56,7 @@ const CameraBottomSheet = ({
             />
           </Field>
 
-          <Button loading={isLoading} onPress={() => {}}>
+          <Button loading={isLoading} onPress={() => { }}>
             Skenovať
           </Button>
         </BottomSheetContent>

@@ -3146,11 +3146,6 @@ async-limiter@~1.0.0:
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
   integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
 
-async-storage@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/async-storage/-/async-storage-0.1.0.tgz#b551fcc048cd69166c8c6c4af0e136cf3d4b929f"
-  integrity sha512-29i3KfI7o9YNmqtR3ecY1KqOuM5/Goos3SHzIwvXNYgQMS4ggB+YQ38DC1FVY+Cc4SxiMLy9J4IRZHZ5q5gDpw==
-
 asynciterator.prototype@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/asynciterator.prototype/-/asynciterator.prototype-1.0.0.tgz#8c5df0514936cdd133604dfcc9d3fb93f09b2b62"
@@ -5007,15 +5002,15 @@ expo-dev-menu@4.5.7:
     expo-dev-menu-interface "1.7.2"
     semver "^7.5.3"
 
+expo-file-system@^16.0.8, expo-file-system@~16.0.8:
+  version "16.0.8"
+  resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-16.0.8.tgz#13c79a8e06e42a8e76e9297df6920597a011d989"
+  integrity sha512-yDbVT0TUKd7ewQjaY5THum2VRFx2n/biskGhkUmLh3ai21xjIVtaeIzHXyv9ir537eVgt4ReqDNWi7jcXjdUcA==
+
 expo-file-system@~16.0.0:
   version "16.0.6"
   resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-16.0.6.tgz#07a140a7bcb44b42bd3f0b465e7583cc7f7d7078"
   integrity sha512-ATCHL7nEg2WwKeamW/SDTR9jBEqM5wncFq594ftKS5QFmhKIrX48d9jyPFGnNq+6h8AGPg4QKh2KCA4OY49L4g==
-
-expo-file-system@~16.0.8:
-  version "16.0.8"
-  resolved "https://registry.yarnpkg.com/expo-file-system/-/expo-file-system-16.0.8.tgz#13c79a8e06e42a8e76e9297df6920597a011d989"
-  integrity sha512-yDbVT0TUKd7ewQjaY5THum2VRFx2n/biskGhkUmLh3ai21xjIVtaeIzHXyv9ir537eVgt4ReqDNWi7jcXjdUcA==
 
 expo-font@^11.10.3, expo-font@~11.10.3:
   version "11.10.3"
@@ -6359,7 +6354,7 @@ join-component@^1.1.0:
   resolved "https://registry.yarnpkg.com/join-component/-/join-component-1.1.0.tgz#b8417b750661a392bee2c2537c68b2a9d4977cd5"
   integrity sha512-bF7vcQxbODoGK1imE2P9GS9aw4zD0Sd+Hni68IMZLj7zRnquH7dXUmMw9hDI5S/Jzt7q+IyTXN0rSg2GI0IKhQ==
 
-jpeg-js@^0.4.3:
+jpeg-js@^0.4.3, jpeg-js@^0.4.4:
   version "0.4.4"
   resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.4.4.tgz#a9f1c6f1f9f0fa80cdb3484ed9635054d28936aa"
   integrity sha512-WZzeDOEtTOBK4Mdsar0IqEU5sMr3vSV2RqkAIzUEV2BHnUfKGyswWFPFwK5EeDo93K3FohSHbLAjj0s1Wzd+dg==
