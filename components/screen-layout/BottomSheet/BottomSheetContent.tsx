@@ -5,16 +5,20 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { cn } from '@/utils/cn'
 
-type Props = ComponentProps<typeof BottomSheetView>
+type Props = ComponentProps<typeof BottomSheetView> & {
+  hideSpacer?: boolean
+  isDynamic?: boolean
+}
 
-const BottomSheetContent = ({ children, className }: Props) => {
+const BottomSheetContent = ({ children, className, hideSpacer, isDynamic }: Props) => {
   const insets = useSafeAreaInsets()
 
   return (
-    <BottomSheetView className={cn('px-5 py-3', className)}>
+    <BottomSheetView className={cn('px-5 py-3', { 'min-h-[80px]': !isDynamic }, className)}>
       {children}
-
-      <View style={{ height: insets.bottom }} aria-hidden />
+      {/* TODO this should be handled by SafeAreaProvider */}
+      {/* spacer */}
+      {!hideSpacer && <View style={{ height: insets.bottom }} aria-hidden />}
     </BottomSheetView>
   )
 }

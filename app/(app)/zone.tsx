@@ -1,14 +1,32 @@
-import { router } from 'expo-router'
+import { PortalHost } from '@gorhom/portal'
+import { View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import ContinueButton from '@/components/navigation/ContinueButton'
+import MapScreen from '@/components/map/MapScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import MapStoreProvider from '@/state/MapStoreProvider/MapStoreProvider'
+import MapZonesProvider from '@/state/MapZonesProvider/MapZonesProvider'
 
-const AppRoute = () => {
+const ZoneScreen = () => {
+  const { top } = useSafeAreaInsets()
+
   return (
-    <ScreenView title="Zone" className="flex-1 justify-start">
-      <ContinueButton onPress={() => router.push('zone-photo')} />
-    </ScreenView>
+    <MapZonesProvider>
+      <MapStoreProvider>
+        <ScreenView options={{ headerShown: false }} className="h-full flex-1 flex-col">
+          <MapScreen />
+
+          <View className="absolute right-0 px-2.5 g-3" style={{ top }}>
+            <PortalHost name="mapLeftBox" />
+
+            <PortalHost name="mapRightBox" />
+          </View>
+
+          <PortalHost name="index" />
+        </ScreenView>
+      </MapStoreProvider>
+    </MapZonesProvider>
   )
 }
 
-export default AppRoute
+export default ZoneScreen

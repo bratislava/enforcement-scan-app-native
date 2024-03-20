@@ -43,6 +43,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
     formState: { isSubmitting },
   } = useHookForm<Data>({
     schema,
+    // eslint-disable-next-line pii/no-email
     defaultValues: { email: 'aaa@aaar.aa', password: 'aaaa' },
   })
 
