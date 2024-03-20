@@ -10,7 +10,7 @@ import InfoSlide from '@/components/screen-layout/InfoSlide'
 import Button from '@/components/shared/Button'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useLocationPermission } from '@/modules/permissions/useLocationPermission'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/utils/cn'
 
 type RouteKeys = 'camera' | 'location'
 // key is nested inside router, because this is how `renderScene` provides it
@@ -36,13 +36,12 @@ const PermissionsRoute = ({ route, jumpTo }: RouteProps) => {
     if (route.key === 'camera') {
       jumpTo('location')
     } else {
-      router.replace('/sign-in')
+      router.replace('/')
     }
   }, [route.key, jumpTo])
 
   useEffect(() => {
     if (permissionStatus !== PermissionStatus.UNDETERMINED) {
-      console.log('ccc2', permissionStatus)
       onPermissionFinished()
     }
   }, [onPermissionFinished, permissionStatus])
@@ -52,7 +51,7 @@ const PermissionsRoute = ({ route, jumpTo }: RouteProps) => {
       <InfoSlide title={route.title} text={route.title} SvgImage={SvgImage} />
       <Button
         variant="primary"
-        className={clsx('mx-5', { 'mb-5': !insets.bottom })}
+        className={cn('mx-5', { 'mb-5': !insets.bottom })}
         onPress={getPermission}
       >
         Pokračovať

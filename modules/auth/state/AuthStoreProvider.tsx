@@ -9,6 +9,11 @@ type GlobalContextProps = {
   isLoading: boolean
 }
 
+export type LoginCredentials = {
+  email: string
+  password: string
+}
+
 export const AuthStoreContext = createContext<GlobalContextProps | null>(null)
 AuthStoreContext.displayName = 'AuthStoreContext'
 
@@ -37,6 +42,7 @@ const AuthStoreProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     onFetchUser()
+    // needs to be triggered only once
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

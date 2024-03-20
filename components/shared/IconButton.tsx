@@ -2,7 +2,7 @@ import { forwardRef } from 'react'
 import { Pressable, PressableProps, View } from 'react-native'
 
 import Icon, { IconName } from '@/components/shared/Icon'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/utils/cn'
 
 type Props = {
   name: IconName
@@ -18,7 +18,7 @@ const IconButton = forwardRef<View, Props>(
         {...rest}
         hitSlop={hitSlop ?? 12}
         accessibilityLabel={accessibilityLabel}
-        className={clsx('self-start rounded-full', {
+        className={cn('self-start rounded-full', {
           'p-3': variant === 'dark' || variant === 'white-raised',
           'p-2.5': variant.includes('small'),
           'bg-white shadow': variant.startsWith('white'),
@@ -29,7 +29,7 @@ const IconButton = forwardRef<View, Props>(
         {({ pressed }) => (
           <Icon
             name={name}
-            className={clsx({
+            className={cn({
               'text-white': variant.startsWith('dark'),
               'text-dark': variant.startsWith('white'),
               'text-dark/50': (rest.disabled || pressed) && variant.startsWith('white'),

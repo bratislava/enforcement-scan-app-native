@@ -3,7 +3,7 @@ import { Pressable, PressableProps, View } from 'react-native'
 
 import Icon, { IconName } from '@/components/shared/Icon'
 import Typography from '@/components/shared/Typography'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/utils/cn'
 
 type PressablePropsOmitted = Omit<PressableProps, 'children'>
 
@@ -25,7 +25,7 @@ export const buttonClassNames = (
 
   const isPlainStyle = variant === 'plain' || variant === 'plain-dark'
 
-  const buttonContainerClassNames = clsx(
+  const buttonContainerClassNames = cn(
     'flex flex-row items-center justify-center g-3 active:opacity-70',
     {
       'rounded border p-2.5': !isPlainStyle,
@@ -37,7 +37,7 @@ export const buttonClassNames = (
     },
   )
 
-  const buttonTextClassNames = clsx('', {
+  const buttonTextClassNames = cn('', {
     'text-white': variant === 'primary' || variant === 'negative',
     'text-dark': variant === 'secondary' || variant === 'tertiary' || variant === 'plain-dark',
     'text-green': variant === 'plain',
@@ -68,7 +68,7 @@ const Button = forwardRef<View, ButtonProps>(
     const { buttonContainerClassNames, buttonTextClassNames } = buttonClassNames(variant, rest)
 
     return (
-      <Pressable ref={ref} hitSlop={4} {...rest} className={clsx(buttonContainerClassNames)}>
+      <Pressable ref={ref} hitSlop={4} {...rest} className={cn(buttonContainerClassNames)}>
         {loading ? (
           <>
             <Icon name="hourglass-top" className={buttonTextClassNames} />

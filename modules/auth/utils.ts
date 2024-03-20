@@ -26,20 +26,6 @@ export const getCurrentAuthenticatedUser = async () => {
   //   console.log(`The signInDetails:`, user.signInDetails)
   //   return user
   // } catch (error) {
-  //   return null
-  // }
-}
-
-export const signInAndRedirectToConfirm = async (phone: string) => {
-  // const { isSignedIn, nextStep } = await signIn({
-  //   username: phone,
-  // })
-  // console.log('signInOutput', { isSignedIn, nextStep })
-  // if (nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_SMS_CODE') {
-  //   /* Sign in result is needed for `confirmSignIn` function */
-  //   router.push({ pathname: '/confirm-sign-in', params: { phone } })
-  // }
-  // if (nextStep.signInStep === 'DONE') {
-  //   router.push({ pathname: '/confirm-sign-in', params: { phone } })
+  return null
   // }
 }

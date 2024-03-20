@@ -9,7 +9,7 @@ import {
 import { TextInput as TextInputType } from 'react-native-gesture-handler'
 
 import { useMultipleRefsSetter } from '@/hooks/useMultipleRefsSetter'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/utils/cn'
 
 export type TextInputProps = Omit<TextInputNativeProps, 'editable'> & {
   hasError?: boolean
@@ -49,7 +49,7 @@ const TextInput = forwardRef<TextInputType, TextInputProps>(
       <Pressable
         onPress={handlePress}
         pointerEvents={pointerEvents}
-        className={clsx('flex-row items-center rounded border bg-white px-4 py-3 g-3', {
+        className={cn('flex-row items-center rounded border bg-white px-4 py-3 g-3', {
           'border-divider focus:border-dark': !isDisabled && !hasError,
           'border-negative': hasError && !isDisabled,
           'border-divider bg-[#D6D6D6]': isDisabled,
@@ -63,7 +63,7 @@ const TextInput = forwardRef<TextInputType, TextInputProps>(
         <InputElement
           ref={refSetter}
           editable={!isDisabled}
-          className={clsx(
+          className={cn(
             'flex-1 font-inter-400regular text-[16px]',
             !multiline && 'h-[24px]',
             className,

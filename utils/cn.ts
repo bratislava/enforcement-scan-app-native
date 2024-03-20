@@ -1,4 +1,4 @@
-import cn from 'clsx'
+import clsx from 'clsx'
 import { extendTailwindMerge } from 'tailwind-merge'
 
 const twMerge = extendTailwindMerge({
@@ -9,6 +9,6 @@ const twMerge = extendTailwindMerge({
   },
 })
 
-export const clsx = (...inputs: cn.ClassValue[]) => {
-  return twMerge(cn(inputs))
+export const cn = (...inputs: clsx.ClassValue[]) => {
+  return twMerge(clsx(inputs))
 }
