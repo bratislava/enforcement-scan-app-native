@@ -66,6 +66,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
           </Field>
         )}
       />
+
       <Controller
         name="password"
         control={control}
