@@ -6,6 +6,7 @@ import { useWindowDimensions, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import CameraBottomSheet from '@/components/camera/CameraBottomSheet'
+import ScreenView from '@/components/screen-layout/ScreenView'
 import Typography from '@/components/shared/Typography'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 
@@ -92,7 +93,7 @@ const CameraComp = () => {
   }
 
   return (
-    <View className="h-full flex-1 flex-col">
+    <ScreenView options={{ headerShown: false }} className="h-full flex-1 flex-col">
       <Camera ratio="16:9" ref={ref} style={{ height: (width * 16) / 9 }} flashMode={flashMode}>
         <View className="h-full w-full">
           <View
@@ -118,7 +119,7 @@ const CameraComp = () => {
         takePicture={takePicture}
         onChangeLicencePlate={(ecv) => setGeneratedEcv(ecv)}
       />
-    </View>
+    </ScreenView>
   )
 }
 

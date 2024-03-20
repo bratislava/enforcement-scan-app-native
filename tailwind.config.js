@@ -10,6 +10,7 @@ module.exports = {
     './utils/**/*.{js,jsx,ts,tsx}',
   ],
   presets: [require('nativewind/preset')],
+  important: true,
   plugins: [
     // https://github.com/marklawlor/nativewind/issues/386
     plugin(function ({ matchUtilities, theme }) {
@@ -39,6 +40,12 @@ module.exports = {
       lg: '16px',
       DEFAULT: '8px',
       sm: '4px',
+    },
+    flex: {
+      1: '1 1 0%',
+      auto: '1 1 auto',
+      initial: '0 1 auto',
+      none: 'none',
     },
     colors: colors,
     extend: {

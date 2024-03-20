@@ -43,7 +43,7 @@ const LoginForm = ({ onSubmit, error }: Props) => {
     formState: { isSubmitting },
   } = useHookForm<Data>({
     schema,
-    defaultValues: { email: '', password: '' },
+    defaultValues: { email: 'aaa@aaar.aa', password: 'aaaa' },
   })
 
   return (

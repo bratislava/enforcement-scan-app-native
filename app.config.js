@@ -29,7 +29,23 @@ module.exports = {
     experiments: {
       tsconfigPaths: true,
     },
-    plugins: ['expo-router', 'expo-camera'],
+    plugins: [
+      'expo-router',
+      'expo-camera',
+      [
+        '@rnmapbox/maps',
+        {
+          RNMapboxMapsImpl: 'mapbox',
+          RNMapboxMapsDownloadToken: process.env.MAPBOX_SECRET_TOKEN,
+        },
+      ],
+      [
+        'expo-location',
+        {
+          locationWhenInUsePermission: 'Show current location on map.',
+        },
+      ],
+    ],
     extra: {
       eas: {
         projectId: '28f73650-074c-4565-94ac-c5cbe5b9658f',

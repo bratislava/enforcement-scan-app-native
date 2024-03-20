@@ -21,12 +21,13 @@ export const buttonClassNames = (
   variant: ButtonProps['variant'],
   pressableProps: PressablePropsOmitted,
 ) => {
-  const { disabled } = pressableProps
+  const { disabled, className } = pressableProps
 
   const isPlainStyle = variant === 'plain' || variant === 'plain-dark'
 
   const buttonContainerClassNames = cn(
     'flex flex-row items-center justify-center g-3 active:opacity-70',
+    className,
     {
       'rounded border p-2.5': !isPlainStyle,
       'border-green bg-green': variant === 'primary',

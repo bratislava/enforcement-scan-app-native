@@ -23,7 +23,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        // "EXPO_PUBLIC_MAPBOX_KEY": "",
+        "EXPO_PUBLIC_MAPBOX_KEY": "pk.eyJ1IjoiaW5vdmFjaWVicmF0aXNsYXZhIiwiYSI6ImNrd25icnBvZTJpZDAyb252N2NlcjZvYTEifQ.RYAkWitxV2HyomaXVe4VnA"
         // "EXPO_PUBLIC_COGNITO_USER_POOL_ID": "",
         // "EXPO_PUBLIC_COGNITO_CLIENT_ID":"",
         // "EXPO_PUBLIC_AWS_REGION": "",
