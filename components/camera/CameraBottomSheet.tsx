@@ -3,29 +3,30 @@ import { FlashMode } from 'expo-camera'
 import { useRef } from 'react'
 import { useSharedValue } from 'react-native-reanimated'
 
-import CameraBottomSheetAttachment from '@/components/camera/CameraBottomSheetAttachment'
-import TextInput from '@/components/inputs/TextInput'
+import FlashlightBottomSheetAttachment from '@/components/camera/FlashlightBottomSheetAttachment'
+import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAttachment'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
-import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/BottomSheetHandleWithShadow'
 import Button from '@/components/shared/Button'
-import Field from '@/components/shared/Field'
+import Typography from '@/components/shared/Typography'
 
 type Props = {
-  licencePlate?: string
   flashMode: FlashMode
   isLoading: boolean
+  hasPhoto: boolean
   takePicture: () => Promise<void>
+  retakePicture: () => void
+  selectPicture: () => Promise<void>
   toggleFlashlight: () => void
-  onChangeLicencePlate: (plate: string) => void
 }
 
 const CameraBottomSheet = ({
-  licencePlate,
+  hasPhoto,
   flashMode,
   isLoading,
   takePicture,
+  selectPicture,
+  retakePicture,
   toggleFlashlight,
-  onChangeLicencePlate,
 }: Props) => {
   const modalRef = useRef<BottomSheet>(null)
 
@@ -33,32 +34,39 @@ const CameraBottomSheet = ({
 
   return (
     <>
-      <CameraBottomSheetAttachment
-        flashMode={flashMode}
-        toggleFlashlight={toggleFlashlight}
-        animatedPosition={animatedPosition}
-      />
+      {hasPhoto ? (
+        <PhotoBottomSheetAttachment animatedPosition={animatedPosition} onRetake={retakePicture} />
+      ) : (
+        <FlashlightBottomSheetAttachment
+          flashMode={flashMode}
+          toggleFlashlight={toggleFlashlight}
+          animatedPosition={animatedPosition}
+        />
+      )}
 
       <BottomSheet
-        handleComponent={BottomSheetHandleWithShadow}
+        handleComponent={null}
         keyboardBehavior="interactive"
         ref={modalRef}
         enableDynamicSizing
         animatedPosition={animatedPosition}
       >
-        <BottomSheetContent cn="g-2">
-          <Field label="EČV">
-            <TextInput
-              isInsideBottomSheet
-              accessibilityLabel="Evidenčné číslo vozidla"
-              value={licencePlate}
-              onChangeText={onChangeLicencePlate}
-            />
-          </Field>
-
-          <Button loading={isLoading} onPress={takePicture}>
-            Skenovať
-          </Button>
+        <BottomSheetContent className="g-2">
+          {hasPhoto ? (
+            <>
+              <Typography variant="h2">Je fotka okej? :) </Typography>
+              <Button loading={isLoading} onPress={selectPicture}>
+                Potvrdiť
+              </Button>
+            </>
+          ) : (
+            <>
+              <Typography variant="h2">Odfoťte zónovú značku</Typography>
+              <Button loading={isLoading} onPress={takePicture}>
+                Odfotiť
+              </Button>
+            </>
+          )}
         </BottomSheetContent>
       </BottomSheet>
     </>

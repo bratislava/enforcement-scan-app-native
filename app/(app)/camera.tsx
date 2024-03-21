@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 import { useWindowDimensions, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import CameraBottomSheet from '@/components/camera/CameraBottomSheet'
+import ALPRCameraBottomSheet from '@/components/camera/ALPRCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import Typography from '@/components/shared/Typography'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
@@ -98,7 +98,7 @@ const CameraComp = () => {
         <View className="h-full w-full">
           <View
             style={{ paddingTop: top, height: HEADER_WITH_PADDING + top }}
-            className="items-center justify-center bg-dark/80"
+            className="items-center justify-start bg-dark/80"
           >
             <Typography className="text-white" variant="h1">
               Skenuj tu
@@ -109,7 +109,7 @@ const CameraComp = () => {
         </View>
       </Camera>
 
-      <CameraBottomSheet
+      <ALPRCameraBottomSheet
         isLoading={loading}
         flashMode={flashMode}
         toggleFlashlight={() =>

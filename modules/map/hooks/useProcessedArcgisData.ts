@@ -30,6 +30,7 @@ export const useProcessedArcgisData = () => {
         rawUdrData,
         rawOdpData,
       })
+
       setZonesData(zonesData)
       setUdrData(udrData)
       setOdpData(odpData)

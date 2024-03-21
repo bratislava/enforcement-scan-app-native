@@ -12,12 +12,12 @@ const DATA: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'map',
     title: 'PAAS',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    description: 'Lorem ipsu dolor sit amet, consectetur adipiscing elit.',
   },
   {
     icon: 'camera',
     title: 'Ne PAAS',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    description: 'Lorem ipsum dolor sit amet,consectetur adipiscing elit.',
   },
   {
     icon: 'outlined-flag',
