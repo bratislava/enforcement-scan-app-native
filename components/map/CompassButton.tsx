@@ -2,7 +2,7 @@ import { forwardRef, useCallback } from 'react'
 import { Pressable, View } from 'react-native'
 
 import { CompassIcon } from '@/assets/map'
-import { useMapStoreContext } from '@/state/MapStoreProvider/useMapStoreContext'
+import { useMapStoreContext } from '@/modules/map/state/MapStoreProvider/useMapStoreContext'
 import { cn } from '@/utils/cn'
 
 type Props = {

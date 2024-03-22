@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 
-import { MapStoreUpdateContext } from '@/state/MapStoreProvider/MapStoreProvider'
+import { MapStoreUpdateContext } from '@/modules/map/state/MapStoreProvider/MapStoreProvider'
 
 export const useMapStoreUpdateContext = () => {
   const context = useContext(MapStoreUpdateContext)

@@ -27,9 +27,9 @@ import MapPin from '@/components/map/MapPin'
 import MapZones from '@/components/map/MapZones'
 import { useCameraChangeHandler } from '@/modules/map/hooks/useCameraChangeHandler'
 import { ProcessedMapData } from '@/modules/map/hooks/useProcessedArcgisData'
+import { useMapStoreUpdateContext } from '@/modules/map/state/MapStoreProvider/useMapStoreUpdateContext'
 import { MapUdrZoneWithTranslationProps, UdrZoneFeature } from '@/modules/map/types'
 import { udrStyles } from '@/modules/map/utils/layer-styles/visitors'
-import { useMapStoreUpdateContext } from '@/state/MapStoreProvider/useMapStoreUpdateContext'
 
 type Props = {
   onZoneChange?: (feature: MapUdrZoneWithTranslationProps | null) => void

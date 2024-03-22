@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { environment } from '@/environment'
 import { useAuthStoreContext } from '@/modules/auth/state/useAuthStoreContext'
+import { OffenceStoreProvider } from '@/state/OffenceStore/OffenceStoreProvider'
 import colors from '@/tailwind.config.colors'
 
 const RootLayout = () => {
@@ -39,15 +40,17 @@ const RootLayout = () => {
 
   // Render the children routes now that all the assets are loaded.
   return (
-    <Stack
-      screenOptions={{
-        headerBackTitleVisible: false,
-        headerTitleStyle: {
-          fontFamily: 'BelfastGrotesk_700Bold',
-        },
-        headerTintColor: colors.dark.DEFAULT,
-      }}
-    />
+    <OffenceStoreProvider>
+      <Stack
+        screenOptions={{
+          headerBackTitleVisible: false,
+          headerTitleStyle: {
+            fontFamily: 'BelfastGrotesk_700Bold',
+          },
+          headerTintColor: colors.dark.DEFAULT,
+        }}
+      />
+    </OffenceStoreProvider>
   )
 }
 

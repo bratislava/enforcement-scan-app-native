@@ -3,12 +3,7 @@
 import { Feature, MultiPolygon, Polygon } from 'geojson'
 
 import { GeocodingFeature } from '@/modules/arcgis/types'
-import {
-  MapLayerEnum,
-  MapPointIconEnum,
-  MapPointKindEnum,
-  MapZoneStatusEnum,
-} from '@/modules/map/constants'
+import { MapLayerEnum, MapZoneStatusEnum } from '@/modules/map/constants'
 
 export type MapUdrZone = {
   /** OBJECTID */
@@ -33,28 +28,6 @@ export type MapUdrZone = {
   parkingDurationRestrictionException: string
   parkingFeeException: string
   layer: MapLayerEnum
-}
-
-export type MapPoint = {
-  id: number
-  name: string
-  kind: MapPointKindEnum
-  icon: MapPointIconEnum
-  udrId?: string | null
-  parkomatId?: string | null
-  location?: string
-  navigation?: string | null
-  openingHours?: string | null
-  address?: string | null
-  addressDetail?: string
-  place?: string
-  parkingSpotCount?: number
-  publicTransportLines?: string | null
-  publicTransportTravelTime?: string | null
-  distanceToPublicTransport?: string | null
-  npkInformation?: string | null
-  rpkInformation?: string | null
-  surface?: string | null
 }
 
 export const isGeocodingFeature = (
@@ -83,11 +56,6 @@ export type WithTranslationProperties<P, K extends keyof P> =
     } & {
       [Property in keyof P as Property extends K ? never : Property]: P[Property]
     }
-
-export type MapPointWithTranslationProps = WithTranslationProperties<
-  MapPoint,
-  'addressDetail' | 'openingHours' | 'name' | 'rpkInformation' | 'npkInformation' | 'surface'
->
 
 export type MapUdrZoneWithTranslationProps = WithTranslationProperties<
   MapUdrZone,

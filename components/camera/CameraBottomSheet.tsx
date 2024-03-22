@@ -15,7 +15,7 @@ type Props = {
   hasPhoto: boolean
   takePicture: () => Promise<void>
   retakePicture: () => void
-  selectPicture: () => Promise<void>
+  selectPicture: () => void
   toggleFlashlight: () => void
 }
 

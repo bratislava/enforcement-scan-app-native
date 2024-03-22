@@ -7,6 +7,7 @@ import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { IconName } from '@/components/shared/Icon'
 import IconButton from '@/components/shared/IconButton'
+import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const DATA: { icon: IconName; title: string; description: string }[] = [
   {
@@ -27,6 +28,13 @@ const DATA: { icon: IconName; title: string; description: string }[] = [
 ]
 
 const AppRoute = () => {
+  const setState = useSetOffenceState()
+
+  const handlePressRole = (role: string) => () => {
+    setState({ role })
+    router.push('/zone')
+  }
+
   return (
     <ScreenView
       title="Enforcement"
@@ -46,7 +54,7 @@ const AppRoute = () => {
           ItemSeparatorComponent={() => <View className="h-2" />}
           data={DATA}
           renderItem={({ item }) => (
-            <RoleTile onPress={() => router.push('/zone')} key={item.title} {...item} />
+            <RoleTile onPress={handlePressRole(item.title)} key={item.title} {...item} />
           )}
           estimatedItemSize={80}
         />

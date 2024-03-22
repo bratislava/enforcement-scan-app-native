@@ -100,11 +100,7 @@ export const processData = ({ rawZonesData, rawUdrData, rawOdpData }: ArcgisData
     {
       type: 'FeatureCollection',
       features: rawUdrData.features
-        .filter(
-          (f) =>
-            (f.properties?.web === 'ano' || f.properties?.web === 'ano - planned') &&
-            (f.properties?.Status === 'active' || f.properties?.Status === 'planned'),
-        )
+        .filter((f) => f.properties?.web === 'ano' || f.properties?.web === 'ano - planned')
         .map((feature) => {
           GLOBAL_ID++
           const layer = MapLayerEnum.visitors

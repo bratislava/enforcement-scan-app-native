@@ -7,13 +7,14 @@ import FlexRow from '@/components/shared/FlexRow'
 import Panel from '@/components/shared/Panel'
 import Typography from '@/components/shared/Typography'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
+import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 type Props = {
   selectedZone: MapUdrZoneWithTranslationProps | null
 }
 
 const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
-  // const onPurchaseStoreUpdate = usePurchaseStoreUpdateContext()
+  const setState = useSetOffenceState()
 
   if (selectedZone) {
     return (
@@ -29,11 +30,7 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
           </FlexRow>
         </Panel>
 
-        <Link
-          asChild
-          href="/zone-photo"
-          // onPress={() => onPurchaseStoreUpdate({ udr: selectedZone })}
-        >
+        <Link asChild href="/zone-photo" onPress={() => setState({ zone: selectedZone })}>
           <ContinueButton />
         </Link>
       </>

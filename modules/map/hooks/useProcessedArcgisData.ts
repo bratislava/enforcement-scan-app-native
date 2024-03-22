@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react'
 import { useStaticArcgisData } from '@/modules/arcgis/hooks/useStaticArcgisData'
 import { ArcgisData } from '@/modules/arcgis/types'
 import { processData } from '@/modules/map/utils/processData'
-import { MapFeatureHashMap } from '@/state/MapZonesProvider/types'
-import { useMapZonesUpdateContext } from '@/state/MapZonesProvider/useMapZonesUpdateContext'
 
 type ProcessDataReturn = ReturnType<typeof processData>
 
@@ -16,8 +14,6 @@ export const useProcessedArcgisData = () => {
   const [udrData, setUdrData] = useState<ProcessDataReturn['udrData'] | null>(null)
   const [odpData, setOdpData] = useState<ProcessDataReturn['odpData'] | null>(null)
   const [isProcessingFinished, setIsProcessingFinished] = useState(false)
-
-  const setMapZones = useMapZonesUpdateContext()
 
   const { rawZonesData, rawUdrData, rawOdpData }: Partial<ArcgisData> = useStaticArcgisData()
 
@@ -36,16 +32,9 @@ export const useProcessedArcgisData = () => {
       setOdpData(odpData)
       setLoading(false)
 
-      const featuresHashMap: MapFeatureHashMap = new Map()
-      udrData.features.forEach((feature) => {
-        if (feature.properties) {
-          featuresHashMap.set(feature.properties.udrId.toString(), feature)
-        }
-      })
-      setMapZones(featuresHashMap)
       setIsProcessingFinished(true)
     }
-  }, [rawUdrData, rawOdpData, rawZonesData, setMapZones, isProcessingFinished])
+  }, [rawUdrData, rawOdpData, rawZonesData, isProcessingFinished])
 
   return { isLoading, zonesData, udrData, odpData }
 }
