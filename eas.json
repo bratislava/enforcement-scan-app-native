@@ -33,7 +33,9 @@
     },
     "preview": {
       "distribution": "internal",
-      "env": {}
+      "env": {
+        "EXPO_PUBLIC_MAPBOX_KEY": "pk.eyJ1IjoiaW5vdmFjaWVicmF0aXNsYXZhIiwiYSI6ImNrd25icnBvZTJpZDAyb252N2NlcjZvYTEifQ.RYAkWitxV2HyomaXVe4VnA"
+      }
     },
     "staging": {
       "autoIncrement": true,

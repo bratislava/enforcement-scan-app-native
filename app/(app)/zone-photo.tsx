@@ -29,16 +29,15 @@ const AppRoute = () => {
     <ScreenView title="Vyberte zónovú fotku" className="flex-1 justify-start">
       <FlashList
         className="h-full w-full flex-1"
-        data={[...images, null]}
+        data={[...images, undefined]}
         renderItem={({ item }) => (
           <PressableStyled
             key={item}
             style={{ height: width / 3 }}
             className="w-full items-center justify-center bg-dark-light"
             onPress={() => {
-              if (item) {
-                setState({ zonePhoto: item })
-              }
+              setState({ zonePhoto: item })
+
               router.push('/zone-photo-camera')
             }}
           >

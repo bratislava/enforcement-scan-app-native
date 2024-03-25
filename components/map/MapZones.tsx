@@ -26,6 +26,10 @@ const MapZones = ({ udrData }: Props) => {
           (udr) => udr.properties?.status === MapZoneStatusEnum.planned,
         ),
       },
+      residents: {
+        ...udrData,
+        features: udrData?.features.filter((udr) => udr.properties?.udrId === '0'),
+      },
     }),
     [udrData],
   )
@@ -35,6 +39,12 @@ const MapZones = ({ udrData }: Props) => {
       {udrData.features?.length > 0 && (
         <ShapeSource id="udrSource" shape={udrData}>
           <FillLayer id="udrFill" style={udrStyles.zoneFill} />
+        </ShapeSource>
+      )}
+      {udrDataByStatus.residents.features?.length > 0 && (
+        <ShapeSource id="udrSourceResidents" shape={udrDataByStatus.residents}>
+          <FillLayer id="udrFillResidents" style={udrStyles.zoneFillResidents} />
+          <LineLayer id="udrLineResidents" style={udrStyles.lineResidents} />
         </ShapeSource>
       )}
       {udrDataByStatus.active.features?.length > 0 && (

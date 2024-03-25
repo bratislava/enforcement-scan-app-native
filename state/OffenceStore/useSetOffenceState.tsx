@@ -5,5 +5,5 @@ import { OffenceState, OffenceStoreContext } from '@/state/OffenceStore/OffenceS
 export const useSetOffenceState = () => {
   const store = useContext(OffenceStoreContext)
 
-  return (newState: OffenceState) => store.setState((prev) => ({ ...prev, newState }))
+  return (newState: OffenceState) => store.setState((prev) => ({ ...prev, ...newState }))
 }

@@ -11,7 +11,7 @@ const ZoneScreen = () => {
 
   return (
     <MapStoreProvider>
-      <ScreenView options={{ headerShown: false }} className="h-full flex-1 flex-col">
+      <ScreenView title="Vyberte zónu" className="h-full flex-1 flex-col">
         <MapScreen />
 
         <View className="absolute right-0 px-2.5 g-3" style={{ top }}>
