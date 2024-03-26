@@ -4,7 +4,7 @@ import { LayoutChangeEvent, Platform, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import Typography from '@/components/shared/Typography'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/utils/cn'
 
 import IconButton from '../shared/IconButton'
 
@@ -30,8 +30,7 @@ const StackScreenWithHeader = ({ options, ...passingProps }: Props) => {
     ({ options: headerOptions, back }) => {
       return (
         <View
-          className={clsx('w-full flex-row', { 'bg-white': !headerOptions?.headerTransparent })}
-          // TODO: paddings should be tested on android
+          className={cn('w-full flex-row', { 'bg-white': !headerOptions?.headerTransparent })}
           style={{ paddingTop: insets.top }}
         >
           <View className="w-full flex-row items-center px-5 py-3">

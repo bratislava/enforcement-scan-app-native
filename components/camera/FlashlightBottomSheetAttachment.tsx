@@ -1,6 +1,5 @@
 import { FlashMode } from 'expo-camera'
 import * as Location from 'expo-location'
-import { useCallback } from 'react'
 import { View } from 'react-native'
 
 import BottomSheetTopAttachment, {
@@ -15,22 +14,18 @@ type Props = Omit<BottomSheetTopAttachmentProps, 'children'> & {
   toggleFlashlight: () => void
 }
 
-const CameraBottomSheetAttachment = ({ toggleFlashlight, flashMode, ...restProps }: Props) => {
+const FlashlightBottomSheetAttachment = ({ toggleFlashlight, flashMode, ...restProps }: Props) => {
   const [permissionStatus] = useCameraPermission()
-
-  const onLocationPress = useCallback(async () => {
-    toggleFlashlight()
-  }, [toggleFlashlight])
 
   return (
     <BottomSheetTopAttachment {...restProps}>
       <FlexRow className="flex-1 items-end justify-end p-2.5 pt-0">
         <View>
           <IconButton
-            name={flashMode === FlashMode.torch ? 'flashlight-off' : 'flashlight-on'}
+            name={flashMode === FlashMode.off ? 'flashlight-on' : 'flashlight-off'}
             accessibilityLabel="Flashlight"
             variant="white-raised"
-            onPress={onLocationPress}
+            onPress={toggleFlashlight}
             disabled={permissionStatus === Location.PermissionStatus.DENIED}
           />
         </View>
@@ -39,4 +34,4 @@ const CameraBottomSheetAttachment = ({ toggleFlashlight, flashMode, ...restProps
   )
 }
 
-export default CameraBottomSheetAttachment
+export default FlashlightBottomSheetAttachment

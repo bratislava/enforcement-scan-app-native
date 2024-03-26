@@ -1,7 +1,7 @@
 import { ActivityIndicator, View, ViewProps } from 'react-native'
 
 import ScreenView from '@/components/screen-layout/ScreenView'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/utils/cn'
 
 type LoadingScreenProps = {
   asScreenView?: boolean
@@ -11,9 +11,8 @@ const LoadingScreen = ({ asScreenView, className, ...rest }: LoadingScreenProps)
   if (asScreenView) {
     return (
       <ScreenView
-        className={clsx('flex-1 items-center justify-center', className)}
+        className={cn('flex-1 items-center justify-center', className)}
         contentPosition="center"
-        backgroundVariant="dots"
         {...rest}
       >
         <ActivityIndicator size="large" />
@@ -22,7 +21,7 @@ const LoadingScreen = ({ asScreenView, className, ...rest }: LoadingScreenProps)
   }
 
   return (
-    <View className={clsx('flex-1 items-center justify-center', className)} {...rest}>
+    <View className={cn('flex-1 items-center justify-center', className)} {...rest}>
       <ActivityIndicator size="large" />
     </View>
   )

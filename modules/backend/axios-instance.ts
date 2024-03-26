@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { getAccessTokenOrLogout } from '@/modules/auth/utils'
+import { useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
 
 export const axiosInstance = axios.create()
 
@@ -13,10 +13,10 @@ declare module 'axios' {
 }
 
 axiosInstance.interceptors.request.use(async (request) => {
-  const accessToken = await getAccessTokenOrLogout()
+  const [tokens] = useAuthTokens()
 
-  if (accessToken) {
-    request.headers.Authorization = `Bearer ${accessToken.toString()}`
+  if (tokens?.accessToken) {
+    request.headers.Authorization = `Bearer ${tokens.accessToken}`
   }
 
   console.log('fetching:', request.url)

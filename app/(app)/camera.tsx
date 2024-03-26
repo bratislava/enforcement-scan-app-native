@@ -5,7 +5,8 @@ import { useRef, useState } from 'react'
 import { useWindowDimensions, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import CameraBottomSheet from '@/components/camera/CameraBottomSheet'
+import ALPRCameraBottomSheet from '@/components/camera/ALPRCameraBottomSheet'
+import ScreenView from '@/components/screen-layout/ScreenView'
 import Typography from '@/components/shared/Typography'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 
@@ -92,12 +93,12 @@ const CameraComp = () => {
   }
 
   return (
-    <View className="h-full flex-1 flex-col">
+    <ScreenView options={{ headerShown: false }} className="h-full flex-1 flex-col">
       <Camera ratio="16:9" ref={ref} style={{ height: (width * 16) / 9 }} flashMode={flashMode}>
         <View className="h-full w-full">
           <View
             style={{ paddingTop: top, height: HEADER_WITH_PADDING + top }}
-            className="items-center justify-center bg-dark/80"
+            className="items-center justify-start bg-dark/80"
           >
             <Typography className="text-white" variant="h1">
               Skenuj tu
@@ -108,17 +109,18 @@ const CameraComp = () => {
         </View>
       </Camera>
 
-      <CameraBottomSheet
+      <ALPRCameraBottomSheet
         isLoading={loading}
         flashMode={flashMode}
         toggleFlashlight={() =>
+          // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
           setFlashMode((prev) => (prev === FlashMode.off ? FlashMode.torch : FlashMode.off))
         }
         licencePlate={generatedEcv}
         takePicture={takePicture}
         onChangeLicencePlate={(ecv) => setGeneratedEcv(ecv)}
       />
-    </View>
+    </ScreenView>
   )
 }
 
