@@ -13,7 +13,6 @@ const LoadingScreen = ({ asScreenView, className, ...rest }: LoadingScreenProps)
       <ScreenView
         className={cn('flex-1 items-center justify-center', className)}
         contentPosition="center"
-        backgroundVariant="dots"
         {...rest}
       >
         <ActivityIndicator size="large" />
