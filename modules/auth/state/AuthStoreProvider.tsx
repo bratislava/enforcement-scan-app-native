@@ -1,7 +1,13 @@
-import { SplashScreen } from 'expo-router'
+import 'core-js/stable/atob'
+
+import { fetchUserInfoAsync, refreshAsync, TokenResponse } from 'expo-auth-session'
+import { router, SplashScreen } from 'expo-router'
+import { jwtDecode } from 'jwt-decode'
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
-import { getCurrentAuthenticatedUser } from '@/modules/auth/utils'
+import { environment } from '@/environment'
+import { AUTH_SCOPES, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
+import { useDiscovery } from '@/modules/auth/hooks/useDiscovery'
 
 type GlobalContextProps = {
   signUpPhone: string | null
@@ -27,6 +33,8 @@ const AuthStoreProvider = ({ children }: PropsWithChildren) => {
     user: null,
     isLoading: true,
   })
+  const [tokens, setTokens] = useAuthTokens()
+  const discovery = useDiscovery()
 
   const onAuthStoreUpdate = useCallback(
     (newValues: Partial<GlobalContextProps>) => {
@@ -35,16 +43,59 @@ const AuthStoreProvider = ({ children }: PropsWithChildren) => {
     [setValues],
   )
 
-  const onFetchUser = async () => {
-    const currentUser = await getCurrentAuthenticatedUser()
-    onAuthStoreUpdate({ user: currentUser, isLoading: false })
-  }
+  const refreshToken = useCallback(async () => {
+    if (tokens?.refreshToken && discovery) {
+      const refreshedTokens = await refreshAsync(
+        {
+          refreshToken: tokens.refreshToken,
+          clientId: environment.clientId,
+          scopes: AUTH_SCOPES,
+        },
+        discovery,
+      )
+      if (refreshedTokens) {
+        setTokens(refreshedTokens)
+
+        const user: {
+          name: string
+        } = jwtDecode(refreshedTokens.accessToken)
+        const idToken: { roles?: string[]; email: string } = jwtDecode(
+          refreshedTokens.idToken || '',
+        )
+
+        onAuthStoreUpdate({
+          user: {
+            name: user.name,
+            email: idToken?.email,
+            roles: idToken?.roles || [],
+          },
+          isLoading: false,
+        })
+      } else {
+        setTokens(null)
+        onAuthStoreUpdate({ user: null, isLoading: false })
+        router.push('/sign-in')
+      }
+    }
+  }, [discovery, setTokens, onAuthStoreUpdate, tokens?.refreshToken])
+
+  const onFetchUser = useCallback(async () => {
+    if (tokens?.accessToken && TokenResponse.isTokenFresh(tokens) && discovery && !values.user) {
+      const currentUser = await fetchUserInfoAsync({ accessToken: tokens.accessToken }, discovery)
+
+      onAuthStoreUpdate({ user: currentUser, isLoading: false })
+    } else if (values.user) {
+      onAuthStoreUpdate({ isLoading: false })
+    } else if (tokens?.refreshToken) {
+      await refreshToken()
+    } else {
+      onAuthStoreUpdate({ user: null, isLoading: false })
+    }
+  }, [discovery, onAuthStoreUpdate, tokens, refreshToken, values.user])
 
   useEffect(() => {
     onFetchUser()
-    // needs to be triggered only once
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [onFetchUser])
 
   // Hide splash screen when user is loaded and translations are ready
   useEffect(() => {

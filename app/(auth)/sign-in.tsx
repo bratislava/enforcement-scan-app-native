@@ -1,28 +1,41 @@
+import * as WebBrowser from 'expo-web-browser'
 import { useState } from 'react'
+import { Text } from 'react-native'
 
-import LoginForm from '@/components/forms/LoginForm'
+import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DissmissKeyboard'
+import Typography from '@/components/shared/Typography'
 import { useSignIn } from '@/modules/auth/hooks/useSignIn'
+
+WebBrowser.maybeCompleteAuthSession()
 
 const Page = () => {
   const [error, setError] = useState<Error>()
-  const signIn = useSignIn()
+  const [isLoading, setIsLoading] = useState(false)
+  const { isReady, signIn } = useSignIn()
 
-  const handleSignIn = async (data: { email: string; password: string }) => {
+  const handleSignIn = async () => {
+    setIsLoading(true)
     try {
-      await signIn(data)
+      await signIn()
     } catch (error) {
       setError(error)
     }
+    setIsLoading(false)
   }
 
   return (
     <DismissKeyboard>
       <ScreenView title="Prihláste sa">
         <ScreenContent>
-          <LoginForm onSubmit={handleSignIn} error={error} />
+          {error?.message ? (
+            <Typography className="py-4 text-negative">{error.message}</Typography>
+          ) : null}
+
+          <ContinueButton loading={isLoading} disabled={isLoading} onPress={handleSignIn} />
+          {isReady ? <Text>AAA</Text> : null}
         </ScreenContent>
       </ScreenView>
     </DismissKeyboard>

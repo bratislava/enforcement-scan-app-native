@@ -7,6 +7,7 @@ import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { IconName } from '@/components/shared/Icon'
 import IconButton from '@/components/shared/IconButton'
+import { useSignOut } from '@/modules/auth/hooks/useSignOut'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const DATA: { icon: IconName; title: string; description: string }[] = [
@@ -29,6 +30,7 @@ const DATA: { icon: IconName; title: string; description: string }[] = [
 
 const AppRoute = () => {
   const setState = useSetOffenceState()
+  const signOut = useSignOut()
 
   const handlePressRole = (role: string) => () => {
     setState({ role })
@@ -40,11 +42,7 @@ const AppRoute = () => {
       title="Enforcement"
       options={{
         headerRight: () => (
-          <IconButton
-            name="person"
-            accessibilityLabel="Nastavenia"
-            // onPress={handlePressClose}
-          />
+          <IconButton name="person" accessibilityLabel="Nastavenia" onPress={signOut} />
         ),
       }}
       className="flex-1 justify-start"
