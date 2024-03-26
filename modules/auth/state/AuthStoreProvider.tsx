@@ -11,7 +11,8 @@ import { useDiscovery } from '@/modules/auth/hooks/useDiscovery'
 
 type GlobalContextProps = {
   signUpPhone: string | null
-  user: any | null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  user: any
   isLoading: boolean
 }
 
