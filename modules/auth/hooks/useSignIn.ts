@@ -21,14 +21,12 @@ export const useSignIn = () => {
   const [locationPermissionStatus] = useLocationPermission()
   const [cameraPermissionStatus] = useCameraPermission()
 
-  // Endpoint
   const discovery = useDiscovery()
   const redirectUri = makeRedirectUri({
     scheme: 'enforcement-scan-app',
     path: 'sign-in',
   })
 
-  // Request
   const [request, , promptAsync] = useAuthRequest(
     {
       clientId: environment.clientId,
@@ -37,8 +35,6 @@ export const useSignIn = () => {
     },
     discovery,
   )
-
-  // console.log(response)
 
   const signIn = async () => {
     try {
@@ -57,7 +53,6 @@ export const useSignIn = () => {
 
         if (res.accessToken) {
           setTokens(res)
-          console.log(res)
 
           const user: {
             name: string

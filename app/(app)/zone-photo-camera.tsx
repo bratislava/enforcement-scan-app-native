@@ -9,6 +9,8 @@ import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
+const ASPECT_RATIO = 16 / 9
+
 const AppRoute = () => {
   const setState = useSetOffenceState()
   const photo = useOffenceStoreContext((state) => state.zonePhoto)
@@ -33,7 +35,13 @@ const AppRoute = () => {
       {photo ? (
         <Image source={{ uri: photo }} style={{ flex: 1 }} />
       ) : (
-        <Camera ratio="16:9" ref={ref} style={{ height: (width * 16) / 9 }} flashMode={flashMode} />
+        // height computation takes place for camera to not have disorted view and aspect ratio to be 16:9
+        <Camera
+          ratio="16:9"
+          ref={ref}
+          style={{ height: width * ASPECT_RATIO }}
+          flashMode={flashMode}
+        />
       )}
 
       <CameraBottomSheet
@@ -44,6 +52,7 @@ const AppRoute = () => {
         isLoading={loading}
         takePicture={takePicture}
         toggleFlashlight={() =>
+          // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
           setFlashMode(flashMode === FlashMode.torch ? FlashMode.off : FlashMode.torch)
         }
       />

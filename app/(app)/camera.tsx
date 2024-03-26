@@ -113,6 +113,7 @@ const CameraComp = () => {
         isLoading={loading}
         flashMode={flashMode}
         toggleFlashlight={() =>
+          // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
           setFlashMode((prev) => (prev === FlashMode.off ? FlashMode.torch : FlashMode.off))
         }
         licencePlate={generatedEcv}

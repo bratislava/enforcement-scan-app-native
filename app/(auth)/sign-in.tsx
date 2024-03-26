@@ -1,6 +1,5 @@
 import * as WebBrowser from 'expo-web-browser'
 import { useState } from 'react'
-import { Text } from 'react-native'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
@@ -9,6 +8,7 @@ import DismissKeyboard from '@/components/shared/DissmissKeyboard'
 import Typography from '@/components/shared/Typography'
 import { useSignIn } from '@/modules/auth/hooks/useSignIn'
 
+// https://docs.expo.dev/guides/authentication/#azure
 WebBrowser.maybeCompleteAuthSession()
 
 const Page = () => {
@@ -34,8 +34,11 @@ const Page = () => {
             <Typography className="py-4 text-negative">{error.message}</Typography>
           ) : null}
 
-          <ContinueButton loading={isLoading} disabled={isLoading} onPress={handleSignIn} />
-          {isReady ? <Text>AAA</Text> : null}
+          <ContinueButton
+            loading={isLoading}
+            disabled={isLoading || !isReady}
+            onPress={handleSignIn}
+          />
         </ScreenContent>
       </ScreenView>
     </DismissKeyboard>

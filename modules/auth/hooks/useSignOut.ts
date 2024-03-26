@@ -14,8 +14,6 @@ export const useSignOut = () => {
 
   return async () => {
     try {
-      // TODO: implement signOut
-      // await signOut()
       onAuthStoreUpdate({ user: null })
       storage.delete(AUTHENTICATION_TOKENS_KEY)
       clearHistory()

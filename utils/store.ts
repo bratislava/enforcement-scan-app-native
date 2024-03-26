@@ -6,6 +6,8 @@ export type Store<T> = {
 
 /**
  * Creates a store object that holds a state and allows to update it and subscribe to changes
+ * this approach is based on book "Micro State Management with React Hooks" by Daishi Kato
+ * https://github.com/PacktPublishing/Micro-State-Management-with-React-Hooks/blob/main/chapter_05/01_combine_context_and_subscription/src/App.tsx
  * @param initialState The initial state of the store
  * @returns A store object with the following methods:
  * - getState: Returns the current state

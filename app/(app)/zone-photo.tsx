@@ -1,11 +1,10 @@
 import { FlashList } from '@shopify/flash-list'
 import { router } from 'expo-router'
-import { Image, useWindowDimensions } from 'react-native'
+import { Image } from 'react-native'
 
 import ScreenView from '@/components/screen-layout/ScreenView'
-import Icon from '@/components/shared/Icon'
+import IconButton from '@/components/shared/IconButton'
 import PressableStyled from '@/components/shared/PressableStyled'
-import Typography from '@/components/shared/Typography'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const images = [
@@ -23,17 +22,29 @@ const images = [
 
 const AppRoute = () => {
   const setState = useSetOffenceState()
-  const { width } = useWindowDimensions()
 
   return (
-    <ScreenView title="Vyberte zónovú fotku" className="flex-1 justify-start">
+    <ScreenView
+      title="Vyberte zónovú fotku"
+      options={{
+        headerRight: () => (
+          <IconButton
+            name="add"
+            accessibilityLabel="Nastavenia"
+            onPress={() => {
+              router.push('/zone-photo-camera')
+            }}
+          />
+        ),
+      }}
+      className="flex-1 justify-start"
+    >
       <FlashList
         className="h-full w-full flex-1"
-        data={[...images, undefined]}
+        data={images}
         renderItem={({ item }) => (
           <PressableStyled
             key={item}
-            style={{ height: width / 3 }}
             className="w-full items-center justify-center bg-dark-light"
             onPress={() => {
               setState({ zonePhoto: item })
@@ -41,19 +52,9 @@ const AppRoute = () => {
               router.push('/zone-photo-camera')
             }}
           >
-            {item ? (
-              <Image className="w-full" style={{ height: width / 3 }} source={{ uri: item }} />
-            ) : (
-              <>
-                <Icon name="photo-camera" size={40} />
-                <Typography variant="h3" className="mt-2">
-                  Pridať fotku
-                </Typography>
-              </>
-            )}
+            <Image className="aspect-square w-full" source={{ uri: item }} />
           </PressableStyled>
         )}
-        numColumns={3}
         estimatedItemSize={100}
       />
     </ScreenView>

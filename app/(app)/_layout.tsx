@@ -20,7 +20,7 @@ const RootLayout = () => {
       )
   }, [])
 
-  // Prevent rendering until the font has loaded and mapbox has loaded
+  // Prevent rendering until the mapbox has loaded
   if (!mapboxLoaded) {
     return null
   }

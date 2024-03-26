@@ -22,7 +22,7 @@ const FlashlightBottomSheetAttachment = ({ toggleFlashlight, flashMode, ...restP
       <FlexRow className="flex-1 items-end justify-end p-2.5 pt-0">
         <View>
           <IconButton
-            name={flashMode === FlashMode.torch ? 'flashlight-off' : 'flashlight-on'}
+            name={flashMode === FlashMode.off ? 'flashlight-on' : 'flashlight-off'}
             accessibilityLabel="Flashlight"
             variant="white-raised"
             onPress={toggleFlashlight}
