@@ -3,6 +3,8 @@ module.exports = {
   ignorePatterns: [
     '*.config.*',
     '.eslintrc.js',
+    'modules/backend/openapi-generated',
+    'modules/backend/utils/fix-client.js',
     // TODO An eslint error occurred with md files - related to babel-eslint, caused by obsolete eslint-plugin-scanjs-rules plugin
     'docs/**/*.md',
   ],

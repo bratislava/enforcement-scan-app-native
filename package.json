@@ -12,7 +12,9 @@
     "lint": "eslint --color --ext .md,.ts,.tsx ./",
     "lint:fix": "yarn eslint --fix",
     "doctor": "expo install --check",
-    "doctor:fix": "expo install --fix"
+    "doctor:fix": "expo install --fix",
+    "generate-client-enforcement-scan-app": "openapi-generator-cli generate -i https://enforcement-scan-app-backend.dev.bratislava.sk/api-json -g typescript-axios -o modules/backend/openapi-generated && node ./modules/backend/utils/fix-client.js && prettier --write modules/backend/openapi-generated",
+    "generate-clients": "yarn generate-client-enforcement-scan-app"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.2.3",
@@ -30,7 +32,7 @@
     "@types/react": "~18.2.45",
     "ajv": "^8.12.0",
     "ajv-errors": "^3.0.0",
-    "axios": "^1.6.7",
+    "axios": "^1.6.8",
     "clsx": "^2.1.0",
     "core-js": "^3.36.1",
     "expo": "~50.0.14",
@@ -67,6 +69,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@openapitools/openapi-generator-cli": "^2.13.1",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "eslint": "^8.48.0",
