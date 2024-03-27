@@ -1,25 +1,14 @@
 import 'core-js/stable/atob'
 
-import { fetchUserInfoAsync, refreshAsync, TokenResponse } from 'expo-auth-session'
+import { refreshAsync, TokenResponse } from 'expo-auth-session'
 import { router, SplashScreen } from 'expo-router'
-import { jwtDecode } from 'jwt-decode'
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 import { environment } from '@/environment'
 import { AUTH_SCOPES, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
 import { useDiscovery } from '@/modules/auth/hooks/useDiscovery'
-
-type GlobalContextProps = {
-  signUpPhone: string | null
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  user: any
-  isLoading: boolean
-}
-
-export type LoginCredentials = {
-  email: string
-  password: string
-}
+import { GlobalContextProps } from '@/modules/auth/types'
+import { getUserFromTokens } from '@/modules/auth/utils'
 
 export const AuthStoreContext = createContext<GlobalContextProps | null>(null)
 AuthStoreContext.displayName = 'AuthStoreContext'
@@ -57,19 +46,10 @@ const AuthStoreProvider = ({ children }: PropsWithChildren) => {
       if (refreshedTokens) {
         setTokens(refreshedTokens)
 
-        const user: {
-          name: string
-        } = jwtDecode(refreshedTokens.accessToken)
-        const idToken: { roles?: string[]; email: string } = jwtDecode(
-          refreshedTokens.idToken || '',
-        )
+        const user = getUserFromTokens(refreshedTokens)
 
         onAuthStoreUpdate({
-          user: {
-            name: user.name,
-            email: idToken?.email,
-            roles: idToken?.roles || [],
-          },
+          user,
           isLoading: false,
         })
       } else {
@@ -82,7 +62,7 @@ const AuthStoreProvider = ({ children }: PropsWithChildren) => {
 
   const onFetchUser = useCallback(async () => {
     if (tokens?.accessToken && TokenResponse.isTokenFresh(tokens) && discovery && !values.user) {
-      const currentUser = await fetchUserInfoAsync({ accessToken: tokens.accessToken }, discovery)
+      const currentUser = getUserFromTokens(tokens)
 
       onAuthStoreUpdate({ user: currentUser, isLoading: false })
     } else if (values.user) {

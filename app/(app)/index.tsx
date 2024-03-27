@@ -7,17 +7,21 @@ import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
+import { useAuthStoreContext } from '@/modules/auth/state/useAuthStoreContext'
 import { RoleItem, ROLES } from '@/modules/backend/constants/roles'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const AppRoute = () => {
   const setState = useSetOffenceState()
   const signOut = useSignOut()
+  const { user } = useAuthStoreContext()
 
   const handlePressRole = (role: RoleItem) => () => {
     setState({ roleKey: role.key })
     router.push(role.actions.zone ? '/zone' : '/licence-plate-camera')
   }
+
+  const allowedRoles = ROLES.filter((role) => user?.roles.includes(role.key))
 
   return (
     <ScreenView
@@ -32,7 +36,7 @@ const AppRoute = () => {
       <ScreenContent>
         <FlashList
           ItemSeparatorComponent={() => <View className="h-2" />}
-          data={ROLES}
+          data={allowedRoles}
           renderItem={({ item }) => <RoleTile onPress={handlePressRole(item)} {...item} />}
           estimatedItemSize={80}
         />

@@ -11,20 +11,24 @@ type Props = {
 } & Omit<PressableProps, 'children' | 'accessibilityLabel'>
 
 const IconButton = forwardRef<View, Props>(
-  ({ name, accessibilityLabel, variant = 'unstyled', hitSlop, ...rest }, ref) => {
+  ({ name, accessibilityLabel, className, variant = 'unstyled', hitSlop, ...rest }, ref) => {
     return (
       <Pressable
         ref={ref}
         {...rest}
         hitSlop={hitSlop ?? 12}
         accessibilityLabel={accessibilityLabel}
-        className={cn('self-start rounded-full', {
-          'p-3': variant === 'dark' || variant === 'white-raised',
-          'p-2.5': variant.includes('small'),
-          'bg-white shadow': variant.startsWith('white'),
-          'bg-dark active:bg-dark/50': variant.startsWith('dark'),
-          'bg-dark/50': rest.disabled && variant.startsWith('dark'),
-        })}
+        className={cn(
+          'self-start rounded-full',
+          {
+            'p-3': variant === 'dark' || variant === 'white-raised',
+            'p-2.5': variant.includes('small'),
+            'bg-white shadow': variant.startsWith('white'),
+            'bg-dark active:bg-dark/50': variant.startsWith('dark'),
+            'bg-dark/50': rest.disabled && variant.startsWith('dark'),
+          },
+          className,
+        )}
       >
         {({ pressed }) => (
           <Icon

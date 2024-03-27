@@ -1,31 +1,19 @@
-// TODO: implement auth utils
+import { TokenResponse } from 'expo-auth-session'
+import { jwtDecode } from 'jwt-decode'
 
-export const getAccessTokenOrLogout = async () => {
-  // try {
-  //   const session = await fetchAuthSession()
-  //   const { accessToken } = session.tokens ?? {}
-  //   if (!accessToken) {
-  //     throw new Error('no jwt token found in current session')
-  //   }
-  //   return accessToken
-  // } catch (error) {
-  //   console.log('error getting access token - redirect to login', error)
-  //   router.replace('/onboarding')
-  //   return null
-  // }
-}
+import { User } from '@/modules/auth/types'
 
-/**
- * This helper function ignores error thrown by when not authenticated
- */
-export const getCurrentAuthenticatedUser = async () => {
-  // try {
-  //   const user = await getCurrentUser()
-  //   console.log(`The username: ${user.username}`)
-  //   console.log(`The userId: ${user.userId}`)
-  //   console.log(`The signInDetails:`, user.signInDetails)
-  //   return user
-  // } catch (error) {
-  return null
-  // }
+export const getUserFromTokens = (tokens: TokenResponse): User => {
+  const { accessToken, idToken } = tokens
+
+  const accessTokenUser: {
+    name: string
+  } = jwtDecode(accessToken)
+  const idTokenUser: { roles?: string[]; email: string } = jwtDecode(idToken || '')
+
+  return {
+    name: accessTokenUser.name,
+    email: idTokenUser?.email,
+    roles: idTokenUser?.roles || [],
+  }
 }

@@ -1,11 +1,13 @@
 import { IconName } from '@/components/shared/Icon'
+import { ScanReasonEnum } from '@/modules/backend/openapi-generated'
 
 export type RoleItem = {
   icon: IconName
   key: string
   title: string
   description: string
-  actions: Record<string, boolean>
+  scanReason: ScanReasonEnum
+  actions: Record<string, boolean | string>
 }
 
 export const ROLES: RoleItem[] = [
@@ -16,30 +18,38 @@ export const ROLES: RoleItem[] = [
     description: 'Lorem ipsu dolor sit amet, consectetur adipiscing elit.',
     actions: {
       zone: true,
+      offence: true,
     },
+    scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
   {
     key: 'municipal-police',
     icon: 'camera',
-    title: 'Ne PAAS',
+    title: 'Policia mesta',
     description: 'Lorem ipsum dolor sit amet,consectetur adipiscing elit.',
     actions: {
       subjective: true,
+      offence: true,
     },
+    scanReason: ScanReasonEnum.Other,
   },
   {
     key: 'petrzalka',
     icon: 'outlined-flag',
     title: 'Testing',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    actions: {},
+    actions: {
+      offence: true,
+    },
+    scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
   {
-    key: 'testing',
+    key: 'research',
     icon: 'outlined-flag',
-    title: 'Testing',
+    title: 'Testovanie',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     actions: {},
+    scanReason: ScanReasonEnum.Research,
   },
 ]
 
