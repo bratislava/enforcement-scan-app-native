@@ -2,9 +2,14 @@ import { FlashList } from '@shopify/flash-list'
 import { router } from 'expo-router'
 import { Image } from 'react-native'
 
+import EmptyStateScreen from '@/components/screen-layout/EmptyStateScreen'
+import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
 import PressableStyled from '@/components/shared/PressableStyled'
+import Typography from '@/components/shared/Typography'
+import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
+import { getFavoritePhotosOptions } from '@/modules/backend/constants/queryParams'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const images = [
@@ -20,8 +25,21 @@ const images = [
   'https://via.placeholder.com/150/F0E68C',
 ]
 
-const AppRoute = () => {
+const ZonePhotoPage = () => {
+  const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavoritePhotosOptions())
   const setState = useSetOffenceState()
+
+  if (isPending) {
+    return <LoadingScreen title="Vyberte zónovú značku" asScreenView />
+  }
+  console.log(data)
+  if (isError) {
+    return <Typography>Error: {error.message}</Typography>
+  }
+
+  if (data?.photos.length === 0) {
+    return <EmptyStateScreen title="title" contentTitle="noAnnouncementsTitle" />
+  }
 
   return (
     <ScreenView
@@ -61,4 +79,4 @@ const AppRoute = () => {
   )
 }
 
-export default AppRoute
+export default ZonePhotoPage
