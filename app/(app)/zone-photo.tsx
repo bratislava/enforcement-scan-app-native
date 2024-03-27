@@ -2,7 +2,6 @@ import { FlashList } from '@shopify/flash-list'
 import { router } from 'expo-router'
 import { Image } from 'react-native'
 
-import EmptyStateScreen from '@/components/screen-layout/EmptyStateScreen'
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
@@ -11,6 +10,7 @@ import Typography from '@/components/shared/Typography'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
 import { getFavoritePhotosOptions } from '@/modules/backend/constants/queryParams'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import EmptyStateScreen from '@/components/screen-layout/EmptyStateScreen'
 
 const images = [
   'https://via.placeholder.com/150',
@@ -32,7 +32,7 @@ const ZonePhotoPage = () => {
   if (isPending) {
     return <LoadingScreen title="Vyberte zónovú značku" asScreenView />
   }
-  console.log(data)
+
   if (isError) {
     return <Typography>Error: {error.message}</Typography>
   }

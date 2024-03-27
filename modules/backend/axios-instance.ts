@@ -1,10 +1,9 @@
 import axios from 'axios'
 
-import { useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
+import { AUTHENTICATION_TOKENS_KEY } from '@/modules/auth/hooks/useAuthTokens'
+import { storage } from '@/utils/mmkv'
 
 export const axiosInstance = axios.create()
-
-// TODO redirect on logout
 
 declare module 'axios' {
   interface AxiosRequestConfig {
@@ -13,7 +12,7 @@ declare module 'axios' {
 }
 
 axiosInstance.interceptors.request.use(async (request) => {
-  const [tokens] = useAuthTokens()
+  const tokens = JSON.parse(storage.getString(AUTHENTICATION_TOKENS_KEY) || '{}')
 
   if (tokens?.accessToken) {
     request.headers.Authorization = `Bearer ${tokens.accessToken}`
