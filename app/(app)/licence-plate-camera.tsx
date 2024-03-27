@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 import { useWindowDimensions, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import ALPRCameraBottomSheet from '@/components/camera/ALPRCameraBottomSheet'
+import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import Typography from '@/components/shared/Typography'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
@@ -30,7 +30,7 @@ const biggestText = (ocr: TextRecognitionResult) => {
 const HEADER_WITH_PADDING = 64
 const CROPPED_PHOTO_HEIGHT = 150
 
-const CameraComp = () => {
+const LicencePlateCameraComp = () => {
   const ref = useRef<Camera>(null)
   const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
   const [loading, setLoading] = useState(false)
@@ -109,7 +109,7 @@ const CameraComp = () => {
         </View>
       </Camera>
 
-      <ALPRCameraBottomSheet
+      <LicencePlateCameraBottomSheet
         isLoading={loading}
         flashMode={flashMode}
         toggleFlashlight={() =>
@@ -124,4 +124,4 @@ const CameraComp = () => {
   )
 }
 
-export default CameraComp
+export default LicencePlateCameraComp
