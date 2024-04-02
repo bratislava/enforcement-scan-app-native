@@ -29,11 +29,18 @@ async function fetchFileOrGetFromCache<T>(fileName: string): Promise<AxiosRespon
         return cachedParsedResponse
       }
     } catch (error) {
+      console.log(error)
       return cachedParsedResponse
     }
   }
 
   const response = await axios.get<T>(url)
+
+  if (response.status !== 200) {
+    if (cachedResponse) {
+      return JSON.parse(cachedResponse) as AxiosResponse<T>
+    } else return response
+  }
 
   storage.set(url, JSON.stringify(response))
 

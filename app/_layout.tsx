@@ -21,6 +21,7 @@ import AuthStoreProvider from '@/modules/auth/state/AuthStoreProvider'
 import colors from '@/tailwind.config.colors'
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import { Suspense } from 'react'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 
 const RootLayout = () => {
   const [fontsLoaded] = useFonts({
@@ -33,7 +34,7 @@ const RootLayout = () => {
   })
 
   const toastProviderProps = useToastProviderProps()
-  
+
   const queryClient = new QueryClient({
     // TODO, set to 1 to prevent confusion during development, may be set to default for production
     // `gcTime` = `cacheTime` in v5: https://tanstack.com/query/latest/docs/react/guides/caching
@@ -45,8 +46,6 @@ const RootLayout = () => {
     return null
   }
 
-
-
   return (
     <Suspense fallback={<LoadingScreen />}>
       <ToastProvider {...toastProviderProps}>
@@ -54,20 +53,22 @@ const RootLayout = () => {
           <AuthStoreProvider>
             <PortalProvider>
               <SafeAreaProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <OmnipresentComponent />
+                <BottomSheetModalProvider>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <OmnipresentComponent />
 
-                  <Stack
-                    screenOptions={{
-                      headerBackTitleVisible: false,
-                      headerShown: false,
-                      headerTitleStyle: {
-                        fontFamily: 'BelfastGrotesk_700Bold',
-                      },
-                      headerTintColor: colors.dark.DEFAULT,
-                    }}
-                  />
-                </GestureHandlerRootView>
+                    <Stack
+                      screenOptions={{
+                        headerBackTitleVisible: false,
+                        headerShown: false,
+                        headerTitleStyle: {
+                          fontFamily: 'BelfastGrotesk_700Bold',
+                        },
+                        headerTintColor: colors.dark.DEFAULT,
+                      }}
+                    />
+                  </GestureHandlerRootView>
+                </BottomSheetModalProvider>
               </SafeAreaProvider>
             </PortalProvider>
           </AuthStoreProvider>

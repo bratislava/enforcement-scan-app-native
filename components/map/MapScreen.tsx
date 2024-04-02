@@ -4,7 +4,6 @@ import { useCallback, useRef, useState } from 'react'
 import { View } from 'react-native'
 
 import Map, { MapRef } from '@/components/map/Map'
-import MapLocationBottomSheet from '@/components/map/MapLocationBottomSheet'
 import MapZoneBottomSheet from '@/components/map/MapZoneBottomSheet'
 import { useProcessedArcgisData } from '@/modules/map/hooks/useProcessedArcgisData'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
@@ -45,8 +44,6 @@ const MapScreen = () => {
           setFlyToCenter={mapRef.current?.setFlyToCenter}
           isZoomedOut={!isMapPinShown}
         />
-
-        <MapLocationBottomSheet />
       </Portal>
     </View>
   )
