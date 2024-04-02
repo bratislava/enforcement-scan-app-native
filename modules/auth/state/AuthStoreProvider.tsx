@@ -5,8 +5,7 @@ import { router, SplashScreen } from 'expo-router'
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 import { environment } from '@/environment'
-import { AUTH_SCOPES, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
-import { useDiscovery } from '@/modules/auth/hooks/useDiscovery'
+import { AUTH_SCOPES, discovery, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
 import { GlobalContextProps } from '@/modules/auth/types'
 import { getUserFromTokens } from '@/modules/auth/utils'
 
@@ -24,7 +23,6 @@ const AuthStoreProvider = ({ children }: PropsWithChildren) => {
     isLoading: true,
   })
   const [tokens, setTokens] = useAuthTokens()
-  const discovery = useDiscovery()
 
   const onAuthStoreUpdate = useCallback(
     (newValues: Partial<GlobalContextProps>) => {
@@ -58,9 +56,11 @@ const AuthStoreProvider = ({ children }: PropsWithChildren) => {
         router.push('/sign-in')
       }
     }
-  }, [discovery, setTokens, onAuthStoreUpdate, tokens?.refreshToken])
+  }, [setTokens, onAuthStoreUpdate, tokens?.refreshToken])
 
   const onFetchUser = useCallback(async () => {
+    // setTokens(null)
+    console.log(tokens?.accessToken)
     if (tokens?.accessToken && TokenResponse.isTokenFresh(tokens) && discovery && !values.user) {
       const currentUser = getUserFromTokens(tokens)
 
@@ -72,7 +72,7 @@ const AuthStoreProvider = ({ children }: PropsWithChildren) => {
     } else {
       onAuthStoreUpdate({ user: null, isLoading: false })
     }
-  }, [discovery, onAuthStoreUpdate, tokens, refreshToken, values.user])
+  }, [onAuthStoreUpdate, tokens, refreshToken, values.user])
 
   useEffect(() => {
     onFetchUser()

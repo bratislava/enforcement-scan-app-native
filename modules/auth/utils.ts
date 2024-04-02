@@ -4,16 +4,18 @@ import { jwtDecode } from 'jwt-decode'
 import { User } from '@/modules/auth/types'
 
 export const getUserFromTokens = (tokens: TokenResponse): User => {
-  const { accessToken, idToken } = tokens
+  const { accessToken } = tokens
 
   const accessTokenUser: {
     name: string
+    // eslint-disable-next-line babel/camelcase
+    preferred_username: string
+    roles: string[]
   } = jwtDecode(accessToken)
-  const idTokenUser: { roles?: string[]; email: string } = jwtDecode(idToken || '')
 
   return {
     name: accessTokenUser.name,
-    email: idTokenUser?.email,
-    roles: idTokenUser?.roles || [],
+    email: accessTokenUser.preferred_username,
+    roles: accessTokenUser.roles || [],
   }
 }
