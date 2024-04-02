@@ -11,16 +11,16 @@ import { PortalProvider } from '@gorhom/portal'
 /* eslint-enable babel/camelcase */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
+import { Suspense } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ToastProvider } from 'react-native-toast-notifications'
 
+import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import { useToastProviderProps } from '@/components/screen-layout/Snackbar/useSnackbar'
 import OmnipresentComponent from '@/components/special/OmnipresentComponent'
 import AuthStoreProvider from '@/modules/auth/state/AuthStoreProvider'
 import colors from '@/tailwind.config.colors'
-import LoadingScreen from '@/components/screen-layout/LoadingScreen'
-import { Suspense } from 'react'
 
 const RootLayout = () => {
   const [fontsLoaded] = useFonts({
@@ -33,7 +33,7 @@ const RootLayout = () => {
   })
 
   const toastProviderProps = useToastProviderProps()
-  
+
   const queryClient = new QueryClient({
     // TODO, set to 1 to prevent confusion during development, may be set to default for production
     // `gcTime` = `cacheTime` in v5: https://tanstack.com/query/latest/docs/react/guides/caching
@@ -44,8 +44,6 @@ const RootLayout = () => {
   if (!fontsLoaded) {
     return null
   }
-
-
 
   return (
     <Suspense fallback={<LoadingScreen />}>

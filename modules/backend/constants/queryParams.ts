@@ -1,5 +1,6 @@
-import { clientApi } from '@/modules/backend/client-api'
 import { queryOptions } from '@tanstack/react-query'
+
+import { clientApi } from '@/modules/backend/client-api'
 
 export const getFavoritePhotosOptions = () =>
   queryOptions({
