@@ -30,6 +30,7 @@ async function fetchFileOrGetFromCache<T>(fileName: string): Promise<AxiosRespon
       }
     } catch (error) {
       console.log(error)
+
       return cachedParsedResponse
     }
   }
@@ -39,7 +40,9 @@ async function fetchFileOrGetFromCache<T>(fileName: string): Promise<AxiosRespon
   if (response.status !== 200) {
     if (cachedResponse) {
       return JSON.parse(cachedResponse) as AxiosResponse<T>
-    } else return response
+    }
+
+    return response
   }
 
   storage.set(url, JSON.stringify(response))

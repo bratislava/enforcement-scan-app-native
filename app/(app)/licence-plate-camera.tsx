@@ -46,7 +46,7 @@ const LicencePlateCameraComp = () => {
             className="items-center justify-start bg-dark/80"
           />
           <View style={{ height: CROPPED_PHOTO_HEIGHT }} className="items-center" />
-          <View className="bg-opacity-20 flex-1 items-center bg-dark/80" />
+          <View className="flex-1 items-center bg-dark/80 bg-opacity-20" />
         </View>
       </Camera>
 

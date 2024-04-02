@@ -1,15 +1,15 @@
+import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps } from '@gorhom/bottom-sheet'
 import { Camera, PermissionStatus } from 'expo-camera'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Linking, Platform, View } from 'react-native'
 
+import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/BottomSheetHandleWithShadow'
 import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
 import Button from '@/components/shared/Button'
 import { useAppFocusEffect } from '@/hooks/useAppFocusEffect'
-import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps } from '@gorhom/bottom-sheet'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
-import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
 
 const CameraPermissionsBottomSheet = () => {
   const ref = useRef<BottomSheet>(null)
@@ -21,7 +21,7 @@ const CameraPermissionsBottomSheet = () => {
       await getCameraPermission()
     }
 
-    const isEnabled = (await Camera.getCameraPermissionsAsync()).granted
+    const { granted: isEnabled } = await Camera.getCameraPermissionsAsync()
 
     setIsCameraOn(isEnabled)
   }, [getCameraPermission, CameraPermissionStatus])

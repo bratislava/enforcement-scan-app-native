@@ -1,15 +1,15 @@
+import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps } from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Linking, Platform, View } from 'react-native'
 
+import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/BottomSheetHandleWithShadow'
 import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
 import Button from '@/components/shared/Button'
 import { useAppFocusEffect } from '@/hooks/useAppFocusEffect'
 import { useLocationPermission } from '@/modules/permissions/useLocationPermission'
-import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps } from '@gorhom/bottom-sheet'
-import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
 
 const LocationBottomSheet = () => {
   const ref = useRef<BottomSheet>(null)
