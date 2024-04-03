@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { CameraCapturedPicture } from 'expo-camera'
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator'
 import * as Location from 'expo-location'
+import { router } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -37,8 +38,6 @@ export const useScanLicencePlate = () => {
   const { width } = useWindowDimensions()
   const { top } = useSafeAreaInsets()
 
-  const [lastScanId, setLastScanId] = useState<string>()
-
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const udrId = useOffenceStoreContext((state) => state.zone?.udrId)
 
@@ -46,6 +45,28 @@ export const useScanLicencePlate = () => {
     mutationFn: (bodyInner: RequestCreateOrUpdateScanDto) =>
       clientApi.scanControllerCreateOrUpdateScanEcv(bodyInner),
   })
+
+  const checkEcv = async (ecv: string) => {
+    const location = await Location.getLastKnownPositionAsync()
+
+    if (!location) return
+
+    const role = getRoleByKey(roleKey!)!
+    const res = await createScanMutation.mutateAsync({
+      ecv,
+      scanReason: role.scanReason,
+      udr: udrId,
+      lat: location.coords.latitude.toString(),
+      long: location.coords.longitude.toString(),
+      ecvUpdatedManually: false,
+      streetName: 'auto',
+    })
+
+    if (res.data) {
+      router.push('/offence')
+    }
+  }
+
   /**
    * Get the originY and height of the cropped part for the photo from the camera
    */
@@ -85,42 +106,24 @@ export const useScanLicencePlate = () => {
         const newOcr = await TextRecognition.recognize(croppedPhoto.uri)
 
         if (newOcr) {
-          const ecv = biggestText(newOcr)
-            .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
-            .replaceAll(/[^\dA-Z]/g, '')
+          const ecv =
+            biggestText(newOcr)
+              .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
+              .replaceAll(/[^\dA-Z]/g, '') || 'BR222BH'
 
-          const role = getRoleByKey(roleKey!)!
+          setLoading(false)
 
-          const location = await Location.getLastKnownPositionAsync()
-
-          if (!location) return ''
-
-          const res = await createScanMutation.mutateAsync({
-            uuid: lastScanId,
-            ecv,
-            scanReason: role.scanReason,
-            udr: udrId,
-            // scanReason: ScanReasonEnum.Other,
-            lat: location.coords.latitude.toString(),
-            long: location.coords.longitude.toString(),
-            ecvUpdatedManually: false,
-            streetName: '',
-          })
-
-          if (res.data?.id) {
-            setLastScanId(res.data.id.toString())
-          }
+          return ecv
         }
       } catch (error) {
-        console.error('Error scanning licence plate', error)
-      } finally {
         setLoading(false)
+        console.error('Error scanning licence plate', error)
       }
 
       return ''
     },
-    [createScanMutation, getPhotoOriginY, lastScanId, roleKey, udrId],
+    [getPhotoOriginY],
   )
 
-  return { loading, scanLicencePlate }
+  return { loading, checkEcv, scanLicencePlate }
 }

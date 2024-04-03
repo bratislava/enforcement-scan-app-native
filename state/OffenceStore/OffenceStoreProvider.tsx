@@ -7,7 +7,10 @@ export type OffenceState = {
   roleKey?: string
   ecv?: string
   zone?: MapUdrZoneWithTranslationProps
-  zonePhoto?: string
+  zonePhoto?: {
+    id: number
+    photoUrl: string
+  }
   location?: {
     lat: number
     lon: number
