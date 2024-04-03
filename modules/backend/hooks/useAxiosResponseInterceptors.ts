@@ -1,16 +1,47 @@
-import { AxiosResponse, isAxiosError } from 'axios'
-import { useEffect } from 'react'
+import axios, { AxiosResponse, isAxiosError } from 'axios'
+import { useCallback, useEffect } from 'react'
 
 import { useSnackbar } from '@/components/screen-layout/Snackbar/useSnackbar'
+import { AUTHENTICATION_TOKENS_KEY, discovery } from '@/modules/auth/hooks/useAuthTokens'
+import { useAuthStoreUpdateContext } from '@/modules/auth/state/useAuthStoreUpdateContext'
+import { refreshToken } from '@/modules/auth/utils'
 import { axiosInstance } from '@/modules/backend/axios-instance'
+import { storage } from '@/utils/mmkv'
 
 // https://dev.to/arianhamdi/react-hooks-in-axios-interceptors-3e1h
 
 export const useAxiosResponseInterceptors = () => {
   const snackbar = useSnackbar()
+  const onAuthStoreUpdate = useAuthStoreUpdateContext()
+
+  const onRefreshToken = useCallback(async () => {
+    const tokens = JSON.parse(storage.getString(AUTHENTICATION_TOKENS_KEY) || '{}')
+
+    if (!tokens?.refreshToken) return ''
+
+    try {
+      const response = await refreshToken(tokens)
+
+      if (!response) throw new Error('Token refresh failed')
+
+      storage.set(AUTHENTICATION_TOKENS_KEY, JSON.stringify(response?.refreshedTokens))
+
+      onAuthStoreUpdate({
+        user: response.user || null,
+        isLoading: false,
+      })
+
+      return response.refreshedTokens.accessToken
+    } catch (error) {
+      storage.delete(AUTHENTICATION_TOKENS_KEY)
+      onAuthStoreUpdate({ user: null, isLoading: false })
+
+      return ''
+    }
+  }, [onAuthStoreUpdate])
 
   useEffect(() => {
-    const errorInterceptor = (error: unknown) => {
+    const errorInterceptor = async (error: unknown) => {
       let snackbarMessage = null
       if (isAxiosError(error)) {
         const { status, data } = error.response ?? {}
@@ -24,6 +55,18 @@ export const useAxiosResponseInterceptors = () => {
           case 424:
             if (errorName || message) {
               snackbarMessage = errorName && message
+            }
+            break
+          case 401:
+            if (discovery) {
+              const accessToken = await onRefreshToken()
+
+              if (accessToken) {
+                axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+
+                return axiosInstance(error?.config || {})
+              }
+              snackbarMessage = 'Vaša prihlásenie vypršalo. Prosím prihláste sa znova.'
             }
             break
 
@@ -42,7 +85,7 @@ export const useAxiosResponseInterceptors = () => {
         snackbar.show(snackbarMessage, { variant: 'danger' })
       }
 
-      return Promise.reject(error)
+      throw error
     }
 
     const successInterceptor = (response: AxiosResponse) => {
@@ -55,5 +98,5 @@ export const useAxiosResponseInterceptors = () => {
     )
 
     return () => axiosInstance.interceptors.response.eject(interceptor)
-  }, [snackbar])
+  }, [onRefreshToken, snackbar])
 }

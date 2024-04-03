@@ -21,7 +21,6 @@ const Page = () => {
     try {
       await signIn()
     } catch (error) {
-      console.log(error)
       setError(error as Error)
     }
     setIsLoading(false)

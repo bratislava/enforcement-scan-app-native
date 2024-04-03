@@ -1,13 +1,12 @@
 import 'core-js/stable/atob'
 
-import { refreshAsync, TokenResponse } from 'expo-auth-session'
-import { router, SplashScreen } from 'expo-router'
+import { TokenResponse } from 'expo-auth-session'
+import { SplashScreen } from 'expo-router'
 import { createContext, PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
-import { environment } from '@/environment'
-import { AUTH_SCOPES, discovery, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
+import { discovery, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
 import { GlobalContextProps } from '@/modules/auth/types'
-import { getUserFromTokens } from '@/modules/auth/utils'
+import { getUserFromTokens, refreshToken } from '@/modules/auth/utils'
 
 export const AuthStoreContext = createContext<GlobalContextProps | null>(null)
 AuthStoreContext.displayName = 'AuthStoreContext'
@@ -31,52 +30,50 @@ const AuthStoreProvider = ({ children }: PropsWithChildren) => {
     [setValues],
   )
 
-  const refreshToken = useCallback(async () => {
-    if (tokens?.refreshToken && discovery) {
-      const refreshedTokens = await refreshAsync(
-        {
-          refreshToken: tokens.refreshToken,
-          clientId: environment.clientId,
-          scopes: AUTH_SCOPES,
-        },
-        discovery,
-      )
-      if (refreshedTokens) {
-        setTokens(refreshedTokens)
+  const onRefreshToken = useCallback(async () => {
+    if (!tokens?.refreshToken) return
 
-        const user = getUserFromTokens(refreshedTokens)
+    let response
 
-        onAuthStoreUpdate({
-          user,
-          isLoading: false,
-        })
-      } else {
-        setTokens(null)
-        onAuthStoreUpdate({ user: null, isLoading: false })
-        router.push('/sign-in')
-      }
+    try {
+      response = await refreshToken(tokens)
+    } catch (error) {
+      console.error('Token refresh failed:', error)
     }
-  }, [setTokens, onAuthStoreUpdate, tokens?.refreshToken])
+
+    setTokens(response?.refreshedTokens || null)
+
+    onAuthStoreUpdate({
+      user: response?.user || null,
+      isLoading: false,
+    })
+  }, [tokens, setTokens, onAuthStoreUpdate])
 
   const onFetchUser = useCallback(async () => {
-    // setTokens(null)
-    console.log(tokens?.accessToken)
     if (tokens?.accessToken && TokenResponse.isTokenFresh(tokens) && discovery && !values.user) {
-      const currentUser = getUserFromTokens(tokens)
+      try {
+        const currentUser = getUserFromTokens(tokens)
 
-      onAuthStoreUpdate({ user: currentUser, isLoading: false })
+        onAuthStoreUpdate({ user: currentUser, isLoading: false })
+      } catch (error) {
+        if (tokens.refreshToken) {
+          await onRefreshToken()
+        }
+      }
     } else if (values.user) {
       onAuthStoreUpdate({ isLoading: false })
     } else if (tokens?.refreshToken) {
-      await refreshToken()
+      await onRefreshToken()
     } else {
       onAuthStoreUpdate({ user: null, isLoading: false })
     }
-  }, [onAuthStoreUpdate, tokens, refreshToken, values.user])
+  }, [onAuthStoreUpdate, tokens, onRefreshToken, values.user])
 
   useEffect(() => {
     onFetchUser()
-  }, [onFetchUser])
+    // needs to be called only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Hide splash screen when user is loaded and translations are ready
   useEffect(() => {
