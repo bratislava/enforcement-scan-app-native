@@ -1,16 +1,10 @@
 import axios, { AxiosResponse, isAxiosError } from 'axios'
-import { refreshAsync } from 'expo-auth-session'
 import { useCallback, useEffect } from 'react'
 
 import { useSnackbar } from '@/components/screen-layout/Snackbar/useSnackbar'
-import { environment } from '@/environment'
-import {
-  AUTH_SCOPES,
-  AUTHENTICATION_TOKENS_KEY,
-  discovery,
-} from '@/modules/auth/hooks/useAuthTokens'
+import { AUTHENTICATION_TOKENS_KEY, discovery } from '@/modules/auth/hooks/useAuthTokens'
 import { useAuthStoreUpdateContext } from '@/modules/auth/state/useAuthStoreUpdateContext'
-import { getUserFromTokens } from '@/modules/auth/utils'
+import { refreshToken } from '@/modules/auth/utils'
 import { axiosInstance } from '@/modules/backend/axios-instance'
 import { storage } from '@/utils/mmkv'
 
@@ -20,40 +14,30 @@ export const useAxiosResponseInterceptors = () => {
   const snackbar = useSnackbar()
   const onAuthStoreUpdate = useAuthStoreUpdateContext()
 
-  const refreshToken = useCallback(async () => {
+  const onRefreshToken = useCallback(async () => {
     const tokens = JSON.parse(storage.getString(AUTHENTICATION_TOKENS_KEY) || '{}')
 
-    if (!tokens?.refreshToken) {
-      return ''
-    }
+    if (!tokens?.refreshToken) return ''
+
     try {
-      const refreshedTokens = await refreshAsync(
-        {
-          refreshToken: tokens?.refreshToken,
-          clientId: environment.clientId,
-          scopes: [`api://${environment.clientId}/user_auth`, ...AUTH_SCOPES],
-        },
-        discovery,
-      )
+      const response = await refreshToken(tokens)
 
-      if (refreshedTokens) {
-        storage.set(AUTHENTICATION_TOKENS_KEY, JSON.stringify(refreshedTokens))
+      if (!response) throw new Error('Token refresh failed')
 
-        const user = getUserFromTokens(refreshedTokens)
+      storage.set(AUTHENTICATION_TOKENS_KEY, JSON.stringify(response?.refreshedTokens))
 
-        onAuthStoreUpdate({
-          user,
-          isLoading: false,
-        })
+      onAuthStoreUpdate({
+        user: response.user || null,
+        isLoading: false,
+      })
 
-        return refreshedTokens.accessToken
-      }
+      return response.refreshedTokens.accessToken
     } catch (error) {
       storage.delete(AUTHENTICATION_TOKENS_KEY)
       onAuthStoreUpdate({ user: null, isLoading: false })
-    }
 
-    return ''
+      return ''
+    }
   }, [onAuthStoreUpdate])
 
   useEffect(() => {
@@ -75,14 +59,14 @@ export const useAxiosResponseInterceptors = () => {
             break
           case 401:
             if (discovery) {
-              const accessToken = await refreshToken()
-              console.log('refreshing token', accessToken)
+              const accessToken = await onRefreshToken()
 
               if (accessToken) {
                 axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
 
                 return axiosInstance(error?.config || {})
               }
+              snackbarMessage = 'Vaša prihlásenie vypršalo. Prosím prihláste sa znova.'
             }
             break
 
@@ -114,5 +98,5 @@ export const useAxiosResponseInterceptors = () => {
     )
 
     return () => axiosInstance.interceptors.response.eject(interceptor)
-  }, [refreshToken, snackbar])
+  }, [onRefreshToken, snackbar])
 }
