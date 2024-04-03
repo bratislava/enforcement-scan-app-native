@@ -19,7 +19,7 @@ type Props = {
   onChangeLicencePlate: (plate: string) => void
 }
 
-const ALPRCameraBottomSheet = ({
+const LicencePlateCameraBottomSheet = ({
   licencePlate,
   flashMode,
   isLoading,
@@ -65,4 +65,4 @@ const ALPRCameraBottomSheet = ({
   )
 }
 
-export default ALPRCameraBottomSheet
+export default LicencePlateCameraBottomSheet

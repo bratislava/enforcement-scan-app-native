@@ -1,11 +1,13 @@
 import { ActivityIndicator, View, ViewProps } from 'react-native'
 
-import ScreenView from '@/components/screen-layout/ScreenView'
+import ScreenView, { ScreenViewProps } from '@/components/screen-layout/ScreenView'
 import { cn } from '@/utils/cn'
 
-type LoadingScreenProps = {
-  asScreenView?: boolean
-} & ViewProps
+type LoadingScreenProps =
+  | ({
+      asScreenView: true
+    } & Omit<ScreenViewProps, 'children'>)
+  | ({ asScreenView?: false } & ViewProps)
 
 const LoadingScreen = ({ asScreenView, className, ...rest }: LoadingScreenProps) => {
   if (asScreenView) {

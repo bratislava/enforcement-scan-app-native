@@ -1,31 +1,44 @@
-// TODO: implement auth utils
+import { refreshAsync, TokenResponse } from 'expo-auth-session'
+import { jwtDecode } from 'jwt-decode'
 
-export const getAccessTokenOrLogout = async () => {
-  // try {
-  //   const session = await fetchAuthSession()
-  //   const { accessToken } = session.tokens ?? {}
-  //   if (!accessToken) {
-  //     throw new Error('no jwt token found in current session')
-  //   }
-  //   return accessToken
-  // } catch (error) {
-  //   console.log('error getting access token - redirect to login', error)
-  //   router.replace('/onboarding')
-  //   return null
-  // }
+import { environment } from '@/environment'
+import { AUTH_SCOPES, discovery } from '@/modules/auth/hooks/useAuthTokens'
+import { User } from '@/modules/auth/types'
+
+export const getUserFromTokens = (tokens: TokenResponse): User => {
+  const { accessToken } = tokens
+
+  const accessTokenUser: {
+    name: string
+    // eslint-disable-next-line babel/camelcase
+    preferred_username: string
+    roles: string[]
+  } = jwtDecode(accessToken)
+
+  return {
+    name: accessTokenUser.name,
+    email: accessTokenUser.preferred_username,
+    roles: accessTokenUser.roles || [],
+  }
 }
 
 /**
- * This helper function ignores error thrown by when not authenticated
+ * Refreshes the access token using the refresh token with OAuth2
  */
-export const getCurrentAuthenticatedUser = async () => {
-  // try {
-  //   const user = await getCurrentUser()
-  //   console.log(`The username: ${user.username}`)
-  //   console.log(`The userId: ${user.userId}`)
-  //   console.log(`The signInDetails:`, user.signInDetails)
-  //   return user
-  // } catch (error) {
+export const refreshToken = async (tokens: TokenResponse) => {
+  if (tokens?.refreshToken && discovery) {
+    const refreshedTokens = await refreshAsync(
+      {
+        refreshToken: tokens.refreshToken,
+        clientId: environment.clientId,
+        scopes: [`api://${environment.clientId}/user_auth`, ...AUTH_SCOPES],
+      },
+      discovery,
+    )
+    if (refreshedTokens) {
+      return { refreshedTokens, user: getUserFromTokens(refreshedTokens) }
+    }
+  }
+
   return null
-  // }
 }

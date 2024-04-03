@@ -2,13 +2,12 @@ import { exchangeCodeAsync, makeRedirectUri, useAuthRequest } from 'expo-auth-se
 import { PermissionStatus } from 'expo-camera'
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
-import { jwtDecode } from 'jwt-decode'
 
 import { environment } from '@/environment'
 import { useClearHistory } from '@/hooks/useClearHistory'
-import { AUTH_SCOPES, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
-import { useDiscovery } from '@/modules/auth/hooks/useDiscovery'
+import { AUTH_SCOPES, discovery, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
 import { useAuthStoreUpdateContext } from '@/modules/auth/state/useAuthStoreUpdateContext'
+import { getUserFromTokens } from '@/modules/auth/utils'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useLocationPermission } from '@/modules/permissions/useLocationPermission'
 
@@ -21,7 +20,6 @@ export const useSignIn = () => {
   const [locationPermissionStatus] = useLocationPermission()
   const [cameraPermissionStatus] = useCameraPermission()
 
-  const discovery = useDiscovery()
   const redirectUri = makeRedirectUri({
     scheme: 'enforcement-scan-app',
     path: 'sign-in',
@@ -44,8 +42,13 @@ export const useSignIn = () => {
         const res = await exchangeCodeAsync(
           {
             clientId: environment.clientId,
+            scopes: [`api://${environment.clientId}/user_auth`, ...AUTH_SCOPES],
             code: codeResponse.params.code,
-            extraParams: request.codeVerifier ? { code_verifier: request.codeVerifier } : undefined,
+            extraParams: request.codeVerifier
+              ? {
+                  code_verifier: request.codeVerifier,
+                }
+              : undefined,
             redirectUri,
           },
           discovery,
@@ -54,19 +57,10 @@ export const useSignIn = () => {
         if (res.accessToken) {
           setTokens(res)
 
-          const user: {
-            name: string
-            // eslint-disable-next-line babel/camelcase
-            unique_name: string
-          } = jwtDecode(res.accessToken)
-          const idToken: { roles?: string[] } = jwtDecode(res.idToken || '')
+          const user = getUserFromTokens(res)
 
           onAuthStoreUpdate({
-            user: {
-              name: user.name,
-              email: user.unique_name,
-              roles: idToken?.roles || [],
-            },
+            user,
           })
         }
       }

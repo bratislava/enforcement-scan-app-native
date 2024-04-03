@@ -4,7 +4,7 @@ import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { createStore, Store } from '@/utils/store'
 
 export type OffenceState = {
-  role?: string
+  roleKey?: string
   ecv?: string
   zone?: MapUdrZoneWithTranslationProps
   zonePhoto?: string

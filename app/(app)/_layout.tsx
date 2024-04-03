@@ -2,6 +2,8 @@ import Mapbox from '@rnmapbox/maps'
 import { Redirect, Stack } from 'expo-router'
 import { useEffect, useState } from 'react'
 
+import CameraPermissionsBottomSheet from '@/components/special/CameraPermissionsBottomSheet'
+import LocationBottomSheet from '@/components/special/LocationPermissionsBottomSheet'
 import { environment } from '@/environment'
 import { useAuthStoreContext } from '@/modules/auth/state/useAuthStoreContext'
 import { OffenceStoreProvider } from '@/state/OffenceStore/OffenceStoreProvider'
@@ -50,6 +52,9 @@ const RootLayout = () => {
           headerTintColor: colors.dark.DEFAULT,
         }}
       />
+
+      <LocationBottomSheet />
+      <CameraPermissionsBottomSheet />
     </OffenceStoreProvider>
   )
 }
