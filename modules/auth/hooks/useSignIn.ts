@@ -34,8 +34,6 @@ export const useSignIn = () => {
     discovery,
   )
 
-  console.log('request', request)
-
   const signIn = async () => {
     try {
       const codeResponse = await promptAsync()
@@ -78,7 +76,6 @@ export const useSignIn = () => {
       clearHistory()
     } catch (error) {
       onAuthStoreUpdate({ user: null })
-      console.log(error)
       throw error
     }
   }

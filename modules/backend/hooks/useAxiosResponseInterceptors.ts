@@ -1,16 +1,63 @@
-import { AxiosResponse, isAxiosError } from 'axios'
-import { useEffect } from 'react'
+import axios, { AxiosResponse, isAxiosError } from 'axios'
+import { refreshAsync } from 'expo-auth-session'
+import { useCallback, useEffect } from 'react'
 
 import { useSnackbar } from '@/components/screen-layout/Snackbar/useSnackbar'
+import { environment } from '@/environment'
+import {
+  AUTH_SCOPES,
+  AUTHENTICATION_TOKENS_KEY,
+  discovery,
+} from '@/modules/auth/hooks/useAuthTokens'
+import { useAuthStoreUpdateContext } from '@/modules/auth/state/useAuthStoreUpdateContext'
+import { getUserFromTokens } from '@/modules/auth/utils'
 import { axiosInstance } from '@/modules/backend/axios-instance'
+import { storage } from '@/utils/mmkv'
 
 // https://dev.to/arianhamdi/react-hooks-in-axios-interceptors-3e1h
 
 export const useAxiosResponseInterceptors = () => {
   const snackbar = useSnackbar()
+  const onAuthStoreUpdate = useAuthStoreUpdateContext()
+
+  const refreshToken = useCallback(async () => {
+    const tokens = JSON.parse(storage.getString(AUTHENTICATION_TOKENS_KEY) || '{}')
+
+    if (!tokens?.refreshToken) {
+      return ''
+    }
+    try {
+      const refreshedTokens = await refreshAsync(
+        {
+          refreshToken: tokens?.refreshToken,
+          clientId: environment.clientId,
+          scopes: [`api://${environment.clientId}/user_auth`, ...AUTH_SCOPES],
+        },
+        discovery,
+      )
+
+      if (refreshedTokens) {
+        storage.set(AUTHENTICATION_TOKENS_KEY, JSON.stringify(refreshedTokens))
+
+        const user = getUserFromTokens(refreshedTokens)
+
+        onAuthStoreUpdate({
+          user,
+          isLoading: false,
+        })
+
+        return refreshedTokens.accessToken
+      }
+    } catch (error) {
+      storage.delete(AUTHENTICATION_TOKENS_KEY)
+      onAuthStoreUpdate({ user: null, isLoading: false })
+    }
+
+    return ''
+  }, [onAuthStoreUpdate])
 
   useEffect(() => {
-    const errorInterceptor = (error: unknown) => {
+    const errorInterceptor = async (error: unknown) => {
       let snackbarMessage = null
       if (isAxiosError(error)) {
         const { status, data } = error.response ?? {}
@@ -24,6 +71,18 @@ export const useAxiosResponseInterceptors = () => {
           case 424:
             if (errorName || message) {
               snackbarMessage = errorName && message
+            }
+            break
+          case 401:
+            if (discovery) {
+              const accessToken = await refreshToken()
+              console.log('refreshing token', accessToken)
+
+              if (accessToken) {
+                axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+
+                return axiosInstance(error?.config || {})
+              }
             }
             break
 
@@ -42,7 +101,7 @@ export const useAxiosResponseInterceptors = () => {
         snackbar.show(snackbarMessage, { variant: 'danger' })
       }
 
-      return Promise.reject(error)
+      throw error
     }
 
     const successInterceptor = (response: AxiosResponse) => {
@@ -55,5 +114,5 @@ export const useAxiosResponseInterceptors = () => {
     )
 
     return () => axiosInstance.interceptors.response.eject(interceptor)
-  }, [snackbar])
+  }, [refreshToken, snackbar])
 }
