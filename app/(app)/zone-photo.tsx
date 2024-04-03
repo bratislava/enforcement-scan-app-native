@@ -1,8 +1,7 @@
 import { FlashList } from '@shopify/flash-list'
-import { router } from 'expo-router'
+import { Redirect, router } from 'expo-router'
 import { Image } from 'react-native'
 
-import EmptyStateScreen from '@/components/screen-layout/EmptyStateScreen'
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
@@ -37,8 +36,8 @@ const ZonePhotoPage = () => {
     return <Typography>Error: {error.message}</Typography>
   }
 
-  if (data?.photos.length === 0) {
-    return <EmptyStateScreen title="title" contentTitle="noAnnouncementsTitle" />
+  if (data.photos.length === 0) {
+    return <Redirect href="/zone-photo-camera" />
   }
 
   return (
