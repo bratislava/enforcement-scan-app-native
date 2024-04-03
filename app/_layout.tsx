@@ -7,6 +7,7 @@ import {
   Inter_700Bold,
   useFonts,
 } from '@expo-google-fonts/inter'
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { PortalProvider } from '@gorhom/portal'
 /* eslint-enable babel/camelcase */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -52,20 +53,22 @@ const RootLayout = () => {
           <AuthStoreProvider>
             <PortalProvider>
               <SafeAreaProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <OmnipresentComponent />
+                <BottomSheetModalProvider>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <OmnipresentComponent />
 
-                  <Stack
-                    screenOptions={{
-                      headerBackTitleVisible: false,
-                      headerShown: false,
-                      headerTitleStyle: {
-                        fontFamily: 'BelfastGrotesk_700Bold',
-                      },
-                      headerTintColor: colors.dark.DEFAULT,
-                    }}
-                  />
-                </GestureHandlerRootView>
+                    <Stack
+                      screenOptions={{
+                        headerBackTitleVisible: false,
+                        headerShown: false,
+                        headerTitleStyle: {
+                          fontFamily: 'BelfastGrotesk_700Bold',
+                        },
+                        headerTintColor: colors.dark.DEFAULT,
+                      }}
+                    />
+                  </GestureHandlerRootView>
+                </BottomSheetModalProvider>
               </SafeAreaProvider>
             </PortalProvider>
           </AuthStoreProvider>

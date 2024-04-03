@@ -8,7 +8,7 @@ import BottomSheetTopAttachment, {
 } from '@/components/screen-layout/BottomSheet/BottomSheetTopAttachment'
 import FlexRow from '@/components/shared/FlexRow'
 import IconButton from '@/components/shared/IconButton'
-import { useLocationPermission } from '@/modules/map/hooks/useLocationPermission'
+import { useLocationPermission } from '@/modules/permissions/useLocationPermission'
 import { cn } from '@/utils/cn'
 
 /** Time after pressing the button when it cannot be pressed again */
