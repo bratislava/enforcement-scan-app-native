@@ -26,7 +26,11 @@ const LicencePlateCameraComp = () => {
   const { scanLicencePlate, loading, checkEcv } = useScanLicencePlate()
 
   const takePicture = async () => {
-    if (generatedEcv) await checkEcv(generatedEcv)
+    if (generatedEcv) {
+      await checkEcv(generatedEcv)
+
+      return
+    }
 
     const date = new Date()
 
