@@ -1,6 +1,6 @@
 import { FlashList } from '@shopify/flash-list'
 import { router } from 'expo-router'
-import { Image } from 'react-native'
+import { Image, View } from 'react-native'
 
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
@@ -11,6 +11,7 @@ import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
 import { getFavoritePhotosOptions } from '@/modules/backend/constants/queryParams'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const ZonePhotoPage = () => {
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavoritePhotosOptions())
@@ -43,6 +44,7 @@ const ZonePhotoPage = () => {
             name="add"
             accessibilityLabel="Nastavenia"
             onPress={() => {
+              setState({ zonePhoto: undefined })
               router.push(zonePhotoCameraPath)
             }}
           />
@@ -53,6 +55,7 @@ const ZonePhotoPage = () => {
       <FlashList
         className="h-full w-full flex-1"
         data={selectedZonePhotos}
+        ItemSeparatorComponent={() => <View className="h-2" />}
         renderItem={({ item }) => (
           <PressableStyled
             key={item.id}
@@ -63,7 +66,10 @@ const ZonePhotoPage = () => {
               router.push(zonePhotoCameraPath)
             }}
           >
-            <Image className="aspect-square w-full" source={{ uri: item.photoUrl }} />
+            <Image
+              className="aspect-square w-full"
+              source={{ uri: createUrlFromImageObject(item) }}
+            />
           </PressableStyled>
         )}
         estimatedItemSize={100}

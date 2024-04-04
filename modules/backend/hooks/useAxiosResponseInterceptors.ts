@@ -45,7 +45,8 @@ export const useAxiosResponseInterceptors = () => {
       let snackbarMessage = null
       if (isAxiosError(error)) {
         const { status, data } = error.response ?? {}
-        const { errorName, message }: { errorName?: string; message?: string } = data
+
+        const { errorName, message }: { errorName?: string; message?: string } = data || {}
 
         // eslint-disable-next-line sonarjs/no-small-switch
         switch (status) {
