@@ -83,7 +83,7 @@ const AppRoute = () => {
       <CameraBottomSheet
         hasPhoto={!!zonePhoto}
         retakePicture={() => setState({ zonePhoto: undefined })}
-        selectPicture={() => router.push('/licence-plate-camera')}
+        selectPicture={() => router.push('/scan/licence-plate-camera')}
         flashMode={flashMode}
         isLoading={loading}
         takePicture={takePicture}

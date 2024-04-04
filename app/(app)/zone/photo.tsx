@@ -29,7 +29,7 @@ const ZonePhotoPage = () => {
 
   const selectedZonePhotos = data.photos.filter((photo) => photo.tag === udrUuid)
 
-  const zonePhotoCameraPath = '/zone-photo-camera'
+  const zonePhotoCameraPath = '/zone/photo-camera'
 
   if (selectedZonePhotos.length === 0) {
     router.replace(zonePhotoCameraPath)
