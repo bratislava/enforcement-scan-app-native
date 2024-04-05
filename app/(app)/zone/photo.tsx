@@ -1,6 +1,6 @@
 import { FlashList } from '@shopify/flash-list'
-import { Redirect, router } from 'expo-router'
-import { Image } from 'react-native'
+import { router } from 'expo-router'
+import { Image, View } from 'react-native'
 
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
@@ -9,24 +9,15 @@ import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
 import { getFavoritePhotosOptions } from '@/modules/backend/constants/queryParams'
+import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
-
-const images = [
-  'https://via.placeholder.com/150',
-  'https://via.placeholder.com/150/0000FF',
-  'https://via.placeholder.com/150/008000',
-  'https://via.placeholder.com/150/FF0000',
-  'https://via.placeholder.com/150/FFFF00',
-  'https://via.placeholder.com/150/000080',
-  'https://via.placeholder.com/150/808080',
-  'https://via.placeholder.com/150/FFA07A',
-  'https://via.placeholder.com/150/FFC0CB',
-  'https://via.placeholder.com/150/F0E68C',
-]
+import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const ZonePhotoPage = () => {
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavoritePhotosOptions())
   const setState = useSetOffenceState()
+
+  const udrUuid = useOffenceStoreContext((state) => state.zone?.udrUuid)
 
   if (isPending) {
     return <LoadingScreen title="Vyberte zónovú značku" asScreenView />
@@ -36,8 +27,12 @@ const ZonePhotoPage = () => {
     return <Typography>Error: {error.message}</Typography>
   }
 
-  if (data.photos.length === 0) {
-    return <Redirect href="/zone-photo-camera" />
+  const selectedZonePhotos = data.photos.filter((photo) => photo.tag === udrUuid)
+
+  const zonePhotoCameraPath = '/zone/photo-camera'
+
+  if (selectedZonePhotos.length === 0) {
+    router.replace(zonePhotoCameraPath)
   }
 
   return (
@@ -49,7 +44,8 @@ const ZonePhotoPage = () => {
             name="add"
             accessibilityLabel="Nastavenia"
             onPress={() => {
-              router.push('/zone-photo-camera')
+              setState({ zonePhoto: undefined })
+              router.push(zonePhotoCameraPath)
             }}
           />
         ),
@@ -58,18 +54,22 @@ const ZonePhotoPage = () => {
     >
       <FlashList
         className="h-full w-full flex-1"
-        data={images}
+        data={selectedZonePhotos}
+        ItemSeparatorComponent={() => <View className="h-2" />}
         renderItem={({ item }) => (
           <PressableStyled
-            key={item}
+            key={item.id}
             className="w-full items-center justify-center bg-dark-light"
             onPress={() => {
               setState({ zonePhoto: item })
 
-              router.push('/zone-photo-camera')
+              router.push(zonePhotoCameraPath)
             }}
           >
-            <Image className="aspect-square w-full" source={{ uri: item }} />
+            <Image
+              className="aspect-square w-full"
+              source={{ uri: createUrlFromImageObject(item) }}
+            />
           </PressableStyled>
         )}
         estimatedItemSize={100}

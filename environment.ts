@@ -18,4 +18,5 @@ export const environment = {
   mapboxPublicKey: assertEnv('EXPO_PUBLIC_MAPBOX_KEY', process.env.EXPO_PUBLIC_MAPBOX_KEY),
   clientId: assertEnv('EXPO_PUBLIC_CLIENT_ID', process.env.EXPO_PUBLIC_CLIENT_ID),
   tenantId: assertEnv('EXPO_PUBLIC_TENANT_ID', process.env.EXPO_PUBLIC_TENANT_ID),
+  imageCdn: assertEnv('EXPO_PUBLIC_IMAGE_CDN', process.env.EXPO_PUBLIC_IMAGE_CDN),
 }

@@ -30,7 +30,11 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
           </FlexRow>
         </Panel>
 
-        <Link asChild href="/zone-photo" onPress={() => setState({ zone: selectedZone })}>
+        <Link
+          asChild
+          href="/zone/photo"
+          onPress={() => setState({ zone: selectedZone, zonePhoto: undefined })}
+        >
           <ContinueButton />
         </Link>
       </>

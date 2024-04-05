@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, isAxiosError } from 'axios'
+import axios, { AxiosError, AxiosResponse, isAxiosError } from 'axios'
 import { useCallback, useEffect } from 'react'
 
 import { useSnackbar } from '@/components/screen-layout/Snackbar/useSnackbar'
@@ -40,45 +40,61 @@ export const useAxiosResponseInterceptors = () => {
     }
   }, [onAuthStoreUpdate])
 
+  const onAxiosError = useCallback(
+    async (error: AxiosError) => {
+      const { status, data } = error.response ?? {}
+
+      const { errorName, message }: { errorName?: string; message?: string } = data || {}
+
+      let snackbarMessage = null
+      switch (status) {
+        case 422:
+          // the 422 errors are handled localy
+          break
+        case 424:
+          if (errorName || message) {
+            snackbarMessage = errorName && message
+          }
+          break
+        case 401:
+          if (discovery) {
+            const accessToken = await onRefreshToken()
+
+            if (accessToken) {
+              axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
+
+              return axiosInstance(error?.config || {})
+            }
+            snackbarMessage = 'Vaša prihlásenie vypršalo. Prosím prihláste sa znova.'
+          }
+          break
+
+        default:
+          if (status) {
+            snackbarMessage ??= status.toString()
+          }
+
+          snackbarMessage ??=
+            'Pri spracovaní vašej požiadavky sa vyskytla chyba. Skúste to prosím neskôr.'
+          break
+      }
+
+      if (snackbarMessage) {
+        snackbar.show(snackbarMessage, { variant: 'danger' })
+      }
+
+      return null
+    },
+    [onRefreshToken, snackbar],
+  )
+
   useEffect(() => {
     const errorInterceptor = async (error: unknown) => {
       let snackbarMessage = null
+
       if (isAxiosError(error)) {
-        const { status, data } = error.response ?? {}
-        const { errorName, message }: { errorName?: string; message?: string } = data
-
-        // eslint-disable-next-line sonarjs/no-small-switch
-        switch (status) {
-          case 422:
-            // the 422 errors are handled localy
-            break
-          case 424:
-            if (errorName || message) {
-              snackbarMessage = errorName && message
-            }
-            break
-          case 401:
-            if (discovery) {
-              const accessToken = await onRefreshToken()
-
-              if (accessToken) {
-                axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`
-
-                return axiosInstance(error?.config || {})
-              }
-              snackbarMessage = 'Vaša prihlásenie vypršalo. Prosím prihláste sa znova.'
-            }
-            break
-
-          default:
-            if (status) {
-              snackbarMessage ??= status.toString()
-            }
-
-            snackbarMessage ??=
-              'Pri spracovaní vašej požiadavky sa vyskytla chyba. Skúste to prosím neskôr.'
-            break
-        }
+        const instance = await onAxiosError(error)
+        if (instance) return instance
       } else snackbarMessage ??= 'Vyskytla sa chyba.'
 
       if (snackbarMessage) {
@@ -98,5 +114,5 @@ export const useAxiosResponseInterceptors = () => {
     )
 
     return () => axiosInstance.interceptors.response.eject(interceptor)
-  }, [onRefreshToken, snackbar])
+  }, [onAxiosError, snackbar])
 }
