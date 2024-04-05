@@ -9,11 +9,11 @@ import { ScanResultEnum } from '@/modules/backend/openapi-generated'
  * Figma: https://www.figma.com/file/3TppNabuUdnCChkHG9Vft7/paas-mpa?node-id=1300%3A11943&mode=dev
  */
 
-// TODO may need update depending on changes in figma
 type ScanResultSearchParams = {
   scanResult: ScanResultEnum
 }
 
+// TODO - texts
 const ScanResultPage = () => {
   const { scanResult } = useLocalSearchParams<ScanResultSearchParams>()
 
@@ -22,12 +22,10 @@ const ScanResultPage = () => {
       options={{ headerTransparent: true }}
       actionButton={
         scanResult === ScanResultEnum.NoViolation ? (
-          <ContinueButton onPress={router.back}>
-            {`${scanResult}.actionButtonLabelBack` as string}
-          </ContinueButton>
+          <ContinueButton onPress={router.back}>{scanResult}</ContinueButton>
         ) : (
           <ContinueButton variant="negative" onPress={() => router.push('/offence')}>
-            {`${scanResult}.actionButtonLabel` as string}
+            {scanResult}
           </ContinueButton>
         )
       }
@@ -40,8 +38,8 @@ const ScanResultPage = () => {
               ? 'warning'
               : 'error'
         }
-        title={`${scanResult}.title`}
-        text={`${scanResult}.text`}
+        title={`${scanResult} - title`}
+        text={`${scanResult} - text`}
         asMarkdown
       />
     </ScreenViewCentered>
