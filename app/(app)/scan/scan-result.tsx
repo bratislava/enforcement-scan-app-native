@@ -17,6 +17,17 @@ type ScanResultSearchParams = {
 const ScanResultPage = () => {
   const { scanResult } = useLocalSearchParams<ScanResultSearchParams>()
 
+  const getResultVariant = (result: ScanResultEnum) => {
+    switch (result) {
+      case ScanResultEnum.NoViolation:
+        return 'success'
+      case ScanResultEnum.PaasParkingViolationDuplicity:
+        return 'warning'
+      default:
+        return 'error'
+    }
+  }
+
   return (
     <ScreenViewCentered
       options={{ headerTransparent: true }}
@@ -24,20 +35,14 @@ const ScanResultPage = () => {
         scanResult === ScanResultEnum.NoViolation ? (
           <ContinueButton onPress={router.back}>{scanResult}</ContinueButton>
         ) : (
-          <ContinueButton variant="negative" onPress={() => router.push('/offence')}>
+          <ContinueButton variant="negative" onPress={() => router.replace('/offence')}>
             {scanResult}
           </ContinueButton>
         )
       }
     >
       <ContentWithAvatar
-        variant={
-          scanResult === ScanResultEnum.NoViolation
-            ? 'success'
-            : scanResult === ScanResultEnum.PaasParkingViolationDuplicity
-              ? 'warning'
-              : 'error'
-        }
+        variant={getResultVariant(scanResult as ScanResultEnum)}
         title={`${scanResult} - title`}
         text={`${scanResult} - text`}
         asMarkdown
