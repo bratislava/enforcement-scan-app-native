@@ -9,6 +9,7 @@ import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomShe
 import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/BottomSheetHandleWithShadow'
 import Button from '@/components/shared/Button'
 import Field from '@/components/shared/Field'
+import IconButton from '@/components/shared/IconButton'
 
 type Props = {
   licencePlate?: string
@@ -37,6 +38,16 @@ const LicencePlateCameraBottomSheet = ({
         flashMode={flashMode}
         toggleFlashlight={toggleFlashlight}
         animatedPosition={animatedPosition}
+        iconLeft={
+          licencePlate ? (
+            <IconButton
+              accessibilityLabel="Opakovať sken"
+              variant="white-raised"
+              name="autorenew"
+              onPress={() => onChangeLicencePlate('')}
+            />
+          ) : undefined
+        }
       />
 
       <BottomSheet
@@ -57,7 +68,7 @@ const LicencePlateCameraBottomSheet = ({
           </Field>
 
           <Button loading={isLoading} onPress={takePicture}>
-            Skenovať
+            {licencePlate ? 'Ďalej' : 'Skenovať'}
           </Button>
         </BottomSheetContent>
       </BottomSheet>

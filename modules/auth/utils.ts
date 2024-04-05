@@ -26,7 +26,7 @@ export const getUserFromTokens = (tokens: TokenResponse): User => {
  * Refreshes the access token using the refresh token with OAuth2
  */
 export const refreshToken = async (tokens: TokenResponse) => {
-  if (tokens?.refreshToken && discovery) {
+  if (tokens?.refreshToken) {
     const refreshedTokens = await refreshAsync(
       {
         refreshToken: tokens.refreshToken,

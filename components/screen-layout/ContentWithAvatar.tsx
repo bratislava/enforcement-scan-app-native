@@ -8,7 +8,7 @@ import { cn } from '@/utils/cn'
 type ContentWithAvatarProps = {
   title: string
   text?: string
-  variant?: 'success' | 'error'
+  variant?: 'success' | 'error' | 'warning'
   customAvatarComponent?: ReactNode
   actionButton?: ReactNode
   asMarkdown?: boolean
