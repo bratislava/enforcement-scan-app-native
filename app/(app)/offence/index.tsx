@@ -10,6 +10,7 @@ import ScreenView from '@/components/screen-layout/ScreenView'
 import Field from '@/components/shared/Field'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
+import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -17,13 +18,14 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 const requiredText = 'Toto pole je povinné'
 
 const OffencePage = () => {
-  const { ecv, offenceType, resolutionType, isObjectiveResponsibility } = useOffenceStoreContext(
-    (state) => state,
-  )
+  const { ecv, offenceType, roleKey, resolutionType, isObjectiveResponsibility } =
+    useOffenceStoreContext((state) => state)
   const setState = useSetOffenceState()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
+
+  const role = getRoleByKey(roleKey)
 
   const onSubmit = async () => {
     setIsSubmitting(true)
@@ -73,6 +75,7 @@ const OffencePage = () => {
         </Field>
 
         <SelectRow
+          disabled={!role?.actions.subjective}
           label="Objektívna zodpovednosť"
           onValueChange={() => setState({ isObjectiveResponsibility: !isObjectiveResponsibility })}
           value={!!isObjectiveResponsibility}

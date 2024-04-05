@@ -24,18 +24,18 @@ export type OffenceState = {
   isObjectiveResponsibility?: boolean
 }
 
-const defaultState: OffenceState = {
+export const defaultOffenceState: OffenceState = {
   isObjectiveResponsibility: true,
 }
 
 export const OffenceStoreContext = createContext<Store<OffenceState>>(
-  createStore<OffenceState>(defaultState),
+  createStore<OffenceState>(defaultOffenceState),
 )
 
 export const OffenceStoreProvider = ({ children }: { children: ReactNode }) => {
   const storeRef = useRef<Store<OffenceState>>()
   if (!storeRef.current) {
-    storeRef.current = createStore<OffenceState>(defaultState)
+    storeRef.current = createStore<OffenceState>(defaultOffenceState)
   }
 
   return (

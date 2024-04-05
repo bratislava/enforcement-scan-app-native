@@ -53,4 +53,4 @@ export const ROLES: RoleItem[] = [
   },
 ]
 
-export const getRoleByKey = (key: string) => ROLES.find((role) => role.key === key)
+export const getRoleByKey = (key?: string) => ROLES.find((role) => role.key === key)
