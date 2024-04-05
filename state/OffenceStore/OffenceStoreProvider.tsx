@@ -1,5 +1,6 @@
 import { createContext, ReactNode, useRef } from 'react'
 
+import { OffenceTypeEnum, ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { createStore, Store } from '@/utils/store'
 
@@ -18,15 +19,23 @@ export type OffenceState = {
     lon: number
   }
   offencePhotos?: string[]
-  offenceType?: string
+  offenceType?: OffenceTypeEnum
+  resolutionType?: ResolutionOffenceTypeEnum
+  isObjectiveResponsibility?: boolean
 }
 
-export const OffenceStoreContext = createContext<Store<OffenceState>>(createStore<OffenceState>({}))
+const defaultState: OffenceState = {
+  isObjectiveResponsibility: true,
+}
+
+export const OffenceStoreContext = createContext<Store<OffenceState>>(
+  createStore<OffenceState>(defaultState),
+)
 
 export const OffenceStoreProvider = ({ children }: { children: ReactNode }) => {
   const storeRef = useRef<Store<OffenceState>>()
   if (!storeRef.current) {
-    storeRef.current = createStore<OffenceState>({})
+    storeRef.current = createStore<OffenceState>(defaultState)
   }
 
   return (

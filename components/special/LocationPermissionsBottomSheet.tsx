@@ -74,8 +74,6 @@ const LocationBottomSheet = () => {
       ? 'locationOff'
       : 'locationDenied'
 
-  console.log('here')
-
   return (
     <BottomSheet
       ref={ref}

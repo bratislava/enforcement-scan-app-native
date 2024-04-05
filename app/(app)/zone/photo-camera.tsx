@@ -30,7 +30,7 @@ const AppRoute = () => {
     mutationFn: ({ file, tag }: { file: File; tag: string }) =>
       clientApi.scanControllerCreateFavouritePhoto(file, tag),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: getFavoritePhotosOptions().queryKey })
+      await queryClient.resetQueries({ queryKey: getFavoritePhotosOptions().queryKey })
     },
   })
 
