@@ -18,7 +18,7 @@ const AppRoute = () => {
 
   const handlePressRole = (role: RoleItem) => () => {
     setState({ roleKey: role.key }, { merge: false })
-    router.push(role.actions.zone ? '/zone' : '/licence-plate-camera')
+    router.push(role.actions.zone ? '/zone' : '/scan/licence-plate-camera')
   }
 
   const allowedRoles = ROLES.filter((role) => user?.roles.includes(role.key))

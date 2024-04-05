@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { RequestCreateOrUpdateScanDto } from '@/modules/backend/openapi-generated'
+import { RequestCreateOrUpdateScanDto, ScanReasonEnum } from '@/modules/backend/openapi-generated'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 
 export const HEADER_WITH_PADDING = 100
@@ -63,7 +63,13 @@ export const useScanLicencePlate = () => {
     })
 
     if (res.data) {
-      router.push('/offence')
+      if (res.data.scanResult === ScanReasonEnum.Other) {
+        router.push('/offence')
+      } else
+        router.push({
+          pathname: '/scan/scan-result',
+          params: { scanResult: res.data.scanResult },
+        })
     }
   }
 
