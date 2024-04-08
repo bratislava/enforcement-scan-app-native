@@ -12,9 +12,9 @@ const Page = () => {
   const offenceType = useOffenceStoreContext((state) => state.offenceType)
   const setState = useSetOffenceState()
 
-  const onOffenceTypeChange = async (newoffenceType: OffenceTypeEnum) => {
-    if (newoffenceType !== offenceType) {
-      setState({ offenceType: newoffenceType })
+  const onOffenceTypeChange = async (newOffenceType: OffenceTypeEnum) => {
+    if (newOffenceType !== offenceType) {
+      setState({ offenceType: newOffenceType })
     }
 
     if (router.canGoBack()) {

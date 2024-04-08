@@ -43,6 +43,8 @@ export const useScanLicencePlate = () => {
   const { top } = useSafeAreaInsets()
 
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
+  const role = getRoleByKey(roleKey)
+
   const udrId = useOffenceStoreContext((state) => state.zone?.udrId)
 
   const createScanMutation = useMutation({
@@ -53,9 +55,8 @@ export const useScanLicencePlate = () => {
   const checkEcv = async (ecv: string) => {
     const location = await Location.getLastKnownPositionAsync()
 
-    if (!location) return
+    if (!(location && role)) return
 
-    const role = getRoleByKey(roleKey!)!
     const res = await createScanMutation.mutateAsync({
       ecv,
       scanReason: role.scanReason,
