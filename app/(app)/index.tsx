@@ -9,6 +9,7 @@ import IconButton from '@/components/shared/IconButton'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
 import { useAuthStoreContext } from '@/modules/auth/state/useAuthStoreContext'
 import { RoleItem, ROLES } from '@/modules/backend/constants/roles'
+import { defaultOffenceState } from '@/state/OffenceStore/OffenceStoreProvider'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const AppRoute = () => {
@@ -17,7 +18,7 @@ const AppRoute = () => {
   const { user } = useAuthStoreContext()
 
   const handlePressRole = (role: RoleItem) => () => {
-    setState({ roleKey: role.key }, { merge: false })
+    setState({ roleKey: role.key, ...defaultOffenceState }, { merge: false })
     router.push(role.actions.zone ? '/zone' : '/scan/licence-plate-camera')
   }
 

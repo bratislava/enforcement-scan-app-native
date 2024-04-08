@@ -11,6 +11,8 @@ import {
   useScanLicencePlate,
 } from '@/modules/camera/hooks/useScanLicencePlate'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
+import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
+import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const LicencePlateCameraComp = () => {
   const ref = useRef<Camera>(null)
@@ -19,7 +21,8 @@ const LicencePlateCameraComp = () => {
 
   const { top } = useSafeAreaInsets()
 
-  const [generatedEcv, setGeneratedEcv] = useState('')
+  const generatedEcv = useOffenceStoreContext((state) => state.ecv)
+  const setState = useSetOffenceState()
 
   useCameraPermission({ autoAsk: true })
 
@@ -39,7 +42,7 @@ const LicencePlateCameraComp = () => {
     if (!photo) return
 
     const ecv = await scanLicencePlate(photo)
-    setGeneratedEcv(ecv)
+    setState({ ecv })
     console.log('Time function took in seconds:', (Date.now() - date.getTime()) / 1000)
   }
 
@@ -65,7 +68,7 @@ const LicencePlateCameraComp = () => {
         }
         licencePlate={generatedEcv}
         takePicture={takePicture}
-        onChangeLicencePlate={(ecv) => setGeneratedEcv(ecv)}
+        onChangeLicencePlate={(ecv) => setState({ ecv })}
       />
     </ScreenView>
   )

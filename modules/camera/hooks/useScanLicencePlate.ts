@@ -10,7 +10,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { RequestCreateOrUpdateScanDto, ScanReasonEnum } from '@/modules/backend/openapi-generated'
+import {
+  RequestCreateOrUpdateScanDto,
+  ScanReasonEnum,
+  ScanResultEnum,
+} from '@/modules/backend/openapi-generated'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 
 export const HEADER_WITH_PADDING = 100
@@ -39,6 +43,8 @@ export const useScanLicencePlate = () => {
   const { top } = useSafeAreaInsets()
 
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
+  const role = getRoleByKey(roleKey)
+
   const udrId = useOffenceStoreContext((state) => state.zone?.udrId)
 
   const createScanMutation = useMutation({
@@ -49,9 +55,8 @@ export const useScanLicencePlate = () => {
   const checkEcv = async (ecv: string) => {
     const location = await Location.getLastKnownPositionAsync()
 
-    if (!location) return
+    if (!(location && role)) return
 
-    const role = getRoleByKey(roleKey!)!
     const res = await createScanMutation.mutateAsync({
       ecv,
       scanReason: role.scanReason,
@@ -68,7 +73,8 @@ export const useScanLicencePlate = () => {
       } else
         router.push({
           pathname: '/scan/scan-result',
-          params: { scanResult: res.data.scanResult },
+          // TODO: remove fixed value after BE adds violations
+          params: { scanResult: ScanResultEnum.PaasParkingViolation || res.data.scanResult },
         })
     }
   }
@@ -115,7 +121,7 @@ export const useScanLicencePlate = () => {
           const ecv =
             biggestText(newOcr)
               .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
-              .replaceAll(/[^\dA-Z]/g, '') || 'BR222BH'
+              .replaceAll(/[^\dA-Z]/g, '') || 'BR222BB' // ECV is here for testing purposes
 
           setLoading(false)
 
