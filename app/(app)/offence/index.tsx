@@ -45,7 +45,11 @@ const OffencePage = () => {
     <ScreenView title="Hlásenie priestupku" className="flex-1 justify-start">
       <ScreenContent>
         <Field label="Vozidlo">
-          <TextInput value={ecv} isDisabled />
+          <TextInput
+            value={ecv}
+            isDisabled={!!role?.actions.scanCheck}
+            onChangeText={(value) => setState({ ecv: value })}
+          />
         </Field>
 
         <Field
