@@ -38,7 +38,9 @@ const Page = () => {
             loading={isLoading}
             disabled={isLoading || !isReady}
             onPress={handleSignIn}
-          />
+          >
+            Prihlásiť sa cez AD
+          </ContinueButton>
         </ScreenContent>
       </ScreenView>
     </DismissKeyboard>

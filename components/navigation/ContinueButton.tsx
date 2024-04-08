@@ -14,7 +14,7 @@ const ContinueButton = forwardRef<View, ContinueButtonProps>(
   ({ children, variant, ...rest }, ref) => {
     return (
       <Button ref={ref} variant={variant ?? 'primary'} {...rest}>
-        {children ?? 'Continue'}
+        {children ?? 'Pokračovať'}
       </Button>
     )
   },

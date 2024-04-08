@@ -9,6 +9,7 @@ import IconButton from '@/components/shared/IconButton'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
 import { useAuthStoreContext } from '@/modules/auth/state/useAuthStoreContext'
 import { RoleItem, ROLES } from '@/modules/backend/constants/roles'
+import { OffenceTypeEnum, ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { defaultOffenceState } from '@/state/OffenceStore/OffenceStoreProvider'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -18,7 +19,19 @@ const AppRoute = () => {
   const { user } = useAuthStoreContext()
 
   const handlePressRole = (role: RoleItem) => () => {
-    setState({ roleKey: role.key, ...defaultOffenceState }, { merge: false })
+    setState(
+      {
+        roleKey: role.key,
+        ...defaultOffenceState,
+        ...(role.actions.paasOffenceTypes
+          ? {
+              offenceType: OffenceTypeEnum.A,
+              resolutionType: ResolutionOffenceTypeEnum.ForwardedToDi,
+            }
+          : {}),
+      },
+      { merge: false },
+    )
     router.push(role.actions.zone ? '/zone' : '/scan/licence-plate-camera')
   }
 
