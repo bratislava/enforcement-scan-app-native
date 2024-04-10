@@ -5,13 +5,16 @@ import {
   ScanReasonEnum,
 } from '@/modules/backend/openapi-generated'
 
+export type RoleKeyType = 'paas' | 'municipal-police' | 'petrzalka' | 'research'
+export type ActionKeyType = 'zone' | 'offence' | 'scanCheck' | 'subjective' | 'paasOffenceTypes'
+
 export type RoleItem = {
   icon: IconName
-  key: string
+  key: RoleKeyType
   title: string
   description: string
   scanReason: ScanReasonEnum
-  actions: Record<string, boolean | string>
+  actions: { [key in ActionKeyType]?: boolean }
 }
 
 export const paasOffenceTypes: OffenceTypeEnum[] = [OffenceTypeEnum.A, OffenceTypeEnum.B]
