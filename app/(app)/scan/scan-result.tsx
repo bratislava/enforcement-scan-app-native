@@ -6,10 +6,6 @@ import ScreenViewCentered from '@/components/screen-layout/ScreenViewCentered'
 import { useSnackbar } from '@/components/screen-layout/Snackbar/useSnackbar'
 import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 
-/*
- * Figma: https://www.figma.com/file/3TppNabuUdnCChkHG9Vft7/paas-mpa?node-id=1300%3A11943&mode=dev
- */
-
 type ScanResultSearchParams = {
   scanResult: ScanResultEnum
 }
@@ -37,6 +33,17 @@ const scanResultTextsMap: Record<ScanResultEnum, Record<string, string>> = {
   },
 }
 
+const getResultVariant = (result?: ScanResultEnum) => {
+  switch (result) {
+    case ScanResultEnum.NoViolation:
+      return 'success'
+    case ScanResultEnum.PaasParkingViolationDuplicity:
+      return 'warning'
+    default:
+      return 'error'
+  }
+}
+
 // TODO - texts
 const ScanResultPage = () => {
   const { scanResult } = useLocalSearchParams<ScanResultSearchParams>()
@@ -47,17 +54,6 @@ const ScanResultPage = () => {
     router.back()
 
     return null
-  }
-
-  const getResultVariant = (result: ScanResultEnum) => {
-    switch (result) {
-      case ScanResultEnum.NoViolation:
-        return 'success'
-      case ScanResultEnum.PaasParkingViolationDuplicity:
-        return 'warning'
-      default:
-        return 'error'
-    }
   }
 
   return (
