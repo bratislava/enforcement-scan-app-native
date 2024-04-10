@@ -6,6 +6,7 @@ import CameraPermissionsBottomSheet from '@/components/special/CameraPermissions
 import LocationBottomSheet from '@/components/special/LocationPermissionsBottomSheet'
 import { environment } from '@/environment'
 import { useAuthStoreContext } from '@/modules/auth/state/useAuthStoreContext'
+import ArcgisStoreProvider from '@/state/ArcgisStore/ArcgisStoreProvider'
 import { OffenceStoreProvider } from '@/state/OffenceStore/OffenceStoreProvider'
 import colors from '@/tailwind.config.colors'
 
@@ -43,18 +44,20 @@ const RootLayout = () => {
   // Render the children routes now that all the assets are loaded.
   return (
     <OffenceStoreProvider>
-      <Stack
-        screenOptions={{
-          headerBackTitleVisible: false,
-          headerTitleStyle: {
-            fontFamily: 'BelfastGrotesk_700Bold',
-          },
-          headerTintColor: colors.dark.DEFAULT,
-        }}
-      />
+      <ArcgisStoreProvider>
+        <Stack
+          screenOptions={{
+            headerBackTitleVisible: false,
+            headerTitleStyle: {
+              fontFamily: 'BelfastGrotesk_700Bold',
+            },
+            headerTintColor: colors.dark.DEFAULT,
+          }}
+        />
 
-      <LocationBottomSheet />
-      <CameraPermissionsBottomSheet />
+        <LocationBottomSheet />
+        <CameraPermissionsBottomSheet />
+      </ArcgisStoreProvider>
     </OffenceStoreProvider>
   )
 }

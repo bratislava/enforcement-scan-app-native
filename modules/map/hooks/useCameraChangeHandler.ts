@@ -18,7 +18,7 @@ type Dependencies = {
   isMapPinShown: boolean
   selectedPolygon: UdrZoneFeature | null
   setSelectedPolygon: Dispatch<SetStateAction<UdrZoneFeature | null>>
-  setIsMapPinShown: Dispatch<SetStateAction<boolean>>
+  setIsMapPinShown?: Dispatch<SetStateAction<boolean>>
   onStateChange?: (state: MapState) => void
   setFlyToCenter: Dispatch<SetStateAction<Position | null>>
   onCenterChange?: (center: Position) => void
@@ -87,9 +87,9 @@ export const useCameraChangeHandler = ({
       if (!Keyboard.isVisible()) {
         debouncedHandleCameraChange(state)
         if (state.properties.zoom < HIDE_MARKER_ON_ZOOM_OVER) {
-          setIsMapPinShown(false)
+          setIsMapPinShown?.(false)
         } else {
-          setIsMapPinShown(true)
+          setIsMapPinShown?.(true)
         }
       }
     },

@@ -25,6 +25,7 @@ import CompassButton from '@/components/map/CompassButton'
 import MapCamera from '@/components/map/MapCamera'
 import MapPin from '@/components/map/MapPin'
 import MapZones from '@/components/map/MapZones'
+import { MAP_STYLE_URL } from '@/modules/map/constants'
 import { useCameraChangeHandler } from '@/modules/map/hooks/useCameraChangeHandler'
 import { ProcessedMapData } from '@/modules/map/hooks/useProcessedArcgisData'
 import { useMapStoreUpdateContext } from '@/modules/map/state/MapStoreProvider/useMapStoreUpdateContext'
@@ -123,8 +124,7 @@ const Map = forwardRef(
         <MapView
           ref={map}
           style={{ flex: 1 }}
-          // eslint-disable-next-line no-secrets/no-secrets
-          styleURL="mapbox://styles/inovaciebratislava/cl5teyncz000614o4le1p295o"
+          styleURL={MAP_STYLE_URL}
           onCameraChanged={handleCameraChange}
           scaleBarEnabled={false}
           pitchEnabled={false}

@@ -9,15 +9,17 @@ export type ZonePhoto = {
   photoUrl: string
 }
 
+export type PositionObject = {
+  lat: number
+  long: number
+}
+
 export type OffenceState = {
   roleKey?: string
   ecv?: string
   zone?: MapUdrZoneWithTranslationProps
   zonePhoto?: ZonePhoto
-  location?: {
-    lat: number
-    lon: number
-  }
+  location?: PositionObject
   offencePhotos?: string[]
   offenceType?: OffenceTypeEnum
   resolutionType?: ResolutionOffenceTypeEnum
