@@ -7,7 +7,6 @@ import MapZoneBottomSheetAttachment from '@/components/map/MapZoneBottomSheetAtt
 import ContinueButton from '@/components/navigation/ContinueButton'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/BottomSheetHandleWithShadow'
-import { cn } from '@/utils/cn'
 
 type Props = {
   isDisabled?: boolean
@@ -31,7 +30,7 @@ const LocationMapBottomSheet = forwardRef<BottomSheet, Props>(
           animatedPosition={animatedPosition}
           enableDynamicSizing
         >
-          <BottomSheetContent isDynamic className={cn('bg-white g-2')}>
+          <BottomSheetContent>
             <ContinueButton disabled={isDisabled} onPress={onPress} />
           </BottomSheetContent>
         </BottomSheet>

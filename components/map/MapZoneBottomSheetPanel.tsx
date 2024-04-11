@@ -42,7 +42,7 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
   }
 
   return (
-    <Panel className="bg-warning-light g-2">
+    <Panel className="min-h-[56px] bg-warning-light g-2">
       <Typography>Nie je zvolená zóna</Typography>
     </Panel>
   )
