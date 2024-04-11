@@ -4,7 +4,7 @@ import SelectList from '@/components/inputs/SelectList'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { RESOLUTION_TYPES } from '@/modules/backend/constants/resolutionTypes'
-import { getRoleByKey, paasResolutionTypes } from '@/modules/backend/constants/roles'
+import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
@@ -27,8 +27,8 @@ const Page = () => {
     }
   }
 
-  const filteredResolutionTypes = role?.actions.paasOffenceTypes
-    ? RESOLUTION_TYPES.filter((offence) => paasResolutionTypes.includes(offence.value))
+  const filteredResolutionTypes = role?.resolutionTypes
+    ? RESOLUTION_TYPES.filter((offence) => role.resolutionTypes?.includes(offence.value))
     : RESOLUTION_TYPES
 
   return (
