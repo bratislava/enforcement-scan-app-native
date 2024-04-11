@@ -18,13 +18,23 @@ export type PositionObject = {
 export type OffenceState = {
   roleKey?: string
   ecv?: string
-  zone?: MapUdrZoneWithTranslationProps
-  zonePhoto?: ZonePhoto
+
+  // offence data
   location?: PositionObject
   offencePhotos?: string[]
   offenceType?: OffenceTypeEnum
   resolutionType?: ResolutionOffenceTypeEnum
   isObjectiveResponsibility?: boolean
+
+  // zone data
+  zone?: MapUdrZoneWithTranslationProps
+  zonePhoto?: ZonePhoto
+
+  // vehicle data
+  vehicleId?: number
+  vehicleType?: string
+  vehicleBrand?: string
+  vehicleColor?: string
 }
 
 export const OffenceStoreContext = createContext<Store<OffenceState>>(

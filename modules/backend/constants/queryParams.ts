@@ -2,9 +2,17 @@ import { queryOptions } from '@tanstack/react-query'
 
 import { clientApi } from '@/modules/backend/client-api'
 
-export const getFavoritePhotosOptions = () =>
+export const getFavouritePhotosOptions = () =>
   queryOptions({
-    queryKey: ['FavoritePhotos'],
+    queryKey: ['FavouritePhotos'],
     queryFn: () => clientApi.scanControllerGetFavouritePhotos(),
     select: (res) => res.data,
+  })
+
+export const getVehiclePropertiesOptions = (ecv?: string) =>
+  queryOptions({
+    queryKey: ['VehicleProperties', ecv],
+    queryFn: () => clientApi.scanControllerGetVehicleProperties(ecv!),
+    select: (res) => res.data,
+    enabled: !!ecv,
   })

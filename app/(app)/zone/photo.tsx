@@ -8,13 +8,13 @@ import IconButton from '@/components/shared/IconButton'
 import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
-import { getFavoritePhotosOptions } from '@/modules/backend/constants/queryParams'
+import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const ZonePhotoPage = () => {
-  const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavoritePhotosOptions())
+  const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavouritePhotosOptions())
   const setState = useSetOffenceState()
 
   const udrUuid = useOffenceStoreContext((state) => state.zone?.udrUuid)

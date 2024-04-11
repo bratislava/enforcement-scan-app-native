@@ -7,7 +7,7 @@ import { Image, useWindowDimensions } from 'react-native'
 import CameraBottomSheet from '@/components/camera/CameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
-import { getFavoritePhotosOptions } from '@/modules/backend/constants/queryParams'
+import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
@@ -30,7 +30,7 @@ const AppRoute = () => {
     mutationFn: ({ file, tag }: { file: File; tag: string }) =>
       clientApi.scanControllerCreateFavouritePhoto(file, tag),
     onSuccess: async () => {
-      await queryClient.resetQueries({ queryKey: getFavoritePhotosOptions().queryKey })
+      await queryClient.resetQueries({ queryKey: getFavouritePhotosOptions().queryKey })
     },
   })
 
