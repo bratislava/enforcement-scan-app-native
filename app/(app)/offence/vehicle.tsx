@@ -33,7 +33,7 @@ const vehicleFields = [
   },
 ] as const
 
-const OffencePage = () => {
+const Page = () => {
   const { ecv, vehicleColor, vehicleBrand, vehicleType, vehicleId } = useOffenceStoreContext(
     (state) => state,
   )
@@ -121,4 +121,4 @@ const OffencePage = () => {
   )
 }
 
-export default OffencePage
+export default Page
