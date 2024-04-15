@@ -1,5 +1,4 @@
 import BottomSheet from '@gorhom/bottom-sheet'
-import { Portal } from '@gorhom/portal'
 import { router } from 'expo-router'
 import { useCallback, useRef, useState } from 'react'
 import { View } from 'react-native'
@@ -19,7 +18,7 @@ const LocationMapScreen = () => {
   const location = useOffenceStoreContext((state) => state.location)
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const role = getRoleByKey(roleKey)
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
 
   const [selectedZone, setSelectedZone] = useState<MapUdrZoneWithTranslationProps | null>(null)
   const handleZoneChange = useCallback(
@@ -32,9 +31,9 @@ const LocationMapScreen = () => {
   const [centerCoordinate, setCenterCoordinate] = useState(location)
 
   const onLocationSelect = useCallback(() => {
-    if (centerCoordinate) setState({ location: centerCoordinate })
+    if (centerCoordinate) setOffenceState({ location: centerCoordinate })
     router.back()
-  }, [centerCoordinate, setState])
+  }, [centerCoordinate, setOffenceState])
 
   return (
     <View className="flex-1 items-stretch">
@@ -48,14 +47,12 @@ const LocationMapScreen = () => {
         />
       ) : null}
 
-      <Portal hostName="locationIndex">
-        <LocationMapBottomSheet
-          isDisabled={role?.actions.zone ? !selectedZone : false}
-          onPress={onLocationSelect}
-          ref={zoneBottomSheetRef}
-          setFlyToCenter={mapRef.current?.setFlyToCenter}
-        />
-      </Portal>
+      <LocationMapBottomSheet
+        isDisabled={role?.actions.zone ? !selectedZone : false}
+        onPress={onLocationSelect}
+        ref={zoneBottomSheetRef}
+        setFlyToCenter={mapRef.current?.setFlyToCenter}
+      />
     </View>
   )
 }

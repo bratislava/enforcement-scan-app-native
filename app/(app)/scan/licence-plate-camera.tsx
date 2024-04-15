@@ -23,7 +23,7 @@ const LicencePlateCameraComp = () => {
   const { top } = useSafeAreaInsets()
 
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
 
   useCameraPermission({ autoAsk: true })
 
@@ -43,10 +43,14 @@ const LicencePlateCameraComp = () => {
 
     const photo = await ref.current?.takePictureAsync()
 
-    if (!photo) return
+    if (!photo) {
+      setIsLoading(false)
+
+      return
+    }
 
     const ecv = await scanLicencePlate(photo)
-    setState({ ecv })
+    setOffenceState({ ecv })
     setIsLoading(false)
     console.log('Time function took in seconds:', (Date.now() - date.getTime()) / 1000)
   }
@@ -73,7 +77,7 @@ const LicencePlateCameraComp = () => {
         }
         licencePlate={generatedEcv}
         takePicture={takePicture}
-        onChangeLicencePlate={(ecv) => setState({ ecv })}
+        onChangeLicencePlate={(ecv) => setOffenceState({ ecv })}
       />
     </ScreenView>
   )

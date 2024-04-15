@@ -6,7 +6,7 @@ import {
 } from '@/modules/backend/openapi-generated'
 
 export type RoleKeyType = 'paas' | 'municipal-police' | 'petrzalka' | 'research'
-export type ActionKeyType = 'zone' | 'offence' | 'scanCheck' | 'subjective' | 'paasOffenceTypes'
+export type ActionKeyType = 'zone' | 'offence' | 'scanCheck' | 'subjective'
 
 export type RoleItem = {
   icon: IconName
@@ -14,13 +14,10 @@ export type RoleItem = {
   title: string
   description: string
   scanReason: ScanReasonEnum
+  resolutionTypes?: ResolutionOffenceTypeEnum[]
+  offenceTypes?: OffenceTypeEnum[]
   actions: { [key in ActionKeyType]?: boolean }
 }
-
-export const paasOffenceTypes: OffenceTypeEnum[] = [OffenceTypeEnum.A, OffenceTypeEnum.B]
-export const paasResolutionTypes: ResolutionOffenceTypeEnum[] = [
-  ResolutionOffenceTypeEnum.ForwardedToDi,
-]
 
 export const ROLES: RoleItem[] = [
   {
@@ -32,8 +29,9 @@ export const ROLES: RoleItem[] = [
       zone: true,
       offence: true,
       scanCheck: true,
-      paasOffenceTypes: true,
     },
+    resolutionTypes: [ResolutionOffenceTypeEnum.ForwardedToDi],
+    offenceTypes: [OffenceTypeEnum.N, OffenceTypeEnum.O],
     scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
   {
@@ -55,6 +53,8 @@ export const ROLES: RoleItem[] = [
     actions: {
       offence: true,
     },
+    resolutionTypes: [ResolutionOffenceTypeEnum.ForwardedToDi],
+    offenceTypes: [OffenceTypeEnum.N, OffenceTypeEnum.T],
     scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
   {

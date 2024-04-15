@@ -15,7 +15,7 @@ type Props = {
 
 const MapCamera = forwardRef<Camera, Props>(({ cameraZoom, flyToCenter, setFlyToCenter }, ref) => {
   const [location] = useLocation()
-  const [localFlyToCenter, setLocalFlyToCenter] = useState<Position | null>()
+  const [localFlyToCenter, setLocalFlyToCenter] = useState<Position>()
   const [isInitialized, setIsInitialized] = useState(false)
 
   const cameraPadding: CameraPadding = useMemo(() => {
@@ -43,7 +43,7 @@ const MapCamera = forwardRef<Camera, Props>(({ cameraZoom, flyToCenter, setFlyTo
       setIsInitialized(true)
       setLocalFlyToCenter(MAP_CENTER)
     } else if (!flyToCenter) {
-      setLocalFlyToCenter(null)
+      setLocalFlyToCenter(undefined)
     }
   }, [flyToCenter, isInitialized, localFlyToCenter])
 
@@ -53,7 +53,7 @@ const MapCamera = forwardRef<Camera, Props>(({ cameraZoom, flyToCenter, setFlyTo
       followUserLocation={false}
       animationMode="flyTo"
       zoomLevel={cameraZoom ?? (flyToCenter ? 15 : 11.5)}
-      centerCoordinate={localFlyToCenter ?? undefined}
+      centerCoordinate={localFlyToCenter}
       maxBounds={CITY_BOUNDS}
       padding={cameraPadding}
     />

@@ -1,5 +1,3 @@
-import 'core-js/stable/atob'
-
 import { createContext, PropsWithChildren } from 'react'
 
 import { useProcessedArcgisData } from '@/modules/map/hooks/useProcessedArcgisData'

@@ -24,7 +24,7 @@ const requiredText = 'Toto pole je povinné'
 const OffencePage = () => {
   const { ecv, offenceType, roleKey, resolutionType, isObjectiveResponsibility, location } =
     useOffenceStoreContext((state) => state)
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
   const [currentLocation] = useLocation()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -48,11 +48,11 @@ const OffencePage = () => {
 
   useEffect(() => {
     if (currentLocation?.coords && !location) {
-      setState({
+      setOffenceState({
         location: { lat: currentLocation.coords.latitude, long: currentLocation.coords.longitude },
       })
     }
-  }, [currentLocation, location, setState])
+  }, [currentLocation, location, setOffenceState])
 
   return (
     <ScreenView title="Hlásenie priestupku" className="flex-1 justify-start">
@@ -62,7 +62,7 @@ const OffencePage = () => {
             <TextInput
               value={ecv}
               isDisabled={!!role?.actions.scanCheck}
-              onChangeText={(value) => setState({ ecv: value })}
+              onChangeText={(value) => setOffenceState({ ecv: value })}
             />
           </Field>
 
@@ -106,9 +106,9 @@ const OffencePage = () => {
             disabled={!role?.actions.subjective}
             label="Objektívna zodpovednosť"
             onValueChange={() =>
-              setState({ isObjectiveResponsibility: !isObjectiveResponsibility })
+              setOffenceState({ isObjectiveResponsibility: !isObjectiveResponsibility })
             }
-            value={!!isObjectiveResponsibility}
+            value={isObjectiveResponsibility}
           />
 
           <ContinueButton loading={isSubmitting} disabled={isSubmitting} onPress={onSubmit} />

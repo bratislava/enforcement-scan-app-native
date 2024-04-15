@@ -16,7 +16,7 @@ import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 const ASPECT_RATIO = 16 / 9
 
 const AppRoute = () => {
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
   const zonePhoto = useOffenceStoreContext((state) => state.zonePhoto)
   const udrUuid = useOffenceStoreContext((state) => state.zone?.udrUuid)
 
@@ -58,7 +58,7 @@ const AppRoute = () => {
         tag: udrUuid!,
       })
 
-      setState({ zonePhoto: photoResponse.data })
+      setOffenceState({ zonePhoto: photoResponse.data })
     } catch (error) {
       console.log(error)
     }
@@ -82,7 +82,7 @@ const AppRoute = () => {
 
       <CameraBottomSheet
         hasPhoto={!!zonePhoto}
-        retakePicture={() => setState({ zonePhoto: undefined })}
+        retakePicture={() => setOffenceState({ zonePhoto: undefined })}
         selectPicture={() => router.push('/scan/licence-plate-camera')}
         flashMode={flashMode}
         isLoading={loading}
