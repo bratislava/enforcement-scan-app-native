@@ -89,13 +89,14 @@ const LocationMap = forwardRef(
             // the shape cannot be null or undefined, but we must render the ShapeSource, because if it is rendered later the z-index breaks
             shape={selectedPolygon ?? { coordinates: [], type: 'Polygon' }}
           >
-            <FillLayer id="highlight" style={udrStyles.zoneFillSelected} />
-            <LineLayer id="higlight-lines" style={udrStyles.lineSelected} />
+            <FillLayer id="highlight-background" style={udrStyles.zoneFillSelected} />
+            <LineLayer id="highlight-lines" style={udrStyles.lineSelected} />
           </ShapeSource>
 
           <UserLocation androidRenderMode="gps" visible minDisplacement={3} animated />
         </MapView>
 
+        {/* MapPin is always shown as selected when user doesn't have zones shown  */}
         <MapPin isZoneSelected={role?.actions.zone ? !!selectedZone : true} />
       </>
     ) : null

@@ -14,7 +14,7 @@ type Props = {
 }
 
 const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
 
   if (selectedZone) {
     return (
@@ -33,7 +33,7 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
         <Link
           asChild
           href="/zone/photo"
-          onPress={() => setState({ zone: selectedZone, zonePhoto: undefined })}
+          onPress={() => setOffenceState({ zone: selectedZone, zonePhoto: undefined })}
         >
           <ContinueButton />
         </Link>
@@ -42,6 +42,7 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
   }
 
   return (
+    // height needs to be fixed because the dynamic bottom sheet height is shrunk
     <Panel className="min-h-[56px] bg-warning-light g-2">
       <Typography>Nie je zvolená zóna</Typography>
     </Panel>

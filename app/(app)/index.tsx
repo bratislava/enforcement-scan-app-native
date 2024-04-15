@@ -13,12 +13,12 @@ import { getDefaultOffenceStateByRole } from '@/state/OffenceStore/getDefaultOff
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const AppRoute = () => {
-  const setState = useSetOffenceState()
+  const { resetOffenceState } = useSetOffenceState()
   const signOut = useSignOut()
   const { user } = useAuthStoreContext()
 
   const handlePressRole = (role: RoleItem) => () => {
-    setState(getDefaultOffenceStateByRole(role.key), { merge: false })
+    resetOffenceState(getDefaultOffenceStateByRole(role.key))
     router.push(role.actions.zone ? '/zone' : '/scan/licence-plate-camera')
   }
 

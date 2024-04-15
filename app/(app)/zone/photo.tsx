@@ -15,7 +15,7 @@ import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const ZonePhotoPage = () => {
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavoritePhotosOptions())
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
 
   const udrUuid = useOffenceStoreContext((state) => state.zone?.udrUuid)
 
@@ -44,7 +44,7 @@ const ZonePhotoPage = () => {
             name="add"
             accessibilityLabel="Nastavenia"
             onPress={() => {
-              setState({ zonePhoto: undefined })
+              setOffenceState({ zonePhoto: undefined })
               router.push(zonePhotoCameraPath)
             }}
           />
@@ -61,7 +61,7 @@ const ZonePhotoPage = () => {
             key={item.id}
             className="w-full items-center justify-center bg-dark-light"
             onPress={() => {
-              setState({ zonePhoto: item })
+              setOffenceState({ zonePhoto: item })
 
               router.push(zonePhotoCameraPath)
             }}
