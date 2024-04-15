@@ -43,7 +43,11 @@ const LicencePlateCameraComp = () => {
 
     const photo = await ref.current?.takePictureAsync()
 
-    if (!photo) return
+    if (!photo) {
+      setIsLoading(false)
+
+      return
+    }
 
     const ecv = await scanLicencePlate(photo)
     setOffenceState({ ecv })
