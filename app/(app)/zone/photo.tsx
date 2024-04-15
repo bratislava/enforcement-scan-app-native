@@ -1,5 +1,5 @@
 import { FlashList } from '@shopify/flash-list'
-import { router } from 'expo-router'
+import { Redirect, router } from 'expo-router'
 import { Image, View } from 'react-native'
 
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
@@ -12,6 +12,8 @@ import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryPara
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
+
+const ZONE_PHOTO_CAMERA_ROUTE = '/zone/photo-camera'
 
 const ZonePhotoPage = () => {
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavouritePhotosOptions())
@@ -29,10 +31,8 @@ const ZonePhotoPage = () => {
 
   const selectedZonePhotos = data.photos.filter((photo) => photo.tag === udrUuid)
 
-  const zonePhotoCameraPath = '/zone/photo-camera'
-
   if (selectedZonePhotos.length === 0) {
-    router.replace(zonePhotoCameraPath)
+    return <Redirect href={ZONE_PHOTO_CAMERA_ROUTE} />
   }
 
   return (
@@ -45,7 +45,7 @@ const ZonePhotoPage = () => {
             accessibilityLabel="Nastavenia"
             onPress={() => {
               setOffenceState({ zonePhoto: undefined })
-              router.push(zonePhotoCameraPath)
+              router.push(ZONE_PHOTO_CAMERA_ROUTE)
             }}
           />
         ),
@@ -63,7 +63,7 @@ const ZonePhotoPage = () => {
             onPress={() => {
               setOffenceState({ zonePhoto: item })
 
-              router.push(zonePhotoCameraPath)
+              router.push(ZONE_PHOTO_CAMERA_ROUTE)
             }}
           >
             <Image
