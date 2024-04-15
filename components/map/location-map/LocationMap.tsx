@@ -96,8 +96,7 @@ const LocationMap = forwardRef(
           <UserLocation androidRenderMode="gps" visible minDisplacement={3} animated />
         </MapView>
 
-        {/* MapPin is always shown as selected when user doesn't have zones shown  */}
-        <MapPin isZoneSelected={role?.actions.zone ? !!selectedZone : true} />
+        <MapPin showFullPin={role?.actions.zone ? !!selectedZone : true} />
       </>
     ) : null
   },
