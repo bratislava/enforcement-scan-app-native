@@ -2,8 +2,8 @@ import { router, useLocalSearchParams } from 'expo-router'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
+import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import ScreenViewCentered from '@/components/screen-layout/ScreenViewCentered'
-import { useSnackbar } from '@/components/screen-layout/Snackbar/useSnackbar'
 import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 
 type ScanResultSearchParams = {
@@ -47,13 +47,9 @@ const getResultVariant = (result?: ScanResultEnum) => {
 // TODO - texts
 const ScanResultPage = () => {
   const { scanResult } = useLocalSearchParams<ScanResultSearchParams>()
-  const snackbar = useSnackbar()
 
   if (!scanResult) {
-    snackbar.show('Nepodarilo sa načítať výsledok skenovania')
-    router.back()
-
-    return null
+    return <ErrorScreen text="Nepodarilo sa načítať výsledok skenovania" />
   }
 
   return (
