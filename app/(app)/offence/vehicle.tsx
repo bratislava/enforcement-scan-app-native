@@ -1,3 +1,4 @@
+import { isAxiosError } from 'axios'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ScrollView } from 'react-native'
@@ -37,7 +38,7 @@ const Page = () => {
   const { ecv, vehicleColor, vehicleBrand, vehicleType, vehicleId } = useOffenceStoreContext(
     (state) => state,
   )
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
@@ -48,19 +49,20 @@ const Page = () => {
 
   useEffect(() => {
     if (data?.items.length === 1 && !vehicleId) {
-      setState({ vehicleId: data.items[0].vehicleId })
+      setOffenceState({ vehicleId: data.items[0].vehicleId })
     }
-  }, [data, setState, vehicleId])
+  }, [data, setOffenceState, vehicleId])
 
   if (isPending) {
     return <LoadingScreen title="Detail vozidla" asScreenView />
   }
 
-  if (isError) {
+  if (isError && isAxiosError(error) && error.response?.status !== 404) {
     return <ErrorScreen text={error?.message} />
   }
 
   const onSubmit = async () => {
+    router.push('/offence/photos')
     setIsSubmitting(true)
     setIsTouched(true)
 
@@ -69,8 +71,6 @@ const Page = () => {
 
       return
     }
-
-    router.push('/offence/photos')
 
     setIsSubmitting(false)
   }
@@ -85,14 +85,14 @@ const Page = () => {
     <ScreenView title="Detail vozidla" className="flex-1 justify-start">
       <ScrollView alwaysBounceHorizontal={false}>
         <ScreenContent>
-          {data.items.length > 0
+          {data?.items.length
             ? data.items.map((vehicle) => (
                 <VehicleTile
                   key={vehicle.vehicleId}
                   {...vehicle}
                   isSelected={vehicle.vehicleId === vehicleId}
                   onPress={() => {
-                    setState({ vehicleId: vehicle.vehicleId })
+                    setOffenceState({ vehicleId: vehicle.vehicleId })
                   }}
                 />
               ))
@@ -105,14 +105,14 @@ const Page = () => {
                   <TextInput
                     hasError={isTouched && !vehicleDataMap[key]}
                     value={vehicleDataMap[key]}
-                    onChangeText={(value) => setState({ [key]: value })}
+                    onChangeText={(value) => setOffenceState({ [key]: value })}
                   />
                 </Field>
               ))}
 
           <ContinueButton
             loading={isSubmitting}
-            disabled={isSubmitting || (data.items.length > 0 && !vehicleId)}
+            disabled={isSubmitting || (!!data?.items.length && !vehicleId)}
             onPress={onSubmit}
           />
         </ScreenContent>
