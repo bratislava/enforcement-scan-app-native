@@ -11,9 +11,9 @@ const PIN_WIDTH = 56
 const PIN_HEIGHT = 98
 
 const MapPin = ({ showFullPin }: Props) => {
-  const screenCenter = useMapCenter()
+  const screenCenter = useMapCenter({ safeArea: true })
   const position = {
-    top: screenCenter.top - PIN_HEIGHT + 4,
+    top: screenCenter.top - PIN_HEIGHT,
     left: screenCenter.left - PIN_WIDTH / 2,
   }
   const pinSize = { width: PIN_WIDTH, height: PIN_HEIGHT }
