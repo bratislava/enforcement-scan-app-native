@@ -1,10 +1,8 @@
 import { isAxiosError } from 'axios'
-import { router } from 'expo-router'
+import { Redirect, router } from 'expo-router'
 import { useEffect } from 'react'
 import { ScrollView } from 'react-native'
 
-import Field from '@/components/inputs/Field'
-import TextInput from '@/components/inputs/TextInput'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
@@ -16,25 +14,8 @@ import { getVehiclePropertiesOptions } from '@/modules/backend/constants/queryPa
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
-const vehicleFields = [
-  {
-    label: 'Značka',
-    key: 'vehicleBrand',
-  },
-  {
-    label: 'Typ',
-    key: 'vehicleType',
-  },
-  {
-    label: 'Farba',
-    key: 'vehicleColor',
-  },
-] as const
-
 const Page = () => {
-  const { ecv, vehicleColor, vehicleBrand, vehicleType, vehicleId } = useOffenceStoreContext(
-    (state) => state,
-  )
+  const { ecv, vehicleId } = useOffenceStoreContext((state) => state)
   const { setOffenceState } = useSetOffenceState()
 
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(
@@ -42,10 +23,10 @@ const Page = () => {
   )
 
   useEffect(() => {
-    if (data?.items.length === 1 && !vehicleId) {
+    if (data?.items.length === 1) {
       setOffenceState({ vehicleId: data.items[0].vehicleId })
     }
-  }, [data, setOffenceState, vehicleId])
+  }, [data, setOffenceState])
 
   if (isPending) {
     return <LoadingScreen title="Detail vozidla" asScreenView />
@@ -55,35 +36,28 @@ const Page = () => {
     return <ErrorScreen text={error?.message} />
   }
 
-  const vehicleDataMap = {
-    vehicleColor,
-    vehicleBrand,
-    vehicleType,
+  if (!data || data?.items.length === 0) {
+    return (
+      <ScreenView title="Detail vozidla">
+        <Redirect href="/offence/photos/library" />
+      </ScreenView>
+    )
   }
 
   return (
     <ScreenView title="Detail vozidla" className="flex-1 justify-start">
       <ScrollView alwaysBounceHorizontal={false}>
         <ScreenContent>
-          {data?.items.length
-            ? data.items.map((vehicle) => (
-                <VehicleTile
-                  key={vehicle.vehicleId}
-                  {...vehicle}
-                  isSelected={vehicle.vehicleId === vehicleId}
-                  onPress={() => {
-                    setOffenceState({ vehicleId: vehicle.vehicleId })
-                  }}
-                />
-              ))
-            : vehicleFields.map(({ key, label }) => (
-                <Field key={key} label={label}>
-                  <TextInput
-                    value={vehicleDataMap[key]}
-                    onChangeText={(value) => setOffenceState({ [key]: value })}
-                  />
-                </Field>
-              ))}
+          {data.items.map((vehicle) => (
+            <VehicleTile
+              key={vehicle.vehicleId}
+              {...vehicle}
+              isSelected={vehicle.vehicleId === vehicleId}
+              onPress={() => {
+                setOffenceState({ vehicleId: vehicle.vehicleId })
+              }}
+            />
+          ))}
 
           <ContinueButton onPress={() => router.push('/offence/photos')} />
         </ScreenContent>
