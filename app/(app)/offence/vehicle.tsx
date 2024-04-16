@@ -1,6 +1,6 @@
 import { isAxiosError } from 'axios'
 import { router } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { ScrollView } from 'react-native'
 
 import Field from '@/components/inputs/Field'
@@ -15,9 +15,6 @@ import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
 import { getVehiclePropertiesOptions } from '@/modules/backend/constants/queryParams'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
-
-// TODO - move to translations JSON after this feature is added
-const requiredText = 'Toto pole je povinné'
 
 const vehicleFields = [
   {
@@ -40,9 +37,6 @@ const Page = () => {
   )
   const { setOffenceState } = useSetOffenceState()
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isTouched, setIsTouched] = useState(false)
-
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(
     getVehiclePropertiesOptions(ecv),
   )
@@ -59,20 +53,6 @@ const Page = () => {
 
   if (isError && isAxiosError(error) && error.response?.status !== 404) {
     return <ErrorScreen text={error?.message} />
-  }
-
-  const onSubmit = async () => {
-    router.push('/offence/photos')
-    setIsSubmitting(true)
-    setIsTouched(true)
-
-    if (data?.items.length ? !(vehicleBrand && vehicleColor && vehicleType) : !vehicleId) {
-      setIsSubmitting(false)
-
-      return
-    }
-
-    setIsSubmitting(false)
   }
 
   const vehicleDataMap = {
@@ -97,24 +77,15 @@ const Page = () => {
                 />
               ))
             : vehicleFields.map(({ key, label }) => (
-                <Field
-                  key={key}
-                  label={label}
-                  errorMessage={isTouched && !vehicleDataMap[key] ? requiredText : undefined}
-                >
+                <Field key={key} label={label}>
                   <TextInput
-                    hasError={isTouched && !vehicleDataMap[key]}
                     value={vehicleDataMap[key]}
                     onChangeText={(value) => setOffenceState({ [key]: value })}
                   />
                 </Field>
               ))}
 
-          <ContinueButton
-            loading={isSubmitting}
-            disabled={isSubmitting || (!!data?.items.length && !vehicleId)}
-            onPress={onSubmit}
-          />
+          <ContinueButton onPress={() => router.push('/offence/photos')} />
         </ScreenContent>
       </ScrollView>
     </ScreenView>
