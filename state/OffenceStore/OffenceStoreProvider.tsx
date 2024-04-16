@@ -1,3 +1,4 @@
+import { CameraCapturedPicture } from 'expo-camera'
 import { createContext, ReactNode, useRef } from 'react'
 
 import { OffenceTypeEnum, ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
@@ -32,9 +33,7 @@ export type OffenceState = {
 
   // vehicle data
   vehicleId?: number
-  vehicleType?: string
-  vehicleBrand?: string
-  vehicleColor?: string
+  photos: CameraCapturedPicture[]
 }
 
 export const OffenceStoreContext = createContext<Store<OffenceState>>(
