@@ -15,11 +15,11 @@ const Page = () => {
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const role = getRoleByKey(roleKey)
 
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
 
   const onOffenceTypeChange = async (newOffenceType: OffenceTypeEnum) => {
     if (newOffenceType !== offenceType) {
-      setState({ offenceType: newOffenceType })
+      setOffenceState({ offenceType: newOffenceType })
     }
 
     if (router.canGoBack()) {

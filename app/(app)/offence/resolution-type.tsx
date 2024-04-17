@@ -15,11 +15,11 @@ const Page = () => {
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const role = getRoleByKey(roleKey)
 
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
 
   const onResultTypeChange = async (newResolutionType: ResolutionOffenceTypeEnum) => {
     if (newResolutionType !== resolutionType) {
-      setState({ resolutionType: newResolutionType })
+      setOffenceState({ resolutionType: newResolutionType })
     }
 
     if (router.canGoBack()) {

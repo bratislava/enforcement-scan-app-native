@@ -35,23 +35,34 @@ export const useCameraChangeHandler = ({
   onCenterChange,
 }: Dependencies) => {
   const { scale } = useWindowDimensions()
-  const screenCenter = useMapCenter({ scale: Platform.OS === 'android' })
+  // screen center is needed to get coordinates of the center of the map
+  const screenCenter = useMapCenter({ safeArea: true })
+  // scaled center is needed to query features at the center of the map
+  const scaledCenter = useMapCenter({ safeArea: true, scale: Platform.OS === 'android' })
   const [lastCenter, setLastCenter] = useState<number[]>([0, 0])
   const getCurrentPolygon = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async (state: MapState) => {
       const rectSize = (QUERY_RECT_SIZE / 2) * (Platform.OS === 'android' ? scale : 1)
       const rectHalfSize = interpolate(state.properties.zoom, [13.5, 15], [0, rectSize])
+      // this feature needs scaled center on android to be calculated correctly
       const featuresAtCenter = await map?.queryRenderedFeaturesInRect(
         [
-          screenCenter.top + rectHalfSize,
-          screenCenter.left + rectHalfSize,
-          screenCenter.top - rectHalfSize,
-          screenCenter.left - rectHalfSize,
+          scaledCenter.top + rectHalfSize,
+          scaledCenter.left + rectHalfSize,
+          scaledCenter.top - rectHalfSize,
+          scaledCenter.left - rectHalfSize,
         ],
         null,
         ['udrFill', 'udrFill2'],
       )
+
+      // this feature needs screen center that is not scaled to be calculated correctly
+      const point = await map?.getCoordinateFromView([screenCenter.left, screenCenter.top])
+
+      if (point) onCenterChange?.(point)
+      else onCenterChange?.(state.properties.center)
+
       if (!featuresAtCenter?.features?.length) {
         setSelectedPolygon(null)
       } else if (isMapPinShown) {
@@ -61,7 +72,16 @@ export const useCameraChangeHandler = ({
         }
       }
     },
-    [screenCenter, isMapPinShown, selectedPolygon, map, setSelectedPolygon, scale],
+    [
+      scale,
+      map,
+      scaledCenter,
+      screenCenter,
+      onCenterChange,
+      isMapPinShown,
+      setSelectedPolygon,
+      selectedPolygon?.properties.id,
+    ],
   )
 
   const debouncedHandleCameraChange = useDebouncedCallback((state: MapState) => {
@@ -81,7 +101,6 @@ export const useCameraChangeHandler = ({
       ) {
         return
       }
-      onCenterChange?.(state.properties.center)
       setLastCenter(state.properties.center)
       resetFlyToCenterHandler()
       if (!Keyboard.isVisible()) {
@@ -99,7 +118,6 @@ export const useCameraChangeHandler = ({
       lastCenter,
       onStateChange,
       resetFlyToCenterHandler,
-      onCenterChange,
     ],
   )
 }

@@ -150,7 +150,7 @@ const Map = forwardRef(
           <UserLocation androidRenderMode="gps" visible minDisplacement={3} animated />
         </MapView>
 
-        {isMapPinShown && <MapPin isZoneSelected={!!selectedZone} />}
+        {isMapPinShown && <MapPin showFullPin={!!selectedZone} />}
 
         <Portal hostName="mapRightBox">
           <CompassButton heading={mapHeading} />
