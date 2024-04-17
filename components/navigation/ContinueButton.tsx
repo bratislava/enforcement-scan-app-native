@@ -2,6 +2,7 @@ import { forwardRef } from 'react'
 import { View } from 'react-native'
 
 import Button, { ButtonProps } from '@/components/shared/Button'
+import { useTranslation } from '@/hooks/useTranslations'
 
 type ContinueButtonProps = Omit<ButtonProps, 'children'> & {
   children?: string
@@ -12,9 +13,11 @@ type ContinueButtonProps = Omit<ButtonProps, 'children'> & {
  */
 const ContinueButton = forwardRef<View, ContinueButtonProps>(
   ({ children, variant, ...rest }, ref) => {
+    const t = useTranslation('Common')
+
     return (
       <Button ref={ref} variant={variant ?? 'primary'} {...rest}>
-        {children ?? 'Pokračovať'}
+        {children ?? t('continue')}
       </Button>
     )
   },

@@ -1,4 +1,5 @@
 import '../global.css'
+import '../i18n.config.js'
 
 /* eslint-disable babel/camelcase */
 import {

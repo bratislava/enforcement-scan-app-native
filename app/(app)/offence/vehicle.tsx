@@ -10,11 +10,13 @@ import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import VehicleTile from '@/components/tiles/VehicleTile'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
+import { useTranslation } from '@/hooks/useTranslations'
 import { getVehiclePropertiesOptions } from '@/modules/backend/constants/queryParams'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const Page = () => {
+  const t = useTranslation('VehicleDetailScreen')
   const { ecv, vehicleId } = useOffenceStoreContext((state) => state)
   const { setOffenceState } = useSetOffenceState()
 
@@ -29,7 +31,7 @@ const Page = () => {
   }, [data, setOffenceState])
 
   if (isPending) {
-    return <LoadingScreen title="Detail vozidla" asScreenView />
+    return <LoadingScreen title={t('title')} asScreenView />
   }
 
   if (isError && isAxiosError(error) && error.response?.status !== 404) {
@@ -38,14 +40,14 @@ const Page = () => {
 
   if (!data || data?.items.length === 0) {
     return (
-      <ScreenView title="Detail vozidla">
+      <ScreenView title={t('title')}>
         <Redirect href="/offence/photos/library" />
       </ScreenView>
     )
   }
 
   return (
-    <ScreenView title="Detail vozidla" className="flex-1 justify-start">
+    <ScreenView title={t('title')} className="flex-1 justify-start">
       <ScrollView alwaysBounceHorizontal={false}>
         <ScreenContent>
           {data.items.map((vehicle) => (

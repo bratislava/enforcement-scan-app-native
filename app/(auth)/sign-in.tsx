@@ -6,12 +6,14 @@ import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DissmissKeyboard'
 import Typography from '@/components/shared/Typography'
+import { useTranslation } from '@/hooks/useTranslations'
 import { useSignIn } from '@/modules/auth/hooks/useSignIn'
 
 // https://docs.expo.dev/guides/authentication/#azure
 WebBrowser.maybeCompleteAuthSession()
 
 const Page = () => {
+  const t = useTranslation('LoginScreen')
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState(false)
   const { isReady, signIn } = useSignIn()
@@ -28,7 +30,7 @@ const Page = () => {
 
   return (
     <DismissKeyboard>
-      <ScreenView title="Prihláste sa">
+      <ScreenView title={t('title')}>
         <ScreenContent>
           {error?.message ? (
             <Typography className="py-4 text-negative">{error.message}</Typography>
@@ -38,7 +40,9 @@ const Page = () => {
             loading={isLoading}
             disabled={isLoading || !isReady}
             onPress={handleSignIn}
-          />
+          >
+            {t('button')}
+          </ContinueButton>
         </ScreenContent>
       </ScreenView>
     </DismissKeyboard>
