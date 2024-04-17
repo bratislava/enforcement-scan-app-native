@@ -19,7 +19,7 @@ const IconButton = forwardRef<View, Props>(
         hitSlop={hitSlop ?? 12}
         accessibilityLabel={accessibilityLabel}
         className={cn(
-          'self-start rounded-full',
+          'rounded-full',
           {
             'p-3': variant === 'dark' || variant === 'white-raised',
             'p-2.5': variant.includes('small'),

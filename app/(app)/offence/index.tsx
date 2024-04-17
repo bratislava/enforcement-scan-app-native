@@ -42,7 +42,7 @@ const OffencePage = () => {
       return
     }
 
-    router.push('/offence/confirm')
+    router.push('/offence/vehicle')
     setIsSubmitting(false)
   }
 

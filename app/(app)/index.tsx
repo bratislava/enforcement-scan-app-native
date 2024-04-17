@@ -2,10 +2,10 @@ import { FlashList } from '@shopify/flash-list'
 import { router } from 'expo-router'
 import { View } from 'react-native'
 
-import RoleTile from '@/components/RoleTile'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
+import RoleTile from '@/components/tiles/RoleTile'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
 import { useAuthStoreContext } from '@/modules/auth/state/useAuthStoreContext'
 import { RoleItem, ROLES } from '@/modules/backend/constants/roles'
@@ -32,14 +32,13 @@ const AppRoute = () => {
           <IconButton name="person" accessibilityLabel="Nastavenia" onPress={signOut} />
         ),
       }}
-      className="flex-1 justify-start"
     >
       <ScreenContent>
         <FlashList
           ItemSeparatorComponent={() => <View className="h-2" />}
           data={allowedRoles}
           renderItem={({ item }) => <RoleTile onPress={handlePressRole(item)} {...item} />}
-          estimatedItemSize={80}
+          estimatedItemSize={111}
         />
       </ScreenContent>
     </ScreenView>

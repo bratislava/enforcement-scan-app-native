@@ -2,6 +2,7 @@ import Mapbox from '@rnmapbox/maps'
 import { Redirect, Stack } from 'expo-router'
 import { useEffect, useState } from 'react'
 
+import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import CameraPermissionsBottomSheet from '@/components/special/CameraPermissionsBottomSheet'
 import LocationBottomSheet from '@/components/special/LocationPermissionsBottomSheet'
 import { environment } from '@/environment'
@@ -25,7 +26,7 @@ const RootLayout = () => {
 
   // Prevent rendering until the mapbox has loaded
   if (!mapboxLoaded) {
-    return null
+    return <LoadingScreen />
   }
 
   // let error boundary handle this
@@ -33,7 +34,7 @@ const RootLayout = () => {
     throw mapboxError
   }
 
-  if (isLoading) return null
+  if (isLoading) return <LoadingScreen />
 
   if (!user) {
     // On web, static rendering will stop here as the user is not authenticated

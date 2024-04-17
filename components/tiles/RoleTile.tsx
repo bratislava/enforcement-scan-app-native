@@ -18,10 +18,12 @@ const RoleTile = ({ title, description, icon, onPress }: Props) => (
     <Panel>
       <FlexRow className="items-center g-4">
         <Icon name={icon} />
+
         <View className="flex-1">
           <Typography variant="default-semibold">{title}</Typography>
           <Typography>{description}</Typography>
         </View>
+
         <Icon name="chevron-right" />
       </FlexRow>
     </Panel>
