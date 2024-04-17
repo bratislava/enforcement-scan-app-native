@@ -12,5 +12,13 @@
   "VehicleDetailScreen": {
     "title": "Detail vozidla",
     "button": "Zaplatiť pokutu"
+  },
+  "OffenceResultScreen": {
+    "home": "Domov",
+    "resultError": "Nepodarilo sa načítať výsledok",
+    "newScan": "Vytvoriť nový sken",
+    "newZone": "Vybrať novú zónu",
+    "description": "Hlásenie bolo úspešne vytvorené, môžete pokračovať ďalej.",
+    "title": "Hlásenie vytvorené"
   }
 }
