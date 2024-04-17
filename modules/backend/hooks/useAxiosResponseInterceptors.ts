@@ -51,6 +51,9 @@ export const useAxiosResponseInterceptors = () => {
         case 422:
           // the 422 errors are handled localy
           break
+        case 404:
+          // the 404 errors are handled localy
+          break
         case 424:
           if (errorName || message) {
             snackbarMessage = errorName && message

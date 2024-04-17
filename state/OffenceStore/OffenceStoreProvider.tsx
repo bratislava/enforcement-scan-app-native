@@ -2,6 +2,7 @@ import { createContext, ReactNode, useRef } from 'react'
 
 import { OffenceTypeEnum, ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
+import { defaultOffenceState } from '@/state/OffenceStore/constants'
 import { createStore, Store } from '@/utils/store'
 
 export type ZonePhoto = {
@@ -9,23 +10,28 @@ export type ZonePhoto = {
   photoUrl: string
 }
 
+export type PositionObject = {
+  lat: number
+  long: number
+}
+
 export type OffenceState = {
   roleKey?: string
   ecv?: string
-  zone?: MapUdrZoneWithTranslationProps
-  zonePhoto?: ZonePhoto
-  location?: {
-    lat: number
-    lon: number
-  }
+
+  // offence data
+  location?: PositionObject
   offencePhotos?: string[]
   offenceType?: OffenceTypeEnum
   resolutionType?: ResolutionOffenceTypeEnum
-  isObjectiveResponsibility?: boolean
-}
+  isObjectiveResponsibility: boolean
 
-export const defaultOffenceState: OffenceState = {
-  isObjectiveResponsibility: true,
+  // zone data
+  zone?: MapUdrZoneWithTranslationProps
+  zonePhoto?: ZonePhoto
+
+  // vehicle data
+  vehicleId?: number
 }
 
 export const OffenceStoreContext = createContext<Store<OffenceState>>(

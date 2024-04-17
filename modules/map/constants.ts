@@ -23,3 +23,5 @@ export const CITY_BOUNDS = {
   sw: [16.95716298676959, 48.02126829091361], // south-west corner
   ne: [17.28590508163896, 48.26473441916502], // north-east corner
 }
+export const MAP_STYLE_URL = 'mapbox://styles/inovaciebratislava/cl5teyncz000614o4le1p295o'
+export const LOCATION_PREVIEW_DEFAULT_ZOOM = 18

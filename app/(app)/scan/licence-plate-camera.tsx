@@ -18,19 +18,23 @@ const LicencePlateCameraComp = () => {
   const ref = useRef<Camera>(null)
   const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
   const { width } = useWindowDimensions()
+  const [isLoading, setIsLoading] = useState(false)
 
   const { top } = useSafeAreaInsets()
 
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
-  const setState = useSetOffenceState()
+  const { setOffenceState } = useSetOffenceState()
 
   useCameraPermission({ autoAsk: true })
 
-  const { scanLicencePlate, loading, checkEcv } = useScanLicencePlate()
+  const { scanLicencePlate, checkEcv } = useScanLicencePlate()
 
   const takePicture = async () => {
+    setIsLoading(true)
     if (generatedEcv) {
       await checkEcv(generatedEcv)
+
+      setIsLoading(false)
 
       return
     }
@@ -39,10 +43,15 @@ const LicencePlateCameraComp = () => {
 
     const photo = await ref.current?.takePictureAsync()
 
-    if (!photo) return
+    if (!photo) {
+      setIsLoading(false)
+
+      return
+    }
 
     const ecv = await scanLicencePlate(photo)
-    setState({ ecv })
+    setOffenceState({ ecv })
+    setIsLoading(false)
     console.log('Time function took in seconds:', (Date.now() - date.getTime()) / 1000)
   }
 
@@ -60,7 +69,7 @@ const LicencePlateCameraComp = () => {
       </Camera>
 
       <LicencePlateCameraBottomSheet
-        isLoading={loading}
+        isLoading={isLoading}
         flashMode={flashMode}
         toggleFlashlight={() =>
           // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
@@ -68,7 +77,7 @@ const LicencePlateCameraComp = () => {
         }
         licencePlate={generatedEcv}
         takePicture={takePicture}
-        onChangeLicencePlate={(ecv) => setState({ ecv })}
+        onChangeLicencePlate={(ecv) => setOffenceState({ ecv })}
       />
     </ScreenView>
   )

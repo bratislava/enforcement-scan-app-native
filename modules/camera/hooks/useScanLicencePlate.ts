@@ -4,7 +4,7 @@ import { CameraCapturedPicture } from 'expo-camera'
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator'
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -38,7 +38,6 @@ const biggestText = (ocr: TextRecognitionResult) => {
 }
 
 export const useScanLicencePlate = () => {
-  const [loading, setLoading] = useState(false)
   const { width } = useWindowDimensions()
   const { top } = useSafeAreaInsets()
 
@@ -99,8 +98,6 @@ export const useScanLicencePlate = () => {
   const scanLicencePlate = useCallback(
     async (photo: CameraCapturedPicture) => {
       try {
-        setLoading(true)
-
         const { originY, height } = getPhotoOriginY(photo.height)
 
         const croppedPhoto = await manipulateAsync(
@@ -118,17 +115,13 @@ export const useScanLicencePlate = () => {
         const newOcr = await TextRecognition.recognize(croppedPhoto.uri)
 
         if (newOcr) {
-          const ecv =
+          return (
             biggestText(newOcr)
               .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
               .replaceAll(/[^\dA-Z]/g, '') || 'BR222BB' // ECV is here for testing purposes
-
-          setLoading(false)
-
-          return ecv
+          )
         }
       } catch (error) {
-        setLoading(false)
         console.error('Error scanning licence plate', error)
       }
 
@@ -137,5 +130,5 @@ export const useScanLicencePlate = () => {
     [getPhotoOriginY],
   )
 
-  return { loading, checkEcv, scanLicencePlate }
+  return { checkEcv, scanLicencePlate }
 }

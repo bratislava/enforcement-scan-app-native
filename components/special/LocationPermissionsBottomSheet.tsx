@@ -23,7 +23,6 @@ const LocationBottomSheet = () => {
 
     const isEnabled = await Location.hasServicesEnabledAsync()
 
-    console.log(isEnabled)
     setIsLocationOn(isEnabled)
   }, [getLocationPermission, locationPermissionStatus])
 
@@ -62,8 +61,6 @@ const LocationBottomSheet = () => {
   useEffect(() => {
     reloadLocationStatus()
   }, [reloadLocationStatus])
-
-  console.log(locationPermissionStatus, isLocationOn)
 
   if (locationPermissionStatus === Location.PermissionStatus.GRANTED && isLocationOn) {
     return null

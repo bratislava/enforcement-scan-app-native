@@ -15,7 +15,7 @@ type Props = {
 
 const MapCamera = forwardRef<Camera, Props>(({ cameraZoom, flyToCenter, setFlyToCenter }, ref) => {
   const [location] = useLocation()
-  const [localFlyToCenter, setLocalFlyToCenter] = useState<Position | undefined>()
+  const [localFlyToCenter, setLocalFlyToCenter] = useState<Position>()
   const [isInitialized, setIsInitialized] = useState(false)
 
   const cameraPadding: CameraPadding = useMemo(() => {
@@ -42,6 +42,8 @@ const MapCamera = forwardRef<Camera, Props>(({ cameraZoom, flyToCenter, setFlyTo
     } else if (!isInitialized) {
       setIsInitialized(true)
       setLocalFlyToCenter(MAP_CENTER)
+    } else if (!flyToCenter) {
+      setLocalFlyToCenter(undefined)
     }
   }, [flyToCenter, isInitialized, localFlyToCenter])
 

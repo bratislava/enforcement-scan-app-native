@@ -5,8 +5,8 @@ import { View } from 'react-native'
 
 import Map, { MapRef } from '@/components/map/Map'
 import MapZoneBottomSheet from '@/components/map/MapZoneBottomSheet'
-import { useProcessedArcgisData } from '@/modules/map/hooks/useProcessedArcgisData'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
+import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 
 const MapScreen = () => {
   const zoneBottomSheetRef = useRef<BottomSheet>(null)
@@ -26,7 +26,7 @@ const MapScreen = () => {
     [setSelectedZone],
   )
 
-  const { isLoading, ...processedData } = useProcessedArcgisData()
+  const { isLoading, ...processedData } = useArcgisStoreContext()
 
   return (
     <View className="flex-1 items-stretch">
