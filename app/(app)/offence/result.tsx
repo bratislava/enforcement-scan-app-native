@@ -14,13 +14,13 @@ import { getDefaultOffenceStateByRole } from '@/state/OffenceStore/getDefaultOff
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
-type ScanResultSearchParams = {
+type OffenceResultSearchParams = {
   scanResult: ScanResultEnum
 }
 
 const OffenceResultPage = () => {
   const t = useTranslation('OffenceResultScreen')
-  const { scanResult } = useLocalSearchParams<ScanResultSearchParams>()
+  const { scanResult } = useLocalSearchParams<OffenceResultSearchParams>()
 
   const { resetOffenceState } = useSetOffenceState()
   const { roleKey, zonePhoto, zone, location } = useOffenceStoreContext((state) => state)
