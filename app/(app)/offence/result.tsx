@@ -21,6 +21,7 @@ type OffenceResultSearchParams = {
 
 const OffenceResultPage = () => {
   const { t } = useTranslation()
+
   const { scanResult } = useLocalSearchParams<OffenceResultSearchParams>()
 
   const { resetOffenceState } = useSetOffenceState()
