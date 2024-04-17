@@ -32,14 +32,13 @@ const AppRoute = () => {
           <IconButton name="person" accessibilityLabel="Nastavenia" onPress={signOut} />
         ),
       }}
-      className="flex-1 justify-start"
     >
       <ScreenContent>
         <FlashList
           ItemSeparatorComponent={() => <View className="h-2" />}
           data={allowedRoles}
           renderItem={({ item }) => <RoleTile onPress={handlePressRole(item)} {...item} />}
-          estimatedItemSize={80}
+          estimatedItemSize={111}
         />
       </ScreenContent>
     </ScreenView>
