@@ -32,9 +32,6 @@ export type OffenceState = {
 
   // vehicle data
   vehicleId?: number
-  vehicleType?: string
-  vehicleBrand?: string
-  vehicleColor?: string
 }
 
 export const OffenceStoreContext = createContext<Store<OffenceState>>(
