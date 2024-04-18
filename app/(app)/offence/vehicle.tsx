@@ -1,6 +1,7 @@
 import { isAxiosError } from 'axios'
 import { Redirect, router } from 'expo-router'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
@@ -10,13 +11,12 @@ import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import VehicleTile from '@/components/tiles/VehicleTile'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
-import { useTranslation } from '@/hooks/useTranslations'
 import { getVehiclePropertiesOptions } from '@/modules/backend/constants/queryParams'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const Page = () => {
-  const t = useTranslation('VehicleDetailScreen')
+  const { t } = useTranslation()
   const { ecv, vehicleId } = useOffenceStoreContext((state) => state)
   const { setOffenceState } = useSetOffenceState()
 
@@ -31,7 +31,7 @@ const Page = () => {
   }, [data, setOffenceState])
 
   if (isPending) {
-    return <LoadingScreen title={t('title')} asScreenView />
+    return <LoadingScreen title={t('vehicleDetail.title')} asScreenView />
   }
 
   if (isError && isAxiosError(error) && error.response?.status !== 404) {
@@ -40,14 +40,14 @@ const Page = () => {
 
   if (!data || data?.items.length === 0) {
     return (
-      <ScreenView title={t('title')}>
+      <ScreenView title={t('vehicleDetail.title')}>
         <Redirect href="/offence/photos/library" />
       </ScreenView>
     )
   }
 
   return (
-    <ScreenView title={t('title')} className="flex-1 justify-start">
+    <ScreenView title={t('vehicleDetail.title')} className="flex-1 justify-start">
       <ScrollView alwaysBounceHorizontal={false}>
         <ScreenContent>
           {data.items.map((vehicle) => (

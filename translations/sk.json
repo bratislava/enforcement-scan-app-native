@@ -1,16 +1,7 @@
 {
-  "Common": {
-    "continue": "Pokračovať"
-  },
-  "HomeScreen": {
-    "title": "Enforcement"
-  },
-  "LoginScreen": {
-    "title": "Prihlásenie",
-    "button": "Prihlásiť sa"
-  },
-  "VehicleDetailScreen": {
-    "title": "Detail vozidla",
-    "button": "Zaplatiť pokutu"
-  }
+  "common.continue": "Pokračovať",
+  "home.title": "Enforcement",
+  "signIn.loginButton": "Prihlásiť sa",
+  "signIn.title": "Prihlásenie",
+  "vehicleDetail.title": "Detail vozidla"
 }
