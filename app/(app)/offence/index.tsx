@@ -1,5 +1,6 @@
 import { Link, router } from 'expo-router'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
 
 import SelectButton from '@/components/inputs/SelectButton'
@@ -11,7 +12,6 @@ import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import Field from '@/components/shared/Field'
 import PressableStyled from '@/components/shared/PressableStyled'
-import { useTranslation } from '@/hooks/useTranslations'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
@@ -19,11 +19,8 @@ import { useLocation } from '@/modules/map/hooks/useLocation'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
-// TODO - move to translations JSON after this feature is added
-const requiredText = 'Toto pole je povinné'
-
 const OffencePage = () => {
-  const t = useTranslation('OffenceScreen')
+  const { t } = useTranslation()
 
   const { ecv, offenceType, roleKey, resolutionType, isObjectiveResponsibility, location } =
     useOffenceStoreContext((state) => state)
@@ -59,7 +56,7 @@ const OffencePage = () => {
 
   return (
     <ScreenView
-      title={t('title')}
+      title={t('offence.title')}
       className="flex-1 justify-start"
       actionButton={
         <ContinueButton loading={isSubmitting} disabled={isSubmitting} onPress={onSubmit} />
@@ -67,7 +64,7 @@ const OffencePage = () => {
     >
       <ScrollView alwaysBounceHorizontal={false}>
         <ScreenContent>
-          <Field label={t('vehicle')}>
+          <Field label={t('offence.vehicle')}>
             <TextInput
               value={ecv}
               isDisabled={!!role?.actions.scanCheck}
@@ -75,7 +72,7 @@ const OffencePage = () => {
             />
           </Field>
 
-          <Field label={t('location')}>
+          <Field label={t('offence.location')}>
             <PressableStyled
               onPress={() => {
                 router.push('/offence/location')
@@ -86,34 +83,34 @@ const OffencePage = () => {
           </Field>
 
           <Field
-            label={t('offenceType')}
-            errorMessage={isTouched && !offenceType ? requiredText : undefined}
+            label={t('offence.offenceType')}
+            errorMessage={isTouched && !offenceType ? t('offence.required') : undefined}
           >
             <Link asChild href="/offence/offence-type">
               <SelectButton
                 hasError={isTouched && !offenceType}
                 value={offenceType ? getOffenceTypeLabel(offenceType) : undefined}
-                placeholder={t('offenceTypePlaceholder')}
+                placeholder={t('offence.offenceTypePlaceholder')}
               />
             </Link>
           </Field>
 
           <Field
-            label={t('offenceResolution')}
-            errorMessage={isTouched && !resolutionType ? requiredText : undefined}
+            label={t('offence.offenceResolution')}
+            errorMessage={isTouched && !resolutionType ? t('offence.required') : undefined}
           >
             <Link asChild href="/offence/resolution-type">
               <SelectButton
                 hasError={isTouched && !resolutionType}
                 value={resolutionType ? getResolutionTypeLabel(resolutionType) : undefined}
-                placeholder={t('offenceResolutionPlaceholder')}
+                placeholder={t('offence.offenceResolutionPlaceholder')}
               />
             </Link>
           </Field>
 
           <SelectRow
             disabled={!role?.actions.subjective}
-            label={t('objectiveResponsibility')}
+            label={t('offence.objectiveResponsibility')}
             onValueChange={() =>
               setOffenceState({ isObjectiveResponsibility: !isObjectiveResponsibility })
             }

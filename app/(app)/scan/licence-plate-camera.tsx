@@ -1,11 +1,11 @@
 import { Camera, FlashMode } from 'expo-camera'
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useWindowDimensions, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
-import { useTranslation } from '@/hooks/useTranslations'
 import {
   CROPPED_PHOTO_HEIGHT,
   HEADER_WITH_PADDING,
@@ -16,7 +16,7 @@ import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreCont
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const LicencePlateCameraComp = () => {
-  const t = useTranslation('LicencePlateCameraScreen')
+  const { t } = useTranslation()
   const ref = useRef<Camera>(null)
   const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
   const { width } = useWindowDimensions()
@@ -58,7 +58,7 @@ const LicencePlateCameraComp = () => {
   }
 
   return (
-    <ScreenView title={t('title')} className="h-full flex-1 flex-col">
+    <ScreenView title={t('scanLicencePlate.title')} className="h-full flex-1 flex-col">
       <Camera ratio="16:9" ref={ref} style={{ height: (width * 16) / 9 }} flashMode={flashMode}>
         <View className="h-full w-full">
           <View

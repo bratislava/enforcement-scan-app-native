@@ -1,5 +1,6 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
 import FlashlightBottomSheetAttachment, {
@@ -11,7 +12,6 @@ import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/
 import Button from '@/components/shared/Button'
 import Field from '@/components/shared/Field'
 import IconButton from '@/components/shared/IconButton'
-import { useTranslation } from '@/hooks/useTranslations'
 
 type Props = FlashLightProps & {
   licencePlate?: string
@@ -27,7 +27,7 @@ const LicencePlateCameraBottomSheet = ({
   onChangeLicencePlate,
   ...rest
 }: Props) => {
-  const t = useTranslation('LicencePlateCameraScreen')
+  const { t } = useTranslation()
   const modalRef = useRef<BottomSheet>(null)
 
   const animatedPosition = useSharedValue(0)
@@ -40,7 +40,7 @@ const LicencePlateCameraBottomSheet = ({
         iconLeft={
           licencePlate ? (
             <IconButton
-              accessibilityLabel={t('retryScan')}
+              accessibilityLabel={t('scanLicencePlate.retryScan')}
               variant="white-raised"
               name="autorenew"
               onPress={() => onChangeLicencePlate('')}
@@ -60,14 +60,14 @@ const LicencePlateCameraBottomSheet = ({
           <Field label="EČV">
             <TextInput
               isInsideBottomSheet
-              accessibilityLabel={t('licencePlate')}
+              accessibilityLabel={t('scanLicencePlate.licencePlate')}
               value={licencePlate}
               onChangeText={onChangeLicencePlate}
             />
           </Field>
 
           <Button loading={isLoading} onPress={takePicture}>
-            {licencePlate ? t('next') : t('scan')}
+            {licencePlate ? t('scanLicencePlate.next') : t('scanLicencePlate.scan')}
           </Button>
         </BottomSheetContent>
       </BottomSheet>

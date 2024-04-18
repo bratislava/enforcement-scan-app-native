@@ -1,5 +1,6 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
 import FlashlightBottomSheetAttachment, {
@@ -9,7 +10,6 @@ import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAtta
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import Button from '@/components/shared/Button'
 import Typography from '@/components/shared/Typography'
-import { useTranslation } from '@/hooks/useTranslations'
 
 type Props = FlashLightProps & {
   isLoading: boolean
@@ -27,7 +27,7 @@ const CameraBottomSheet = ({
   retakePicture,
   ...rest
 }: Props) => {
-  const t = useTranslation('ZoneScreen')
+  const { t } = useTranslation()
   const modalRef = useRef<BottomSheet>(null)
 
   const animatedPosition = useSharedValue(0)
@@ -50,16 +50,16 @@ const CameraBottomSheet = ({
         <BottomSheetContent className="g-2">
           {hasPhoto ? (
             <>
-              <Typography variant="h2">{t('confirmTitle')}</Typography>
+              <Typography variant="h2">{t('zone.confirmTitle')}</Typography>
               <Button loading={isLoading} onPress={selectPicture}>
-                {t('confirm')}
+                {t('zone.confirm')}
               </Button>
             </>
           ) : (
             <>
-              <Typography variant="h2">{t('takePictureTitle')}</Typography>
+              <Typography variant="h2">{t('zone.takePictureTitle')}</Typography>
               <Button loading={isLoading} onPress={takePicture}>
-                {t('takePicture')}
+                {t('zone.takePicture')}
               </Button>
             </>
           )}

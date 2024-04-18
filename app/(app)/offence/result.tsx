@@ -1,5 +1,6 @@
 import { router, useLocalSearchParams, useNavigation } from 'expo-router'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
@@ -8,7 +9,6 @@ import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import ScreenViewCentered from '@/components/screen-layout/ScreenViewCentered'
 import IconButton from '@/components/shared/IconButton'
 import { useClearHistory } from '@/hooks/useClearHistory'
-import { useTranslation } from '@/hooks/useTranslations'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 import { getDefaultOffenceStateByRole } from '@/state/OffenceStore/getDefaultOffenceStateByRole'
@@ -20,7 +20,7 @@ type OffenceResultSearchParams = {
 }
 
 const OffenceResultPage = () => {
-  const t = useTranslation('OffenceResultScreen')
+  const { t } = useTranslation()
   const { scanResult } = useLocalSearchParams<OffenceResultSearchParams>()
 
   const { resetOffenceState } = useSetOffenceState()
@@ -33,7 +33,7 @@ const OffenceResultPage = () => {
   const headerRight = () => (
     <IconButton
       name="home"
-      accessibilityLabel={t('home')}
+      accessibilityLabel={t('offenceResult.home')}
       onPress={() => {
         router.replace('/')
         clearHistory()
@@ -69,7 +69,10 @@ const OffenceResultPage = () => {
 
   if (!(scanResult && role)) {
     return (
-      <ErrorScreen options={{ headerTransparent: true, headerRight }} text={t('resultError')} />
+      <ErrorScreen
+        options={{ headerTransparent: true, headerRight }}
+        text={t('offenceResult.resultError')}
+      />
     )
   }
 
@@ -93,17 +96,21 @@ const OffenceResultPage = () => {
       }}
       actionButton={
         <View className="g-2">
-          <ContinueButton onPress={router.back}>{t('newScan')}</ContinueButton>
+          <ContinueButton onPress={router.back}>{t('offenceResult.newScan')}</ContinueButton>
 
           {role?.actions.zone ? (
             <ContinueButton variant="secondary" onPress={onNewZonePress}>
-              {t('newZone')}
+              {t('offenceResult.newZone')}
             </ContinueButton>
           ) : null}
         </View>
       }
     >
-      <ContentWithAvatar variant="success" title={t('title')} text={t('description')} />
+      <ContentWithAvatar
+        variant="success"
+        title={t('offenceResult.title')}
+        text={t('offenceResult.description')}
+      />
     </ScreenViewCentered>
   )
 }
