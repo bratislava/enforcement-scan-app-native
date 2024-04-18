@@ -1,4 +1,5 @@
 import { router, useLocalSearchParams, useNavigation } from 'expo-router'
+import { useEffect } from 'react'
 import { View } from 'react-native'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
@@ -40,32 +41,48 @@ const OffenceResultPage = () => {
     />
   )
 
+  // Function to reset the navigation stack to the 'scan/licence-plate-camera' screen when going back (back button or swipe back)
+  useEffect(() => {
+    if (!(scanResult && role)) return () => {}
+
+    return navigation.addListener('beforeRemove', (e) => {
+      // prevents going back
+      e.preventDefault()
+
+      const state = navigation.getState()
+
+      const index = state.routes.findIndex((route) => route.name === 'scan/licence-plate-camera')
+      const currentRoute = state.routes[state.index]
+
+      // resets navigation to remove all the routes between the 'scan/licence-plate-camera' screen and the current screen
+      navigation.reset({
+        ...state,
+        index: index + 1,
+        routes: [...state.routes.slice(0, index + 1), currentRoute],
+      })
+      resetOffenceState({ ...getDefaultOffenceStateByRole(role.key), zone, zonePhoto, location })
+
+      // finally goes back
+      navigation.dispatch(e.data.action)
+    })
+  }, [location, navigation, resetOffenceState, role, scanResult, zone, zonePhoto])
+
   if (!(scanResult && role)) {
     return (
       <ErrorScreen options={{ headerTransparent: true, headerRight }} text={t('resultError')} />
     )
   }
 
-  // Function to reset the navigation stack to a specific route
-  const onBackToRoute = (name: string) => {
-    const state = navigation.getState()
+  const onNewZonePress = () => {
+    resetOffenceState(getDefaultOffenceStateByRole(role.key))
 
-    const index = state.routes.findIndex((route) => route.name === name)
+    const state = navigation.getState()
+    const index = state.routes.findIndex((route) => route.name === 'zone/index')
     navigation.reset({
       ...state,
       index,
       routes: state.routes.slice(0, index + 1),
     })
-  }
-
-  const onNewScanPress = () => {
-    resetOffenceState({ ...getDefaultOffenceStateByRole(role.key), zone, zonePhoto, location })
-    onBackToRoute('scan/licence-plate-camera')
-  }
-
-  const onNewZonePress = () => {
-    resetOffenceState(getDefaultOffenceStateByRole(role.key))
-    onBackToRoute('zone/index')
   }
 
   return (
@@ -76,7 +93,7 @@ const OffenceResultPage = () => {
       }}
       actionButton={
         <View className="g-2">
-          <ContinueButton onPress={onNewScanPress}>{t('newScan')}</ContinueButton>
+          <ContinueButton onPress={router.back}>{t('newScan')}</ContinueButton>
 
           {role?.actions.zone ? (
             <ContinueButton variant="secondary" onPress={onNewZonePress}>
