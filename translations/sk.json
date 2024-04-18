@@ -1,24 +1,13 @@
 {
-  "Common": {
-    "continue": "Pokračovať"
-  },
-  "HomeScreen": {
-    "title": "Enforcement"
-  },
-  "LoginScreen": {
-    "title": "Prihlásenie",
-    "button": "Prihlásiť sa"
-  },
-  "VehicleDetailScreen": {
-    "title": "Detail vozidla",
-    "button": "Zaplatiť pokutu"
-  },
-  "OffenceResultScreen": {
-    "home": "Domov",
-    "resultError": "Nepodarilo sa načítať výsledok",
-    "newScan": "Vytvoriť nový sken",
-    "newZone": "Vybrať novú zónu",
-    "description": "Hlásenie bolo úspešne vytvorené, môžete pokračovať ďalej.",
-    "title": "Hlásenie vytvorené"
-  }
+  "common.continue": "Pokračovať",
+  "home.title": "Enforcement",
+  "offenceResult.description": "Hlásenie bolo úspešne vytvorené, môžete pokračovať ďalej.",
+  "offenceResult.home": "Domov",
+  "offenceResult.newScan": "Vytvoriť nový sken",
+  "offenceResult.newZone": "Vybrať novú zónu",
+  "offenceResult.resultError": "Nepodarilo sa načítať výsledok",
+  "offenceResult.title": "Hlásenie vytvorené",
+  "signIn.loginButton": "Prihlásiť sa",
+  "signIn.title": "Prihlásenie",
+  "vehicleDetail.title": "Detail vozidla"
 }
