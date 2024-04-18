@@ -1,5 +1,6 @@
 import * as WebBrowser from 'expo-web-browser'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
@@ -12,6 +13,7 @@ import { useSignIn } from '@/modules/auth/hooks/useSignIn'
 WebBrowser.maybeCompleteAuthSession()
 
 const Page = () => {
+  const { t } = useTranslation()
   const [error, setError] = useState<Error>()
   const [isLoading, setIsLoading] = useState(false)
   const { isReady, signIn } = useSignIn()
@@ -28,7 +30,7 @@ const Page = () => {
 
   return (
     <DismissKeyboard>
-      <ScreenView title="Prihláste sa">
+      <ScreenView title={t('signIn.title')}>
         <ScreenContent>
           {error?.message ? (
             <Typography className="py-4 text-negative">{error.message}</Typography>
@@ -38,7 +40,9 @@ const Page = () => {
             loading={isLoading}
             disabled={isLoading || !isReady}
             onPress={handleSignIn}
-          />
+          >
+            {t('signIn.loginButton')}
+          </ContinueButton>
         </ScreenContent>
       </ScreenView>
     </DismissKeyboard>

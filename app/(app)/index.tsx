@@ -1,5 +1,6 @@
 import { FlashList } from '@shopify/flash-list'
 import { router } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import ScreenContent from '@/components/screen-layout/ScreenContent'
@@ -16,6 +17,7 @@ const AppRoute = () => {
   const { resetOffenceState } = useSetOffenceState()
   const signOut = useSignOut()
   const { user } = useAuthStoreContext()
+  const { t } = useTranslation()
 
   const handlePressRole = (role: RoleItem) => () => {
     resetOffenceState(getDefaultOffenceStateByRole(role.key))
@@ -26,7 +28,7 @@ const AppRoute = () => {
 
   return (
     <ScreenView
-      title="Enforcement"
+      title={t('home.title')}
       options={{
         headerRight: () => (
           <IconButton name="person" accessibilityLabel="Nastavenia" onPress={signOut} />

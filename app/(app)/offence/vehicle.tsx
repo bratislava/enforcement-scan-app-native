@@ -1,6 +1,7 @@
 import { isAxiosError } from 'axios'
 import { Redirect, router } from 'expo-router'
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
@@ -15,6 +16,7 @@ import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreCont
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const Page = () => {
+  const { t } = useTranslation()
   const { ecv, vehicleId } = useOffenceStoreContext((state) => state)
   const { setOffenceState } = useSetOffenceState()
 
@@ -29,7 +31,7 @@ const Page = () => {
   }, [data, setOffenceState])
 
   if (isPending) {
-    return <LoadingScreen title="Detail vozidla" asScreenView />
+    return <LoadingScreen title={t('vehicleDetail.title')} asScreenView />
   }
 
   if (isError && isAxiosError(error) && error.response?.status !== 404) {
@@ -38,14 +40,14 @@ const Page = () => {
 
   if (!data || data?.items.length === 0) {
     return (
-      <ScreenView title="Detail vozidla">
+      <ScreenView title={t('vehicleDetail.title')}>
         <Redirect href="/offence/photos/library" />
       </ScreenView>
     )
   }
 
   return (
-    <ScreenView title="Detail vozidla" className="flex-1 justify-start">
+    <ScreenView title={t('vehicleDetail.title')} className="flex-1 justify-start">
       <ScrollView alwaysBounceHorizontal={false}>
         <ScreenContent>
           {data.items.map((vehicle) => (
