@@ -1,5 +1,6 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
 import FlashlightBottomSheetAttachment, {
@@ -8,7 +9,6 @@ import FlashlightBottomSheetAttachment, {
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import Button from '@/components/shared/Button'
 import Typography from '@/components/shared/Typography'
-import { useTranslation } from '@/hooks/useTranslations'
 
 type Props = FlashLightProps & {
   isLoading: boolean
@@ -16,7 +16,7 @@ type Props = FlashLightProps & {
 }
 
 const PhotosBottomSheet = ({ isLoading, takePicture, ...rest }: Props) => {
-  const t = useTranslation('OffencePhotoCameraScreen')
+  const { t } = useTranslation()
   const modalRef = useRef<BottomSheet>(null)
 
   const animatedPosition = useSharedValue(0)
@@ -33,9 +33,9 @@ const PhotosBottomSheet = ({ isLoading, takePicture, ...rest }: Props) => {
         animatedPosition={animatedPosition}
       >
         <BottomSheetContent className="g-2">
-          <Typography variant="h2">{t('addPictureTitle')}</Typography>
+          <Typography variant="h2">{t('offenceCamera.addPictureTitle')}</Typography>
           <Button loading={isLoading} onPress={takePicture}>
-            {t('addPicture')}
+            {t('offenceCamera.addPicture')}
           </Button>
         </BottomSheetContent>
       </BottomSheet>
