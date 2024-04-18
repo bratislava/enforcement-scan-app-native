@@ -34,7 +34,7 @@ const MapCamera = forwardRef<Camera, Props>(({ cameraZoom, flyToCenter, setFlyTo
     }
   }, [setFlyToCenter, location])
 
-  /** To accout for `flyToCenter` being reset to undefined,
+  /** To account for `flyToCenter` being reset to undefined,
    * set to MAP_CENTER only on ititialization when the user is not within the city */
   useEffect(() => {
     if (flyToCenter && flyToCenter !== localFlyToCenter) {
@@ -51,8 +51,8 @@ const MapCamera = forwardRef<Camera, Props>(({ cameraZoom, flyToCenter, setFlyTo
     <Camera
       ref={ref}
       followUserLocation={false}
-      animationMode="flyTo"
-      zoomLevel={cameraZoom ?? (flyToCenter ? 15 : 11.5)}
+      animationMode="moveTo"
+      zoomLevel={cameraZoom ?? 15}
       centerCoordinate={localFlyToCenter}
       maxBounds={CITY_BOUNDS}
       padding={cameraPadding}

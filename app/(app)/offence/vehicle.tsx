@@ -41,7 +41,7 @@ const Page = () => {
   if (!data || data?.items.length === 0) {
     return (
       <ScreenView title={t('title')}>
-        <Redirect href="/offence/photos/library" />
+        <Redirect href="/offence/photos" />
       </ScreenView>
     )
   }

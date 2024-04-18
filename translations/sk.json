@@ -9,6 +9,10 @@
     "title": "Prihlásenie",
     "button": "Prihlásiť sa"
   },
+  "ZoneScreen": {
+    "title": "Vyberte zónu",
+    "zoomIn": "Priblížte"
+  },
   "VehicleDetailScreen": {
     "title": "Detail vozidla",
     "button": "Zaplatiť pokutu"
@@ -20,5 +24,15 @@
     "newZone": "Vybrať novú zónu",
     "description": "Hlásenie bolo úspešne vytvorené, môžete pokračovať ďalej.",
     "title": "Hlásenie vytvorené"
+  },
+  "OffenceScreen": {
+    "title": "Hlásenie priestupku",
+    "vehicle": "Vozidlo",
+    "location": "Poloha",
+    "offenceType": "Druh priestupku",
+    "offenceTypePlaceholder": "Vyberte druh priestupku",
+    "offenceResolution": "Vyriešenie priestupku",
+    "offenceResolutionPlaceholder": "Vyberte druh vyriešenia",
+    "objectiveResponsibility": "Objektívna zodpovednosť"
   }
 }

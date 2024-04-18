@@ -11,6 +11,7 @@ import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import Field from '@/components/shared/Field'
 import PressableStyled from '@/components/shared/PressableStyled'
+import { useTranslation } from '@/hooks/useTranslations'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
@@ -22,15 +23,17 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 const requiredText = 'Toto pole je povinné'
 
 const OffencePage = () => {
+  const t = useTranslation('OffenceScreen')
+
   const { ecv, offenceType, roleKey, resolutionType, isObjectiveResponsibility, location } =
     useOffenceStoreContext((state) => state)
   const { setOffenceState } = useSetOffenceState()
-  const [currentLocation] = useLocation()
+  const role = getRoleByKey(roleKey)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
 
-  const role = getRoleByKey(roleKey)
+  const [currentLocation] = useLocation()
 
   const onSubmit = async () => {
     setIsSubmitting(true)
@@ -55,10 +58,16 @@ const OffencePage = () => {
   }, [currentLocation, location, setOffenceState])
 
   return (
-    <ScreenView title="Hlásenie priestupku" className="flex-1 justify-start">
+    <ScreenView
+      title={t('title')}
+      className="flex-1 justify-start"
+      actionButton={
+        <ContinueButton loading={isSubmitting} disabled={isSubmitting} onPress={onSubmit} />
+      }
+    >
       <ScrollView alwaysBounceHorizontal={false}>
         <ScreenContent>
-          <Field label="Vozidlo">
+          <Field label={t('vehicle')}>
             <TextInput
               value={ecv}
               isDisabled={!!role?.actions.scanCheck}
@@ -66,7 +75,7 @@ const OffencePage = () => {
             />
           </Field>
 
-          <Field label="Poloha">
+          <Field label={t('location')}>
             <PressableStyled
               onPress={() => {
                 router.push('/offence/location')
@@ -77,41 +86,39 @@ const OffencePage = () => {
           </Field>
 
           <Field
-            label="Druh priestupku"
+            label={t('offenceType')}
             errorMessage={isTouched && !offenceType ? requiredText : undefined}
           >
             <Link asChild href="/offence/offence-type">
               <SelectButton
                 hasError={isTouched && !offenceType}
                 value={offenceType ? getOffenceTypeLabel(offenceType) : undefined}
-                placeholder="Vyberte druh priestupku"
+                placeholder={t('offenceTypePlaceholder')}
               />
             </Link>
           </Field>
 
           <Field
-            label="Vyriešenie priestupku"
+            label={t('offenceResolution')}
             errorMessage={isTouched && !resolutionType ? requiredText : undefined}
           >
             <Link asChild href="/offence/resolution-type">
               <SelectButton
                 hasError={isTouched && !resolutionType}
                 value={resolutionType ? getResolutionTypeLabel(resolutionType) : undefined}
-                placeholder="Vyberte druh vyriešenia"
+                placeholder={t('offenceResolutionPlaceholder')}
               />
             </Link>
           </Field>
 
           <SelectRow
             disabled={!role?.actions.subjective}
-            label="Objektívna zodpovednosť"
+            label={t('objectiveResponsibility')}
             onValueChange={() =>
               setOffenceState({ isObjectiveResponsibility: !isObjectiveResponsibility })
             }
             value={isObjectiveResponsibility}
           />
-
-          <ContinueButton loading={isSubmitting} disabled={isSubmitting} onPress={onSubmit} />
         </ScreenContent>
       </ScrollView>
     </ScreenView>

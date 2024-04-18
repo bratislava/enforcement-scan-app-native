@@ -24,6 +24,7 @@ const LocationMapPreview = () => {
           scaleBarEnabled={false}
         >
           <Camera
+            animationMode="moveTo"
             minZoomLevel={LOCATION_PREVIEW_DEFAULT_ZOOM}
             centerCoordinate={[location.long, location.lat]}
           />

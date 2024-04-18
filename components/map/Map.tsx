@@ -47,13 +47,7 @@ const ZOOM_ON_PLACE_SELECT = 15
 
 const Map = forwardRef(
   (
-    {
-      onZoneChange,
-      processedData,
-      onMapPinVisibilityChange,
-
-      onCenterChange,
-    }: Props,
+    { onZoneChange, processedData, onMapPinVisibilityChange, onCenterChange }: Props,
     ref: ForwardedRef<MapRef>,
   ) => {
     const camera = useRef<Camera>(null)
