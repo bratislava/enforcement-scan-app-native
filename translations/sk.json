@@ -1,38 +1,24 @@
 {
-  "Common": {
-    "continue": "Pokračovať"
-  },
-  "HomeScreen": {
-    "title": "Enforcement"
-  },
-  "LoginScreen": {
-    "title": "Prihlásenie",
-    "button": "Prihlásiť sa"
-  },
-  "ZoneScreen": {
-    "title": "Vyberte zónu",
-    "zoomIn": "Priblížte"
-  },
-  "VehicleDetailScreen": {
-    "title": "Detail vozidla",
-    "button": "Zaplatiť pokutu"
-  },
-  "OffenceResultScreen": {
-    "home": "Domov",
-    "resultError": "Nepodarilo sa načítať výsledok",
-    "newScan": "Vytvoriť nový sken",
-    "newZone": "Vybrať novú zónu",
-    "description": "Hlásenie bolo úspešne vytvorené, môžete pokračovať ďalej.",
-    "title": "Hlásenie vytvorené"
-  },
-  "OffenceScreen": {
-    "title": "Hlásenie priestupku",
-    "vehicle": "Vozidlo",
-    "location": "Poloha",
-    "offenceType": "Druh priestupku",
-    "offenceTypePlaceholder": "Vyberte druh priestupku",
-    "offenceResolution": "Vyriešenie priestupku",
-    "offenceResolutionPlaceholder": "Vyberte druh vyriešenia",
-    "objectiveResponsibility": "Objektívna zodpovednosť"
-  }
+  "common.continue": "Pokračovať",
+  "home.title": "Enforcement",
+  "offence.location": "Poloha",
+  "offence.objectiveResponsibility": "Objektívna zodpovednosť",
+  "offence.offenceResolution": "Vyriešenie priestupku",
+  "offence.offenceResolutionPlaceholder": "Vyberte druh vyriešenia",
+  "offence.offenceType": "Druh priestupku",
+  "offence.offenceTypePlaceholder": "Vyberte druh priestupku",
+  "offence.required": "Toto pole je povinné",
+  "offence.title": "Hlásenie priestupku",
+  "offence.vehicle": "Vozidlo",
+  "offenceResult.description": "Hlásenie bolo úspešne vytvorené, môžete pokračovať ďalej.",
+  "offenceResult.home": "Domov",
+  "offenceResult.newScan": "Vytvoriť nový sken",
+  "offenceResult.newZone": "Vybrať novú zónu",
+  "offenceResult.resultError": "Nepodarilo sa načítať výsledok",
+  "offenceResult.title": "Hlásenie vytvorené",
+  "signIn.loginButton": "Prihlásiť sa",
+  "signIn.title": "Prihlásenie",
+  "vehicleDetail.title": "Detail vozidla",
+  "zone.title": "Vyberte zónu",
+  "zone.zoomIn": "Priblížte"
 }

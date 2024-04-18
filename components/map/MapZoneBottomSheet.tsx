@@ -1,5 +1,6 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { forwardRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSharedValue } from 'react-native-reanimated'
 
@@ -9,7 +10,6 @@ import MapZoneBottomSheetPanel from '@/components/map/MapZoneBottomSheetPanel'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/BottomSheetHandleWithShadow'
 import Typography from '@/components/shared/Typography'
-import { useTranslation } from '@/hooks/useTranslations'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { PositionObject } from '@/state/OffenceStore/OffenceStoreProvider'
 import { cn } from '@/utils/cn'
@@ -23,7 +23,7 @@ type Props = {
 
 const MapZoneBottomSheet = forwardRef<BottomSheet, Props>(
   ({ zone: selectedZone, setFlyToCenter, centerCoordinate, isZoomedOut }, ref) => {
-    const t = useTranslation('ZoneScreen')
+    const { t } = useTranslation()
     const animatedPosition = useSharedValue(0)
 
     return (
@@ -40,7 +40,7 @@ const MapZoneBottomSheet = forwardRef<BottomSheet, Props>(
           <BottomSheetContent isDynamic className={cn('bg-white', selectedZone ? 'g-2' : 'g-3')}>
             {isZoomedOut ? (
               <View className="flex-col items-center">
-                <Typography className="text-center">{t('zoomIn')}</Typography>
+                <Typography className="text-center">{t('zone.zoomIn')}</Typography>
               </View>
             ) : (
               <MapZoneBottomSheetPanel
