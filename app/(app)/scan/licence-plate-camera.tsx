@@ -1,8 +1,9 @@
 import { Camera, FlashMode } from 'expo-camera'
 import { useRef, useState } from 'react'
-import { useWindowDimensions, View } from 'react-native'
+import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { useTranslation } from '@/hooks/useTranslations'
@@ -19,7 +20,6 @@ const LicencePlateCameraComp = () => {
   const t = useTranslation('LicencePlateCameraScreen')
   const ref = useRef<Camera>(null)
   const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
-  const { width } = useWindowDimensions()
   const [isLoading, setIsLoading] = useState(false)
 
   const { top } = useSafeAreaInsets()
@@ -58,8 +58,8 @@ const LicencePlateCameraComp = () => {
   }
 
   return (
-    <ScreenView title={t('title')} className="h-full flex-1 flex-col">
-      <Camera ratio="16:9" ref={ref} style={{ height: (width * 16) / 9 }} flashMode={flashMode}>
+    <ScreenView title={t('title')} className="h-full">
+      <FullScreenCamera ref={ref} flashMode={flashMode}>
         <View className="h-full w-full">
           <View
             style={{ paddingTop: top, height: HEADER_WITH_PADDING }}
@@ -68,7 +68,7 @@ const LicencePlateCameraComp = () => {
           <View style={{ height: CROPPED_PHOTO_HEIGHT }} className="items-center" />
           <View className="flex-1 items-center bg-dark/80 bg-opacity-20" />
         </View>
-      </Camera>
+      </FullScreenCamera>
 
       <LicencePlateCameraBottomSheet
         isLoading={isLoading}

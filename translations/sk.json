@@ -46,5 +46,15 @@
     "offenceResolution": "Vyriešenie priestupku",
     "offenceResolutionPlaceholder": "Vyberte druh vyriešenia",
     "objectiveResponsibility": "Objektívna zodpovednosť"
+  },
+  "OffencePhotosScreen": {
+    "title": "Prehľad fotografií"
+  },
+  "OffencePhotoCameraScreen": {
+    "title": "Ďalšie fotky",
+    "titleWithCount": "Ďalšie fotky ({{count}}/{{maxCount}})",
+    "error": "Pri fotení sa vyskytla chyba",
+    "addPictureTitle": "Pridajte fotku",
+    "addPicture": "Odfotiť"
   }
 }
