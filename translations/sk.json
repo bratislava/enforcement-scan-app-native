@@ -11,7 +11,19 @@
   },
   "ZoneScreen": {
     "title": "Vyberte zónu",
-    "zoomIn": "Priblížte"
+    "zoomIn": "Priblížte",
+    "zonePicture": "Zónová fotka",
+    "takePictureTitle": "Pridajte fotku",
+    "takePicture": "Odfotiť",
+    "confirmTitle": "Je fotka okej? :)",
+    "confirm": "Potvrdiť"
+  },
+  "LicencePlateCameraScreen": {
+    "title": "Skenuj EČV",
+    "retryScan": "Opakovať sken",
+    "licencePlate": "Evidenčné číslo vozidla",
+    "next": "Ďalej",
+    "scan": "Skenovať"
   },
   "VehicleDetailScreen": {
     "title": "Detail vozidla",

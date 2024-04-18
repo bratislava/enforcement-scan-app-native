@@ -6,6 +6,7 @@ import { Image, useWindowDimensions } from 'react-native'
 
 import CameraBottomSheet from '@/components/camera/CameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import { useTranslation } from '@/hooks/useTranslations'
 import { clientApi } from '@/modules/backend/client-api'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
@@ -16,6 +17,7 @@ import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 const ASPECT_RATIO = 16 / 9
 
 const AppRoute = () => {
+  const t = useTranslation('ZoneScreen')
   const { setOffenceState } = useSetOffenceState()
   const zonePhoto = useOffenceStoreContext((state) => state.zonePhoto)
   const udrUuid = useOffenceStoreContext((state) => state.zone?.udrUuid)
@@ -67,7 +69,7 @@ const AppRoute = () => {
   }
 
   return (
-    <ScreenView hasBackButton title="Zónová fotka" className="h-full flex-1 flex-col">
+    <ScreenView hasBackButton title={t('zonePicture')} className="h-full flex-1 flex-col">
       {zonePhoto ? (
         <Image source={{ uri: createUrlFromImageObject(zonePhoto) }} style={{ flex: 1 }} />
       ) : (
@@ -87,10 +89,7 @@ const AppRoute = () => {
         flashMode={flashMode}
         isLoading={loading}
         takePicture={takePicture}
-        toggleFlashlight={() =>
-          // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
-          setFlashMode(flashMode === FlashMode.torch ? FlashMode.off : FlashMode.torch)
-        }
+        setFlashMode={setFlashMode}
       />
     </ScreenView>
   )

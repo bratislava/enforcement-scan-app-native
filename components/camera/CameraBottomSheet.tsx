@@ -1,33 +1,33 @@
 import BottomSheet from '@gorhom/bottom-sheet'
-import { FlashMode } from 'expo-camera'
 import { useRef } from 'react'
 import { useSharedValue } from 'react-native-reanimated'
 
-import FlashlightBottomSheetAttachment from '@/components/camera/FlashlightBottomSheetAttachment'
+import FlashlightBottomSheetAttachment, {
+  FlashLightProps,
+} from '@/components/camera/FlashlightBottomSheetAttachment'
 import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAttachment'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import Button from '@/components/shared/Button'
 import Typography from '@/components/shared/Typography'
+import { useTranslation } from '@/hooks/useTranslations'
 
-type Props = {
-  flashMode: FlashMode
+type Props = FlashLightProps & {
   isLoading: boolean
   hasPhoto: boolean
   takePicture: () => Promise<void>
   retakePicture: () => void
   selectPicture: () => void
-  toggleFlashlight: () => void
 }
 
 const CameraBottomSheet = ({
   hasPhoto,
-  flashMode,
   isLoading,
   takePicture,
   selectPicture,
   retakePicture,
-  toggleFlashlight,
+  ...rest
 }: Props) => {
+  const t = useTranslation('ZoneScreen')
   const modalRef = useRef<BottomSheet>(null)
 
   const animatedPosition = useSharedValue(0)
@@ -37,11 +37,7 @@ const CameraBottomSheet = ({
       {hasPhoto ? (
         <PhotoBottomSheetAttachment animatedPosition={animatedPosition} onRetake={retakePicture} />
       ) : (
-        <FlashlightBottomSheetAttachment
-          flashMode={flashMode}
-          toggleFlashlight={toggleFlashlight}
-          animatedPosition={animatedPosition}
-        />
+        <FlashlightBottomSheetAttachment {...rest} animatedPosition={animatedPosition} />
       )}
 
       <BottomSheet
@@ -54,16 +50,16 @@ const CameraBottomSheet = ({
         <BottomSheetContent className="g-2">
           {hasPhoto ? (
             <>
-              <Typography variant="h2">Je fotka okej? :) </Typography>
+              <Typography variant="h2">{t('confirmTitle')}</Typography>
               <Button loading={isLoading} onPress={selectPicture}>
-                Potvrdiť
+                {t('confirm')}
               </Button>
             </>
           ) : (
             <>
-              <Typography variant="h2">Odfoťte zónovú značku</Typography>
+              <Typography variant="h2">{t('takePictureTitle')}</Typography>
               <Button loading={isLoading} onPress={takePicture}>
-                Odfotiť
+                {t('takePicture')}
               </Button>
             </>
           )}

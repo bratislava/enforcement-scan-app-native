@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import { useTranslation } from '@/hooks/useTranslations'
 import {
   CROPPED_PHOTO_HEIGHT,
   HEADER_WITH_PADDING,
@@ -15,6 +16,7 @@ import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreCont
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const LicencePlateCameraComp = () => {
+  const t = useTranslation('LicencePlateCameraScreen')
   const ref = useRef<Camera>(null)
   const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
   const { width } = useWindowDimensions()
@@ -56,7 +58,7 @@ const LicencePlateCameraComp = () => {
   }
 
   return (
-    <ScreenView title="Skenuj EČV" className="h-full flex-1 flex-col">
+    <ScreenView title={t('title')} className="h-full flex-1 flex-col">
       <Camera ratio="16:9" ref={ref} style={{ height: (width * 16) / 9 }} flashMode={flashMode}>
         <View className="h-full w-full">
           <View
@@ -71,10 +73,7 @@ const LicencePlateCameraComp = () => {
       <LicencePlateCameraBottomSheet
         isLoading={isLoading}
         flashMode={flashMode}
-        toggleFlashlight={() =>
-          // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
-          setFlashMode((prev) => (prev === FlashMode.off ? FlashMode.torch : FlashMode.off))
-        }
+        setFlashMode={setFlashMode}
         licencePlate={generatedEcv}
         takePicture={takePicture}
         onChangeLicencePlate={(ecv) => setOffenceState({ ecv })}
