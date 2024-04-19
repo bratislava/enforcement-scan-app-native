@@ -1,5 +1,6 @@
 import { Camera, FlashMode } from 'expo-camera'
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useWindowDimensions, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -15,6 +16,7 @@ import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreCont
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const LicencePlateCameraComp = () => {
+  const { t } = useTranslation()
   const ref = useRef<Camera>(null)
   const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
   const { width } = useWindowDimensions()
@@ -56,7 +58,7 @@ const LicencePlateCameraComp = () => {
   }
 
   return (
-    <ScreenView title="Skenuj EČV" className="h-full flex-1 flex-col">
+    <ScreenView title={t('scanLicencePlate.title')} className="h-full flex-1 flex-col">
       <Camera ratio="16:9" ref={ref} style={{ height: (width * 16) / 9 }} flashMode={flashMode}>
         <View className="h-full w-full">
           <View
@@ -71,10 +73,7 @@ const LicencePlateCameraComp = () => {
       <LicencePlateCameraBottomSheet
         isLoading={isLoading}
         flashMode={flashMode}
-        toggleFlashlight={() =>
-          // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
-          setFlashMode((prev) => (prev === FlashMode.off ? FlashMode.torch : FlashMode.off))
-        }
+        setFlashMode={setFlashMode}
         licencePlate={generatedEcv}
         takePicture={takePicture}
         onChangeLicencePlate={(ecv) => setOffenceState({ ecv })}

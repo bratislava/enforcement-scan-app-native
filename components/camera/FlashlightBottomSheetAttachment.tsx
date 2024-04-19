@@ -1,6 +1,6 @@
 import { FlashMode } from 'expo-camera'
 import * as Location from 'expo-location'
-import { ReactNode } from 'react'
+import { Dispatch, ReactNode, SetStateAction } from 'react'
 import { View } from 'react-native'
 
 import BottomSheetTopAttachment, {
@@ -10,14 +10,17 @@ import FlexRow from '@/components/shared/FlexRow'
 import IconButton from '@/components/shared/IconButton'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 
-type Props = Omit<BottomSheetTopAttachmentProps, 'children'> & {
+export type FlashLightProps = {
   flashMode: FlashMode
-  toggleFlashlight: () => void
-  iconLeft?: ReactNode
+  setFlashMode: Dispatch<SetStateAction<FlashMode>>
 }
 
+type Props = Omit<BottomSheetTopAttachmentProps, 'children'> & {
+  iconLeft?: ReactNode
+} & FlashLightProps
+
 const FlashlightBottomSheetAttachment = ({
-  toggleFlashlight,
+  setFlashMode,
   iconLeft,
   flashMode,
   ...restProps
@@ -33,7 +36,10 @@ const FlashlightBottomSheetAttachment = ({
           name={flashMode === FlashMode.off ? 'flashlight-on' : 'flashlight-off'}
           accessibilityLabel="Flashlight"
           variant="white-raised"
-          onPress={toggleFlashlight}
+          // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
+          onPress={() =>
+            setFlashMode((prev) => (prev === FlashMode.off ? FlashMode.torch : FlashMode.off))
+          }
           disabled={permissionStatus === Location.PermissionStatus.DENIED}
         />
       </FlexRow>
