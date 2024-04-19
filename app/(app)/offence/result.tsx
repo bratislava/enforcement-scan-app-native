@@ -49,7 +49,6 @@ const OffenceResultPage = () => {
       // prevents going back
       e.preventDefault()
 
-
       if (e.data.action.type === 'GO_BACK') {
         resetOffenceState({ ...getDefaultOffenceStateByRole(role.key), zone, zonePhoto, location })
         router.navigate('scan/licence-plate-camera')
