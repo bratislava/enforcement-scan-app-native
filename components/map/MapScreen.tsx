@@ -1,5 +1,5 @@
 import BottomSheet from '@gorhom/bottom-sheet'
-import { Portal } from '@gorhom/portal'
+import { Position } from '@rnmapbox/maps/lib/typescript/src/types/Position'
 import { useCallback, useRef, useState } from 'react'
 import { View } from 'react-native'
 
@@ -7,11 +7,13 @@ import Map, { MapRef } from '@/components/map/Map'
 import MapZoneBottomSheet from '@/components/map/MapZoneBottomSheet'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
+import { PositionObject } from '@/state/OffenceStore/OffenceStoreProvider'
 
 const MapScreen = () => {
   const zoneBottomSheetRef = useRef<BottomSheet>(null)
   const mapRef = useRef<MapRef>(null)
 
+  const [centerCoordinate, setCenterCoordinate] = useState<PositionObject>()
   const [selectedZone, setSelectedZone] = useState<MapUdrZoneWithTranslationProps | null>(null)
   const [isMapPinShown, setIsMapPinShown] = useState(false)
 
@@ -28,23 +30,33 @@ const MapScreen = () => {
 
   const { isLoading, ...processedData } = useArcgisStoreContext()
 
+  const onCenterChange = useCallback(
+    (center: Position) => {
+      setCenterCoordinate({
+        lat: center[1], // lat is second in Position type
+        long: center[0], // long is first in Position type
+      })
+    },
+    [setCenterCoordinate],
+  )
+
   return (
     <View className="flex-1 items-stretch">
       <Map
         ref={mapRef}
         onZoneChange={handleZoneChange}
         processedData={processedData}
+        onCenterChange={onCenterChange}
         onMapPinVisibilityChange={handleMapPinVisibilityChange}
       />
 
-      <Portal hostName="index">
-        <MapZoneBottomSheet
-          ref={zoneBottomSheetRef}
-          zone={selectedZone}
-          setFlyToCenter={mapRef.current?.setFlyToCenter}
-          isZoomedOut={!isMapPinShown}
-        />
-      </Portal>
+      <MapZoneBottomSheet
+        ref={zoneBottomSheetRef}
+        zone={selectedZone}
+        centerCoordinate={centerCoordinate}
+        setFlyToCenter={mapRef.current?.setFlyToCenter}
+        isZoomedOut={!isMapPinShown}
+      />
     </View>
   )
 }

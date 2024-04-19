@@ -1,6 +1,15 @@
 {
   "common.continue": "Pokračovať",
   "home.title": "Enforcement",
+  "offence.location": "Poloha",
+  "offence.objectiveResponsibility": "Objektívna zodpovednosť",
+  "offence.offenceResolution": "Vyriešenie priestupku",
+  "offence.offenceResolutionPlaceholder": "Vyberte druh vyriešenia",
+  "offence.offenceType": "Druh priestupku",
+  "offence.offenceTypePlaceholder": "Vyberte druh priestupku",
+  "offence.required": "Toto pole je povinné",
+  "offence.title": "Hlásenie priestupku",
+  "offence.vehicle": "Vozidlo",
   "offenceResult.description": "Hlásenie bolo úspešne vytvorené, môžete pokračovať ďalej.",
   "offenceResult.home": "Domov",
   "offenceResult.newScan": "Vytvoriť nový sken",
@@ -9,5 +18,7 @@
   "offenceResult.title": "Hlásenie vytvorené",
   "signIn.loginButton": "Prihlásiť sa",
   "signIn.title": "Prihlásenie",
-  "vehicleDetail.title": "Detail vozidla"
+  "vehicleDetail.title": "Detail vozidla",
+  "zone.title": "Vyberte zónu",
+  "zone.zoomIn": "Priblížte"
 }
