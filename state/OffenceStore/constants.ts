@@ -4,6 +4,7 @@ import { OffenceState } from '@/state/OffenceStore/OffenceStoreProvider'
 
 export const defaultOffenceState: OffenceState = {
   isObjectiveResponsibility: true,
+  photos: [],
 }
 
 // TODO: Add default values for other roles when needed
