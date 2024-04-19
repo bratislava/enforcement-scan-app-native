@@ -14,7 +14,7 @@
   "offenceCamera.addPictureTitle": "Pridajte fotku",
   "offenceCamera.error": "Pri fotení sa vyskytla chyba",
   "offenceCamera.title": "Ďalšie fotky",
-  "offenceCamera.titleWithCount": "Ďalšie fotky ({{count}}/{{maxCount}})",
+  "offenceCamera.titleWithCount": "Ďalšie fotky ({{currentCount}}/{{maxCount}})",
   "offenceResult.description": "Hlásenie bolo úspešne vytvorené, môžete pokračovať ďalej.",
   "offenceResult.home": "Domov",
   "offenceResult.newScan": "Vytvoriť nový sken",

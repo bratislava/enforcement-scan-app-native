@@ -34,14 +34,16 @@ const AppRoute = () => {
         variant: 'danger',
       })
 
-      return setLoading(false)
+      setLoading(false)
+
+      return
     }
 
     const newPhotos = [...photos, capturedPhoto]
 
     setOffenceState({ photos: newPhotos })
 
-    return setLoading(false)
+    setLoading(false)
   }
 
   if (photos.length >= MAX_PHOTOS) {
@@ -55,7 +57,10 @@ const AppRoute = () => {
   return (
     <ScreenView
       hasBackButton
-      title={t('offenceCamera.titleWithCount', { count: photos.length + 1, maxCount: MAX_PHOTOS })}
+      title={t('offenceCamera.titleWithCount', {
+        currentCount: photos.length + 1,
+        maxCount: MAX_PHOTOS,
+      })}
       className="h-full"
     >
       <FullScreenCamera ref={ref} flashMode={flashMode} />
