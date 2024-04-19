@@ -49,21 +49,11 @@ const OffenceResultPage = () => {
       // prevents going back
       e.preventDefault()
 
-      const state = navigation.getState()
 
-      const index = state.routes.findIndex((route) => route.name === 'scan/licence-plate-camera')
-      const currentRoute = state.routes[state.index]
-
-      // resets navigation to remove all the routes between the 'scan/licence-plate-camera' screen and the current screen
-      navigation.reset({
-        ...state,
-        index: index + 1,
-        routes: [...state.routes.slice(0, index + 1), currentRoute],
-      })
-      resetOffenceState({ ...getDefaultOffenceStateByRole(role.key), zone, zonePhoto, location })
-
-      // finally goes back
-      navigation.dispatch(e.data.action)
+      if (e.data.action.type === 'GO_BACK') {
+        resetOffenceState({ ...getDefaultOffenceStateByRole(role.key), zone, zonePhoto, location })
+        router.navigate('scan/licence-plate-camera')
+      } else navigation.dispatch(e.data.action)
     })
   }, [location, navigation, resetOffenceState, role, scanResult, zone, zonePhoto])
 
@@ -78,14 +68,7 @@ const OffenceResultPage = () => {
 
   const onNewZonePress = () => {
     resetOffenceState(getDefaultOffenceStateByRole(role.key))
-
-    const state = navigation.getState()
-    const index = state.routes.findIndex((route) => route.name === 'zone/index')
-    navigation.reset({
-      ...state,
-      index,
-      routes: state.routes.slice(0, index + 1),
-    })
+    router.navigate('zone')
   }
 
   return (
