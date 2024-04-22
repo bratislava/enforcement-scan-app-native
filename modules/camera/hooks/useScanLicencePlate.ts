@@ -68,7 +68,7 @@ export const useScanLicencePlate = () => {
     })
 
     if (res.data) {
-      setOffenceState({ scanId: res.data.id })
+      setOffenceState({ scanUuid: res.data.uuid })
       if (res.data.scanResult === ScanReasonEnum.Other) {
         router.push('/offence')
       } else
