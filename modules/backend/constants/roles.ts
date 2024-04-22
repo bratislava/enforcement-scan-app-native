@@ -30,7 +30,7 @@ export const ROLES: RoleItem[] = [
       offence: true,
       scanCheck: true,
     },
-    resolutionTypes: [ResolutionOffenceTypeEnum.ForwardedToDi],
+    resolutionTypes: [ResolutionOffenceTypeEnum.JustRegistration],
     offenceTypes: [OffenceTypeEnum.N, OffenceTypeEnum.O],
     scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
@@ -53,7 +53,7 @@ export const ROLES: RoleItem[] = [
     actions: {
       offence: true,
     },
-    resolutionTypes: [ResolutionOffenceTypeEnum.ForwardedToDi],
+    resolutionTypes: [ResolutionOffenceTypeEnum.JustRegistration],
     offenceTypes: [OffenceTypeEnum.N, OffenceTypeEnum.T],
     scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },

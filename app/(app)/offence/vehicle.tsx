@@ -1,5 +1,5 @@
 import { isAxiosError } from 'axios'
-import { Redirect, router } from 'expo-router'
+import { Redirect, router, useNavigation } from 'expo-router'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
@@ -15,8 +15,12 @@ import { getVehiclePropertiesOptions } from '@/modules/backend/constants/queryPa
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
+const ALLOWED_VEHICLE_ERRORS = new Set([404, 424])
+
 const Page = () => {
   const { t } = useTranslation()
+  const navigation = useNavigation()
+
   const { ecv, vehicleId } = useOffenceStoreContext((state) => state)
   const { setOffenceState } = useSetOffenceState()
 
@@ -30,11 +34,27 @@ const Page = () => {
     }
   }, [data, setOffenceState])
 
+  useEffect(() => {
+    return navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault()
+
+      if (e.data.action.type === 'GO_BACK') {
+        setOffenceState({ vehicleId: undefined })
+      }
+      navigation.dispatch(e.data.action)
+    })
+  }, [navigation, setOffenceState])
+
   if (isPending) {
     return <LoadingScreen title={t('vehicleDetail.title')} asScreenView />
   }
 
-  if (isError && isAxiosError(error) && error.response?.status !== 404) {
+  if (
+    isError &&
+    isAxiosError(error) &&
+    error.response?.status &&
+    !ALLOWED_VEHICLE_ERRORS.has(error.response.status)
+  ) {
     return <ErrorScreen text={error?.message} />
   }
 

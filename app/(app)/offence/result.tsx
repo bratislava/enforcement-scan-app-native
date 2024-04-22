@@ -10,18 +10,17 @@ import ScreenViewCentered from '@/components/screen-layout/ScreenViewCentered'
 import IconButton from '@/components/shared/IconButton'
 import { useClearHistory } from '@/hooks/useClearHistory'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 import { getDefaultOffenceStateByRole } from '@/state/OffenceStore/getDefaultOffenceStateByRole'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 type OffenceResultSearchParams = {
-  scanResult: ScanResultEnum
+  offenceResult: 'success' | 'error'
 }
 
 const OffenceResultPage = () => {
   const { t } = useTranslation()
-  const { scanResult } = useLocalSearchParams<OffenceResultSearchParams>()
+  const { offenceResult } = useLocalSearchParams<OffenceResultSearchParams>()
 
   const { resetOffenceState } = useSetOffenceState()
   const { roleKey, zonePhoto, zone, location } = useOffenceStoreContext((state) => state)
@@ -41,9 +40,11 @@ const OffenceResultPage = () => {
     />
   )
 
+  const showErrorScreen = !offenceResult || offenceResult === 'error' || !role
+
   // Function to reset the navigation stack to the 'scan/licence-plate-camera' screen when going back (back button or swipe back)
   useEffect(() => {
-    if (!(scanResult && role)) return () => {}
+    if (showErrorScreen) return () => {}
 
     return navigation.addListener('beforeRemove', (e) => {
       // prevents going back
@@ -54,9 +55,9 @@ const OffenceResultPage = () => {
         router.navigate('scan/licence-plate-camera')
       } else navigation.dispatch(e.data.action)
     })
-  }, [location, navigation, resetOffenceState, role, scanResult, zone, zonePhoto])
+  }, [location, navigation, resetOffenceState, zone, zonePhoto, showErrorScreen, role?.key])
 
-  if (!(scanResult && role)) {
+  if (showErrorScreen) {
     return (
       <ErrorScreen
         options={{ headerTransparent: true, headerRight }}
