@@ -11,7 +11,7 @@ import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
-const MAX_PHOTOS = 4
+export const MAX_PHOTOS = 5
 
 const AppRoute = () => {
   const { t } = useTranslation()

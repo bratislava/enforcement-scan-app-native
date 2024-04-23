@@ -10,6 +10,7 @@ import LocationMapPreview from '@/components/map/location-map/LocationMapPreview
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import DismissKeyboard from '@/components/shared/DissmissKeyboard'
 import Field from '@/components/shared/Field'
 import PressableStyled from '@/components/shared/PressableStyled'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
@@ -55,70 +56,72 @@ const OffencePage = () => {
   }, [currentLocation, location, setOffenceState])
 
   return (
-    <ScreenView
-      title={t('offence.title')}
-      className="flex-1 justify-start"
-      actionButton={
-        <ContinueButton loading={isSubmitting} disabled={isSubmitting} onPress={onSubmit} />
-      }
-    >
-      <ScrollView alwaysBounceHorizontal={false}>
-        <ScreenContent>
-          <Field label={t('offence.vehicle')}>
-            <TextInput
-              value={ecv}
-              isDisabled={!!role?.actions.scanCheck}
-              onChangeText={(value) => setOffenceState({ ecv: value })}
-            />
-          </Field>
+    <DismissKeyboard>
+      <ScreenView
+        title={t('offence.title')}
+        className="flex-1 justify-start"
+        actionButton={
+          <ContinueButton loading={isSubmitting} disabled={isSubmitting} onPress={onSubmit} />
+        }
+      >
+        <ScrollView alwaysBounceHorizontal={false}>
+          <ScreenContent>
+            <Field label={t('offence.vehicle')}>
+              <TextInput
+                value={ecv}
+                isDisabled={!!role?.actions.scanCheck}
+                onChangeText={(value) => setOffenceState({ ecv: value })}
+              />
+            </Field>
 
-          <Field label={t('offence.location')}>
-            <PressableStyled
-              onPress={() => {
-                router.push('/offence/location')
-              }}
+            <Field label={t('offence.location')}>
+              <PressableStyled
+                onPress={() => {
+                  router.push('/offence/location')
+                }}
+              >
+                <LocationMapPreview />
+              </PressableStyled>
+            </Field>
+
+            <Field
+              label={t('offence.offenceType')}
+              errorMessage={isTouched && !offenceType ? t('offence.required') : undefined}
             >
-              <LocationMapPreview />
-            </PressableStyled>
-          </Field>
+              <Link asChild href="/offence/offence-type">
+                <SelectButton
+                  hasError={isTouched && !offenceType}
+                  value={offenceType ? getOffenceTypeLabel(offenceType) : undefined}
+                  placeholder={t('offence.offenceTypePlaceholder')}
+                />
+              </Link>
+            </Field>
 
-          <Field
-            label={t('offence.offenceType')}
-            errorMessage={isTouched && !offenceType ? t('offence.required') : undefined}
-          >
-            <Link asChild href="/offence/offence-type">
-              <SelectButton
-                hasError={isTouched && !offenceType}
-                value={offenceType ? getOffenceTypeLabel(offenceType) : undefined}
-                placeholder={t('offence.offenceTypePlaceholder')}
-              />
-            </Link>
-          </Field>
+            <Field
+              label={t('offence.offenceResolution')}
+              errorMessage={isTouched && !resolutionType ? t('offence.required') : undefined}
+            >
+              <Link asChild href="/offence/resolution-type">
+                <SelectButton
+                  hasError={isTouched && !resolutionType}
+                  value={resolutionType ? getResolutionTypeLabel(resolutionType) : undefined}
+                  placeholder={t('offence.offenceResolutionPlaceholder')}
+                />
+              </Link>
+            </Field>
 
-          <Field
-            label={t('offence.offenceResolution')}
-            errorMessage={isTouched && !resolutionType ? t('offence.required') : undefined}
-          >
-            <Link asChild href="/offence/resolution-type">
-              <SelectButton
-                hasError={isTouched && !resolutionType}
-                value={resolutionType ? getResolutionTypeLabel(resolutionType) : undefined}
-                placeholder={t('offence.offenceResolutionPlaceholder')}
-              />
-            </Link>
-          </Field>
-
-          <SelectRow
-            disabled={!role?.actions.subjective}
-            label={t('offence.objectiveResponsibility')}
-            onValueChange={() =>
-              setOffenceState({ isObjectiveResponsibility: !isObjectiveResponsibility })
-            }
-            value={isObjectiveResponsibility}
-          />
-        </ScreenContent>
-      </ScrollView>
-    </ScreenView>
+            <SelectRow
+              disabled={!role?.actions.subjective}
+              label={t('offence.objectiveResponsibility')}
+              onValueChange={() =>
+                setOffenceState({ isObjectiveResponsibility: !isObjectiveResponsibility })
+              }
+              value={isObjectiveResponsibility}
+            />
+          </ScreenContent>
+        </ScrollView>
+      </ScreenView>
+    </DismissKeyboard>
   )
 }
 

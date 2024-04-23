@@ -659,9 +659,8 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<DefaultResponseHealthcheck>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.defaultControllerHealthcheck(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.defaultControllerHealthcheck(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['DefaultApi.defaultControllerHealthcheck']?.[
@@ -830,10 +829,8 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       if (data !== undefined) {
-        localVarFormParams.append(
-          'data',
-          new Blob([JSON.stringify(data)], { type: 'application/json' }),
-        )
+        // TODO: fix
+        localVarFormParams.append('data', JSON.stringify(data))
       }
       if (files) {
         files.forEach((element) => {
@@ -1109,9 +1106,8 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetFavouritePhotosDto>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerGetFavouritePhotos(
-        options,
-      )
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.scanControllerGetFavouritePhotos(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['ScannersAndOffencesApi.scanControllerGetFavouritePhotos']?.[

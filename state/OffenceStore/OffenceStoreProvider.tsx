@@ -19,6 +19,7 @@ export type PositionObject = {
 export type OffenceState = {
   roleKey?: string
   ecv?: string
+  scanUuid?: string
 
   // offence data
   location?: PositionObject

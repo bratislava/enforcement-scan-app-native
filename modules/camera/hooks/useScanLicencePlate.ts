@@ -16,6 +16,7 @@ import {
   ScanResultEnum,
 } from '@/modules/backend/openapi-generated'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
+import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 export const HEADER_WITH_PADDING = 100
 export const CROPPED_PHOTO_HEIGHT = 150
@@ -43,7 +44,7 @@ export const useScanLicencePlate = () => {
 
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const role = getRoleByKey(roleKey)
-
+  const { setOffenceState } = useSetOffenceState()
   const udrId = useOffenceStoreContext((state) => state.zone?.udrId)
 
   const createScanMutation = useMutation({
@@ -67,6 +68,7 @@ export const useScanLicencePlate = () => {
     })
 
     if (res.data) {
+      setOffenceState({ scanUuid: res.data.uuid })
       if (res.data.scanResult === ScanReasonEnum.Other) {
         router.push('/offence')
       } else
