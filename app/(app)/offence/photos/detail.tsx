@@ -12,10 +12,13 @@ import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
+type PhotoDetailSearchParams = {
+  index: string
+}
+
 const AppRoute = () => {
   const { t } = useTranslation()
-
-  const { index } = useLocalSearchParams<{ index: string }>()
+  const { index } = useLocalSearchParams<PhotoDetailSearchParams>()
   const photoIndex = Number(index)
 
   const { setOffenceState } = useSetOffenceState()
