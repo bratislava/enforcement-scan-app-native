@@ -1,5 +1,5 @@
 import { FlashList } from '@shopify/flash-list'
-import { router } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { Image, View } from 'react-native'
 
@@ -13,6 +13,17 @@ import { cn } from '@/utils/cn'
 const PhotosPage = () => {
   const { t } = useTranslation()
   const { photos } = useOffenceStoreContext((state) => state)
+
+  const router = useRouter()
+
+  const onShowDetail = (index: number) => {
+    router.push({
+      pathname: '/offence/photos/detail',
+      params: {
+        index,
+      },
+    })
+  }
 
   const { onCreateOffence, isLoading } = useCreateOffence()
 
@@ -30,14 +41,7 @@ const PhotosPage = () => {
           <PressableStyled
             key={item.uri}
             className={cn('w-full items-center justify-center')}
-            onPress={() => {
-              router.push({
-                pathname: '/offence/photos/detail',
-                params: {
-                  index,
-                },
-              })
-            }}
+            onPress={() => onShowDetail(index)}
           >
             <Image className="aspect-square w-full" source={{ uri: item.uri }} />
           </PressableStyled>
