@@ -1,5 +1,6 @@
 {
   "common.continue": "Pokračovať",
+  "home.profile": "Profil",
   "home.title": "Enforcement",
   "offence.location": "Poloha",
   "offence.objectiveResponsibility": "Objektívna zodpovednosť",
@@ -24,6 +25,8 @@
   "offenceResult.newZone": "Vybrať novú zónu",
   "offenceResult.resultError": "Nepodarilo sa vytvoriť hlásenie. Skúste ho vytvoriť znova.",
   "offenceResult.title": "Hlásenie vytvorené",
+  "profile.logout": "Odhlásiť sa",
+  "profile.title": "Profil",
   "scanLicencePlate.licencePlate": "Evidenčné číslo vozidla",
   "scanLicencePlate.next": "Ďalej",
   "scanLicencePlate.retryScan": "Opakovať sken",
