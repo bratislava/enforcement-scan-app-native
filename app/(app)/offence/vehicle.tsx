@@ -38,12 +38,12 @@ const Page = () => {
     return navigation.addListener('beforeRemove', (e) => {
       e.preventDefault()
 
-      if (e.data.action.type === 'GO_BACK') {
+      if (e.data.action.type === 'GO_BACK' && vehicleId) {
         setOffenceState({ vehicleId: undefined })
       }
       navigation.dispatch(e.data.action)
     })
-  }, [navigation, setOffenceState])
+  }, [navigation, setOffenceState, vehicleId])
 
   if (isPending) {
     return <LoadingScreen title={t('vehicleDetail.title')} asScreenView />
