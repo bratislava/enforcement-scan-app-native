@@ -1,7 +1,8 @@
-import { Camera, PermissionStatus } from 'expo-camera'
 import { useCallback, useEffect, useState } from 'react'
+import { Camera, CameraPermissionStatus } from 'react-native-vision-camera'
 
 import { useAppFocusEffect } from '@/hooks/useAppFocusEffect'
+import { PermissionStatuses } from '@/modules/camera/constants'
 
 type Options =
   | {
@@ -10,13 +11,13 @@ type Options =
   | undefined
 
 export const useCameraPermission = ({ autoAsk }: Options = {}) => {
-  const [permissionStatus, setPermissionStatus] = useState<PermissionStatus>(
-    PermissionStatus.UNDETERMINED,
+  const [permissionStatus, setPermissionStatus] = useState<CameraPermissionStatus>(
+    PermissionStatuses.UNDETERMINED,
   )
   const [doNotAskAgain, setDoNotAskAgain] = useState(false)
 
   const checkPermission = useCallback(async () => {
-    const { status } = await Camera.getCameraPermissionsAsync()
+    const status = await Camera.getCameraPermissionStatus()
     setPermissionStatus(status)
     console.log('status', status)
   }, [])
@@ -31,13 +32,13 @@ export const useCameraPermission = ({ autoAsk }: Options = {}) => {
     if (!doNotAskAgain) {
       setDoNotAskAgain(true)
 
-      const { status: currentStatus } = await Camera.getCameraPermissionsAsync()
+      const currentStatus = await Camera.getCameraPermissionStatus()
       console.log('currentStatus', currentStatus)
 
-      if (currentStatus === PermissionStatus.UNDETERMINED) {
-        const { status } = await Camera.requestCameraPermissionsAsync()
-        console.log('currentStatus2', status)
-        setPermissionStatus(status)
+      if (currentStatus === PermissionStatuses.UNDETERMINED) {
+        const requestedStatus = await Camera.requestCameraPermission()
+
+        setPermissionStatus(requestedStatus)
 
         return
       }

@@ -1,7 +1,8 @@
 import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps } from '@gorhom/bottom-sheet'
-import { Camera, PermissionStatus } from 'expo-camera'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Linking, Platform, View } from 'react-native'
+import { Camera } from 'react-native-vision-camera'
 
 import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
@@ -9,25 +10,27 @@ import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/
 import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
 import Button from '@/components/shared/Button'
 import { useAppFocusEffect } from '@/hooks/useAppFocusEffect'
+import { PermissionStatuses } from '@/modules/camera/constants'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 
 const CameraPermissionsBottomSheet = () => {
+  const { t } = useTranslation()
   const ref = useRef<BottomSheet>(null)
   const [CameraPermissionStatus, getCameraPermission] = useCameraPermission()
   const [isCameraOn, setIsCameraOn] = useState(true)
 
   const reloadCameraStatus = useCallback(async () => {
-    if (CameraPermissionStatus === PermissionStatus.UNDETERMINED) {
+    if (CameraPermissionStatus === PermissionStatuses.UNDETERMINED) {
       await getCameraPermission()
     }
 
-    const { granted: isEnabled } = await Camera.getCameraPermissionsAsync()
+    const status = await Camera.getCameraPermissionStatus()
 
-    setIsCameraOn(isEnabled)
+    setIsCameraOn(status === PermissionStatuses.GRANTED)
   }, [getCameraPermission, CameraPermissionStatus])
 
   const handleOpenSettingsPress = useCallback(async () => {
-    if (CameraPermissionStatus !== PermissionStatus.GRANTED) {
+    if (CameraPermissionStatus !== PermissionStatuses.GRANTED) {
       Linking.openSettings()
     } else if (!isCameraOn) {
       // https://copyprogramming.com/howto/react-native-open-settings-through-linking-openurl-in-ios
@@ -62,12 +65,14 @@ const CameraPermissionsBottomSheet = () => {
     reloadCameraStatus()
   }, [reloadCameraStatus])
 
-  if (CameraPermissionStatus === PermissionStatus.GRANTED && isCameraOn) {
+  if (CameraPermissionStatus === PermissionStatuses.GRANTED && isCameraOn) {
     return null
   }
 
   const translationKey =
-    CameraPermissionStatus === PermissionStatus.GRANTED ? 'cameraOff' : 'cameraDenied'
+    CameraPermissionStatus === PermissionStatuses.GRANTED
+      ? t('camera.permissions.cameraOff')
+      : t('camera.permissions.cameraDenied')
 
   return (
     <BottomSheet

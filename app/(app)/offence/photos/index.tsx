@@ -1,8 +1,9 @@
-import { Camera, FlashMode } from 'expo-camera'
 import { Redirect } from 'expo-router'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Camera } from 'react-native-vision-camera'
 
+import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import PhotosBottomSheet from '@/components/camera/PhotosBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
@@ -22,12 +23,12 @@ const AppRoute = () => {
   const photos = useOffenceStoreContext((state) => state.photos)
 
   const ref = useRef<Camera>(null)
-  const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
+  const [torch, setTorch] = useState<TorchState>('off')
   const [loading, setLoading] = useState(false)
 
   const takePicture = async () => {
     setLoading(true)
-    const capturedPhoto = await ref.current?.takePictureAsync()
+    const capturedPhoto = await ref.current?.takePhoto()
 
     if (!capturedPhoto) {
       snackbar.show(t('offenceCamera.error'), {
@@ -63,13 +64,13 @@ const AppRoute = () => {
       })}
       className="h-full"
     >
-      <FullScreenCamera ref={ref} flashMode={flashMode} />
+      <FullScreenCamera ref={ref} torch={torch} />
 
       <PhotosBottomSheet
-        flashMode={flashMode}
+        torch={torch}
         isLoading={loading}
         takePicture={takePicture}
-        setFlashMode={setFlashMode}
+        setTorch={setTorch}
       />
     </ScreenView>
   )

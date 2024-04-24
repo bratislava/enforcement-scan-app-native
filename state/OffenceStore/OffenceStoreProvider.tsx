@@ -1,5 +1,5 @@
-import { CameraCapturedPicture } from 'expo-camera'
 import { createContext, ReactNode, useRef } from 'react'
+import { PhotoFile } from 'react-native-vision-camera'
 
 import { OffenceTypeEnum, ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
@@ -34,7 +34,7 @@ export type OffenceState = {
 
   // vehicle data
   vehicleId?: number
-  photos: CameraCapturedPicture[]
+  photos: PhotoFile[]
 }
 
 export const OffenceStoreContext = createContext<Store<OffenceState>>(

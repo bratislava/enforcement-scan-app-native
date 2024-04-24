@@ -32,6 +32,7 @@ module.exports = {
     plugins: [
       'expo-router',
       'expo-camera',
+      'react-native-vision-camera',
       [
         '@rnmapbox/maps',
         {

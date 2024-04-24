@@ -1,9 +1,10 @@
-import { Camera, FlashMode } from 'expo-camera'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { Camera } from 'react-native-vision-camera'
 
+import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
@@ -19,7 +20,7 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 const LicencePlateCameraComp = () => {
   const { t } = useTranslation()
   const ref = useRef<Camera>(null)
-  const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
+  const [torch, setTorch] = useState<TorchState>('off')
   const [isLoading, setIsLoading] = useState(false)
 
   const { top } = useSafeAreaInsets()
@@ -43,7 +44,7 @@ const LicencePlateCameraComp = () => {
 
     const date = new Date()
 
-    const photo = await ref.current?.takePictureAsync()
+    const photo = await ref.current?.takePhoto()
 
     if (!photo) {
       setIsLoading(false)
@@ -59,7 +60,7 @@ const LicencePlateCameraComp = () => {
 
   return (
     <ScreenView title={t('scanLicencePlate.title')} className="h-full">
-      <FullScreenCamera ref={ref} flashMode={flashMode}>
+      <FullScreenCamera ref={ref} torch={torch}>
         <View className="h-full w-full">
           <View
             style={{ paddingTop: top, height: HEADER_WITH_PADDING }}
@@ -72,8 +73,8 @@ const LicencePlateCameraComp = () => {
 
       <LicencePlateCameraBottomSheet
         isLoading={isLoading}
-        flashMode={flashMode}
-        setFlashMode={setFlashMode}
+        torch={torch}
+        setTorch={setTorch}
         licencePlate={generatedEcv}
         takePicture={takePicture}
         onChangeLicencePlate={(ecv) => setOffenceState({ ecv })}

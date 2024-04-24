@@ -1,4 +1,3 @@
-import { FlashMode } from 'expo-camera'
 import * as Location from 'expo-location'
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 import { View } from 'react-native'
@@ -10,21 +9,18 @@ import FlexRow from '@/components/shared/FlexRow'
 import IconButton from '@/components/shared/IconButton'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 
+export type TorchState = 'on' | 'off'
+
 export type FlashLightProps = {
-  flashMode: FlashMode
-  setFlashMode: Dispatch<SetStateAction<FlashMode>>
+  torch: TorchState
+  setTorch: Dispatch<SetStateAction<TorchState>>
 }
 
 type Props = Omit<BottomSheetTopAttachmentProps, 'children'> & {
   iconLeft?: ReactNode
 } & FlashLightProps
 
-const FlashlightBottomSheetAttachment = ({
-  setFlashMode,
-  iconLeft,
-  flashMode,
-  ...restProps
-}: Props) => {
+const FlashlightBottomSheetAttachment = ({ setTorch, iconLeft, torch, ...restProps }: Props) => {
   const [permissionStatus] = useCameraPermission()
 
   return (
@@ -33,13 +29,11 @@ const FlashlightBottomSheetAttachment = ({
         {iconLeft || <View />}
 
         <IconButton
-          name={flashMode === FlashMode.off ? 'flashlight-on' : 'flashlight-off'}
+          name={torch === 'off' ? 'flashlight-on' : 'flashlight-off'}
           accessibilityLabel="Flashlight"
           variant="white-raised"
           // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
-          onPress={() =>
-            setFlashMode((prev) => (prev === FlashMode.off ? FlashMode.torch : FlashMode.off))
-          }
+          onPress={() => setTorch((prev) => (prev === 'off' ? 'on' : 'off'))}
           disabled={permissionStatus === Location.PermissionStatus.DENIED}
         />
       </FlexRow>
