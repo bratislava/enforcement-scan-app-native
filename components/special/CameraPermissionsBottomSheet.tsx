@@ -1,8 +1,7 @@
 import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps } from '@gorhom/bottom-sheet'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linking, Platform, View } from 'react-native'
-import { Camera } from 'react-native-vision-camera'
+import { Linking, View } from 'react-native'
 
 import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
@@ -17,33 +16,18 @@ const CameraPermissionsBottomSheet = () => {
   const { t } = useTranslation()
   const ref = useRef<BottomSheet>(null)
   const [CameraPermissionStatus, getCameraPermission] = useCameraPermission()
-  const [isCameraOn, setIsCameraOn] = useState(true)
 
   const reloadCameraStatus = useCallback(async () => {
     if (CameraPermissionStatus === PermissionStatuses.UNDETERMINED) {
       await getCameraPermission()
     }
-
-    const status = await Camera.getCameraPermissionStatus()
-
-    setIsCameraOn(status === PermissionStatuses.GRANTED)
   }, [getCameraPermission, CameraPermissionStatus])
 
   const handleOpenSettingsPress = useCallback(async () => {
     if (CameraPermissionStatus !== PermissionStatuses.GRANTED) {
       Linking.openSettings()
-    } else if (!isCameraOn) {
-      // https://copyprogramming.com/howto/react-native-open-settings-through-linking-openurl-in-ios
-      if (Platform.OS === 'android') {
-        Linking.sendIntent('android.settings.Camera_SOURCE_SETTINGS')
-      } else if (Platform.OS === 'ios') {
-        // TODO: test on iOS
-        Linking.openURL('App-Prefs:root=Privacy&path=Camera')
-        // Or this
-        // Linking.openURL('App-Prefs:Privacy&path=Camera')
-      }
     }
-  }, [CameraPermissionStatus, isCameraOn])
+  }, [CameraPermissionStatus])
 
   // This is done so that when user changes the Camera settings and refocuses the app
   // the bottom sheet will be updated
@@ -65,14 +49,9 @@ const CameraPermissionsBottomSheet = () => {
     reloadCameraStatus()
   }, [reloadCameraStatus])
 
-  if (CameraPermissionStatus === PermissionStatuses.GRANTED && isCameraOn) {
+  if (CameraPermissionStatus === PermissionStatuses.GRANTED) {
     return null
   }
-
-  const translationKey =
-    CameraPermissionStatus === PermissionStatuses.GRANTED
-      ? t('camera.permissions.cameraOff')
-      : t('camera.permissions.cameraDenied')
 
   return (
     <BottomSheet
@@ -85,8 +64,8 @@ const CameraPermissionsBottomSheet = () => {
       <BottomSheetContent>
         <ContentWithAvatar
           className="px-0 py-0 pb-3 g-3"
-          title={translationKey}
-          text={translationKey}
+          title={t('camera.permissions.cameraDenied.title')}
+          text={t('camera.permissions.cameraDenied.text')}
           customAvatarComponent={<AvatarCircleIcon name="no-photography" />}
         >
           <View className="flex-row justify-between g-3">

@@ -1,4 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
@@ -6,69 +7,51 @@ import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import ScreenViewCentered from '@/components/screen-layout/ScreenViewCentered'
 import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 
+type AvailableScanResults = 'PAAS_PARKING_VIOLATION' | 'PAAS_PARKING_VIOLATION_DUPLICITY'
+
 type ScanResultSearchParams = {
-  scanResult: ScanResultEnum
+  scanResult: AvailableScanResults
 }
 
-const scanResultTextsMap: Record<ScanResultEnum, Record<string, string>> = {
-  [ScanResultEnum.NoViolation]: {
-    title: 'Bez priestupku',
-    text: 'Bez priestupku - text',
-    buttonText: 'Skenovať ďalší',
-  },
-  [ScanResultEnum.PaasParkingViolationDuplicity]: {
-    title: 'Duplicita',
-    text: 'Duplicita - text',
-    buttonText: 'Skenovať ďalší',
-  },
-  [ScanResultEnum.PaasParkingViolation]: {
-    title: 'Priestupok',
-    text: 'Priestupok - text',
-    buttonText: 'Vytvoriť nový priestupok',
-  },
-  [ScanResultEnum.Other]: {
-    title: 'Iný dôvod',
-    text: 'Iný dôvod - text',
-    buttonText: 'Skenovať ďalší',
-  },
-}
+const getResultVariant = (result?: AvailableScanResults) => {
+  if (result === 'PAAS_PARKING_VIOLATION') return 'error'
 
-const getResultVariant = (result?: ScanResultEnum) => {
-  switch (result) {
-    case ScanResultEnum.NoViolation:
-      return 'success'
-    case ScanResultEnum.PaasParkingViolationDuplicity:
-      return 'warning'
-    default:
-      return 'error'
-  }
+  return 'warning'
 }
 
 // TODO - texts
 const ScanResultPage = () => {
+  const { t } = useTranslation()
   const { scanResult } = useLocalSearchParams<ScanResultSearchParams>()
 
   if (!scanResult) {
-    return <ErrorScreen text="Nepodarilo sa načítať výsledok skenovania" />
+    return <ErrorScreen text={t('scanResult.unsuccessful')} />
+  }
+
+  const scanResultTextsMap = {
+    [ScanResultEnum.PaasParkingViolationDuplicity]: {
+      title: t('scanResult.duplicity.title'),
+      text: t('scanResult.duplicity.text'),
+      buttonText: t('scanResult.duplicity.buttonText'),
+    },
+    [ScanResultEnum.PaasParkingViolation]: {
+      title: t('scanResult.offence.title'),
+      text: t('scanResult.offence.text'),
+      buttonText: t('scanResult.offence.buttonText'),
+    },
   }
 
   return (
     <ScreenViewCentered
       options={{ headerTransparent: true }}
       actionButton={
-        scanResult === ScanResultEnum.NoViolation ? (
-          <ContinueButton onPress={router.back}>
-            {scanResultTextsMap[scanResult].buttonText}
-          </ContinueButton>
-        ) : (
-          <ContinueButton variant="negative" onPress={() => router.replace('/offence')}>
-            {scanResultTextsMap[scanResult].buttonText}
-          </ContinueButton>
-        )
+        <ContinueButton variant="negative" onPress={() => router.replace('/offence')}>
+          {scanResultTextsMap[scanResult].buttonText}
+        </ContinueButton>
       }
     >
       <ContentWithAvatar
-        variant={getResultVariant(scanResult as ScanResultEnum)}
+        variant={getResultVariant(scanResult)}
         title={scanResultTextsMap[scanResult].title}
         text={scanResultTextsMap[scanResult].text}
         asMarkdown
