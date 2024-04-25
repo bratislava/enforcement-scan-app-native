@@ -9112,10 +9112,10 @@ react-native-mmkv@~2.11.0:
   resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.11.0.tgz#51b9985f6a5c09fe9c16d8c1861cc2901856ace1"
   integrity sha512-28PdUHjZJmAw3q+8zJDAAdohnZMpDC7WgRUJxACOMkcmJeqS3u5cKS/lSq2bhf1CvaeIiHYHUWiyatUjMRCDQQ==
 
-react-native-pager-view@^6.2.3:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.3.0.tgz#7e734e84b1692f877591335373f6fd92f0d67aa6"
-  integrity sha512-ufJOoVa9pFL1J/yb4hpsCqp8n1qTlcF5VvwqvCacHX//D7hSeRscsiIXg1u1pXNWwllvACb+mqxec/3Uj2mxrA==
+react-native-pager-view@6.2.3:
+  version "6.2.3"
+  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.2.3.tgz#698f6387fdf06cecc3d8d4792604419cb89cb775"
+  integrity sha512-dqVpXWFtPNfD3D2QQQr8BP+ullS5MhjRJuF8Z/qml4QTILcrWaW8F5iAxKkQR3Jl0ikcEryG/+SQlNcwlo0Ggg==
 
 react-native-reanimated@~3.6.2:
   version "3.6.3"
@@ -9177,10 +9177,22 @@ react-native-toast-notifications@^3.4.0:
   resolved "https://registry.yarnpkg.com/react-native-toast-notifications/-/react-native-toast-notifications-3.4.0.tgz#9f2c79ec80fba4af6b788ecddf704f94cf21dbc2"
   integrity sha512-ZvB//jLhRiBRemtcH7vGP1maiKCikqtW4aDqo+QYvEIOcX0y3GrjxRayVAqI4oh0qJgd/26DkbM8COobj+0MEQ==
 
-react-native-vision-camera@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-vision-camera/-/react-native-vision-camera-4.0.1.tgz#045c8ff9c236d3bf7e1dba24172a4c11b19bbd37"
-  integrity sha512-TuXLw/ak+LPaJOCuUaYG1g2EmTAEEeIVAhSbCsqEHlklMjkO0oRBGcPC6HpKw3++jkcKRBVVyY48HbB002UZfg==
+react-native-vision-camera-v3-text-recognition@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-vision-camera-v3-text-recognition/-/react-native-vision-camera-v3-text-recognition-1.0.6.tgz#984ddf19076a8b9dc90503075737f967fd246f8f"
+  integrity sha512-aX6co2JTBokpia/FzoCKXTf5ys1JxWyxUVPRtqQR0lbWzEp1QrG23czFzFMuqR/kH6jL9jYtajfL8BVWuvAY+g==
+
+react-native-vision-camera@^3.9.0:
+  version "3.9.2"
+  resolved "https://registry.yarnpkg.com/react-native-vision-camera/-/react-native-vision-camera-3.9.2.tgz#d6656a4c0af929916d5e6b57af5adfe94ff8c65a"
+  integrity sha512-watHRWbeH7CBYq/5sPj2fpZj87V8J5nGdmYO61aYsDLuJ2Pkij7anAzBf8B8oZiyoSUuYpAzX4lIIi+LjWVedA==
+
+react-native-worklets-core@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-worklets-core/-/react-native-worklets-core-0.4.0.tgz#708f204d89327d88e155cccb5fc23421ca764b6f"
+  integrity sha512-0rYCwxnG6L85mih+3xe1r2RhhwKqjgVN9jikVh0iMPKDf9L4OZMJnl6Kh4zjXiW9rkyI5lBghfM4XIcLMfeU6w==
+  dependencies:
+    string-hash-64 "^1.0.3"
 
 react-native@0.73.6:
   version "0.73.6"
@@ -10065,6 +10077,11 @@ strict-uri-encode@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
   integrity sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==
+
+string-hash-64@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/string-hash-64/-/string-hash-64-1.0.3.tgz#0deb56df58678640db5c479ccbbb597aaa0de322"
+  integrity sha512-D5OKWKvDhyVWWn2x5Y9b+37NUllks34q1dCDhk/vYcso9fmhs+Tl3KR/gE4v5UNj2UA35cnX4KdVVGkG1deKqw==
 
 "string-width-cjs@npm:string-width@^4.2.0":
   version "4.2.3"

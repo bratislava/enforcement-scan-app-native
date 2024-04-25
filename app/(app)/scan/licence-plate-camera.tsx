@@ -1,13 +1,17 @@
-import { useRef, useState } from 'react'
+import { router } from 'expo-router'
+import { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Camera } from 'react-native-vision-camera'
+import { TextDataMap } from 'react-native-vision-camera-v3-text-recognition'
 
 import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
-import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
+import OcrCamera from '@/components/camera/OcrCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import { getRoleByKey } from '@/modules/backend/constants/roles'
+import { ScanReasonEnum, ScanResultEnum } from '@/modules/backend/openapi-generated'
 import {
   CROPPED_PHOTO_HEIGHT,
   HEADER_WITH_PADDING,
@@ -16,68 +20,110 @@ import {
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { cn } from '@/utils/cn'
 
 const LicencePlateCameraComp = () => {
   const { t } = useTranslation()
   const ref = useRef<Camera>(null)
   const [torch, setTorch] = useState<TorchState>('off')
   const [isLoading, setIsLoading] = useState(false)
+  const [scanResult, setScanResult] = useState<ScanResultEnum | null>(null)
 
   const { top } = useSafeAreaInsets()
 
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
+  const roleKey = useOffenceStoreContext((state) => state.roleKey)
+  const role = getRoleByKey(roleKey)
   const { setOffenceState } = useSetOffenceState()
 
   useCameraPermission({ autoAsk: true })
 
   const { scanLicencePlate, checkEcv } = useScanLicencePlate()
 
-  const takePicture = async () => {
+  const onCheckEcv = useCallback(
+    async (ecv: string) => {
+      const newScanResult = await checkEcv(ecv)
+
+      if (newScanResult === ScanReasonEnum.Other) {
+        return router.push('/offence')
+      }
+      if (newScanResult !== ScanResultEnum.NoViolation)
+        return router.push({
+          pathname: '/scan/scan-result',
+          params: { scanResult: newScanResult },
+        })
+
+      return newScanResult
+    },
+    [checkEcv],
+  )
+
+  const onFrameCapture = useCallback(
+    async (frame: TextDataMap) => {
+      const ecv = scanLicencePlate(frame)
+
+      if (ecv && !generatedEcv) {
+        setIsLoading(true)
+        setScanResult(null)
+        setOffenceState({ ecv })
+
+        const newScanResult = await onCheckEcv(ecv)
+
+        if (newScanResult && role?.actions.scanCheck) {
+          setScanResult(newScanResult)
+        }
+
+        setIsLoading(false)
+      }
+    },
+    [generatedEcv, onCheckEcv, role?.actions.scanCheck, scanLicencePlate, setOffenceState],
+  )
+
+  const onContinue = async () => {
     setIsLoading(true)
+
     if (generatedEcv) {
-      await checkEcv(generatedEcv)
+      const result = await onCheckEcv(generatedEcv)
 
-      setIsLoading(false)
-
-      return
+      if (result) router.push('/offence')
     }
 
-    const date = new Date()
-
-    const photo = await ref.current?.takePhoto()
-
-    if (!photo) {
-      setIsLoading(false)
-
-      return
-    }
-
-    const ecv = await scanLicencePlate(photo)
-    setOffenceState({ ecv })
     setIsLoading(false)
-    console.log('Time function took in seconds:', (Date.now() - date.getTime()) / 1000)
   }
 
   return (
     <ScreenView title={t('scanLicencePlate.title')} className="h-full">
-      <FullScreenCamera ref={ref} torch={torch}>
-        <View className="h-full w-full">
+      <View className="relative">
+        <OcrCamera ref={ref} torch={torch} onFrameCapture={onFrameCapture} />
+
+        <View className="absolute h-full w-full">
           <View
             style={{ paddingTop: top, height: HEADER_WITH_PADDING }}
-            className="items-center justify-start bg-dark/80"
+            className={cn('items-center justify-start bg-dark/80', {
+              'bg-green/80': scanResult === ScanResultEnum.NoViolation,
+            })}
           />
           <View style={{ height: CROPPED_PHOTO_HEIGHT }} className="items-center" />
-          <View className="flex-1 items-center bg-dark/80 bg-opacity-20" />
+          <View
+            className={cn('flex-1 items-center bg-dark/80 bg-opacity-20', {
+              'bg-green/80': scanResult === ScanResultEnum.NoViolation,
+            })}
+          />
         </View>
-      </FullScreenCamera>
+      </View>
 
       <LicencePlateCameraBottomSheet
         isLoading={isLoading}
         torch={torch}
         setTorch={setTorch}
         licencePlate={generatedEcv}
-        takePicture={takePicture}
-        onChangeLicencePlate={(ecv) => setOffenceState({ ecv })}
+        onContinue={onContinue}
+        onChangeLicencePlate={(ecv) => {
+          if (scanResult) {
+            setScanResult(null)
+          }
+          setOffenceState({ ecv })
+        }}
       />
     </ScreenView>
   )
