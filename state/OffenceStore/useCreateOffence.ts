@@ -4,6 +4,7 @@ import { router } from 'expo-router'
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
 import { clientApi } from '@/modules/backend/client-api'
 import { RequestCreateOffenceDataDto } from '@/modules/backend/openapi-generated'
+import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 
 const onRouteToResult = (offenceResult: 'success' | 'error') => {
@@ -64,11 +65,15 @@ export const useCreateOffence = () => {
           streetName: '',
         },
         // Axios throws Network Error if the file is fetched and sent with `new File()`
-        files: photos.map((photo) => ({
-          uri: photo.uri,
-          type: 'image/jpeg',
-          name: photo.uri,
-        })) as unknown as Array<File>,
+        files: photos.map((photo) => {
+          const photoUri = getPhotoUri(photo)
+
+          return {
+            uri: photoUri,
+            type: 'image/jpeg',
+            name: photoUri,
+          }
+        }) as unknown as Array<File>,
       })
 
       onRouteToResult(res.data.id ? 'success' : 'error')

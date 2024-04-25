@@ -6,6 +6,7 @@ import { Image, View } from 'react-native'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import PressableStyled from '@/components/shared/PressableStyled'
+import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useCreateOffence } from '@/state/OffenceStore/useCreateOffence'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { cn } from '@/utils/cn'
@@ -39,11 +40,11 @@ const PhotosPage = () => {
         ItemSeparatorComponent={() => <View className="h-2 w-2" />}
         renderItem={({ item, index }) => (
           <PressableStyled
-            key={item.uri}
+            key={item.path}
             className={cn('w-full items-center justify-center')}
             onPress={() => onShowDetail(index)}
           >
-            <Image className="aspect-square w-full" source={{ uri: item.uri }} />
+            <Image className="aspect-square w-full" source={{ uri: getPhotoUri(item) }} />
           </PressableStyled>
         )}
         numColumns={2}
