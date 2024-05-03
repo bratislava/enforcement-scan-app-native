@@ -37,7 +37,12 @@ const OffencePage = () => {
     setIsSubmitting(true)
     setIsTouched(true)
 
-    if (!(offenceType && resolutionType)) {
+    if (
+      !(
+        offenceType &&
+        (isObjectiveResponsibility || (!isObjectiveResponsibility && resolutionType))
+      )
+    ) {
       setIsSubmitting(false)
 
       return
@@ -97,24 +102,28 @@ const OffencePage = () => {
               </Link>
             </Field>
 
-            <Field
-              label={t('offence.offenceResolution')}
-              errorMessage={isTouched && !resolutionType ? t('offence.required') : undefined}
-            >
-              <Link asChild href="/offence/resolution-type">
-                <SelectButton
-                  hasError={isTouched && !resolutionType}
-                  value={resolutionType ? getResolutionTypeLabel(resolutionType) : undefined}
-                  placeholder={t('offence.offenceResolutionPlaceholder')}
-                />
-              </Link>
-            </Field>
+            {isObjectiveResponsibility ? null : (
+              <Field
+                label={t('offence.offenceResolution')}
+                errorMessage={isTouched && !resolutionType ? t('offence.required') : undefined}
+              >
+                <Link asChild href="/offence/resolution-type">
+                  <SelectButton
+                    hasError={isTouched && !resolutionType}
+                    value={resolutionType ? getResolutionTypeLabel(resolutionType) : undefined}
+                    placeholder={t('offence.offenceResolutionPlaceholder')}
+                  />
+                </Link>
+              </Field>
+            )}
 
             <SelectRow
               disabled={!role?.actions.subjective}
               label={t('offence.objectiveResponsibility')}
               onValueChange={() =>
-                setOffenceState({ isObjectiveResponsibility: !isObjectiveResponsibility })
+                setOffenceState({
+                  isObjectiveResponsibility: !isObjectiveResponsibility,
+                })
               }
               value={isObjectiveResponsibility}
             />
