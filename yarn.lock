@@ -2214,11 +2214,6 @@
     prompts "^2.4.2"
     semver "^7.5.2"
 
-"@react-native-ml-kit/text-recognition@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@react-native-ml-kit/text-recognition/-/text-recognition-1.5.1.tgz#a0b3bd379c5261621143b862c2571088321e7505"
-  integrity sha512-UO13SPfTPG44UrE4k9jXZBLXYAizXg9spDiAzUnMQMKOHUCuY6sTnm7YNI7pUrR1HXQ72L5dpCeXU+d0QK8/rQ==
-
 "@react-native/assets-registry@0.73.1", "@react-native/assets-registry@~0.73.1":
   version "0.73.1"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.73.1.tgz#e2a6b73b16c183a270f338dc69c36039b3946e85"
@@ -5520,13 +5515,6 @@ expo-auth-session@~5.4.0:
     expo-crypto "~12.8.0"
     expo-linking "~6.2.0"
     expo-web-browser "~12.8.0"
-    invariant "^2.2.4"
-
-expo-camera@^14.1.1:
-  version "14.1.1"
-  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-14.1.1.tgz#f500c37dc112090bd5d2f30917087f7faf59318b"
-  integrity sha512-ANxQYy2P9qXxRoLWs7Gs3y7NM7OpYr7Q1H6kmQwJxHjjuJSc2qhwhY10I138d0fzB0h0p8NF1ezqIrqWct5AvQ==
-  dependencies:
     invariant "^2.2.4"
 
 expo-constants@~15.4.0, expo-constants@~15.4.3, expo-constants@~15.4.5:
