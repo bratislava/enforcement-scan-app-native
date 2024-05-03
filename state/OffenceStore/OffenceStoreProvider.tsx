@@ -35,6 +35,7 @@ export type OffenceState = {
   // vehicle data
   vehicleId?: number
   photos: PhotoFile[]
+  ecvPhoto: PhotoFile
 }
 
 export const OffenceStoreContext = createContext<Store<OffenceState>>(

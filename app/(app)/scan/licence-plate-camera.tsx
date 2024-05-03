@@ -60,12 +60,16 @@ const LicencePlateCameraComp = () => {
 
   const onFrameCapture = useCallback(
     async (frame: TextDataMap) => {
+      if (!ref.current) return
+
       const ecv = scanLicencePlate(frame)
 
       if (ecv && !generatedEcv) {
         setIsLoading(true)
         setScanResult(null)
-        setOffenceState({ ecv })
+
+        const ecvPhoto = await ref.current.takePhoto()
+        setOffenceState({ ecvPhoto, ecv })
 
         const newScanResult = await onCheckEcv(ecv)
 

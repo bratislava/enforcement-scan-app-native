@@ -26,6 +26,7 @@ export const useCreateOffence = () => {
     zonePhoto,
     vehicleId,
     photos,
+    ecvPhoto,
     zone,
     resolutionType,
   } = useOffenceStoreContext((state) => state)
@@ -65,7 +66,7 @@ export const useCreateOffence = () => {
           streetName: '',
         },
         // Axios throws Network Error if the file is fetched and sent with `new File()`
-        files: photos.map((photo) => {
+        files: [...photos, ecvPhoto].map((photo) => {
           const photoUri = getPhotoUri(photo)
 
           return {
