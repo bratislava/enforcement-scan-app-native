@@ -27,4 +27,6 @@ i18n
     debug: environment.deployment === 'development',
   })
 
+export const t = i18n.t
+
 export default i18n

@@ -58,11 +58,10 @@ export const useCreateOffence = () => {
           lat: location.lat.toString(),
           long: location.long.toString(),
           zonePhotoId: zonePhoto?.id,
-          resolutionType,
+          // offence with objective responsibility does not allow to set resolution type
+          resolutionType: isObjectiveResponsibility ? undefined : resolutionType,
           udr: zone?.udrId,
           vehicleId,
-          // TODO: discuss what to do with streetName
-          streetName: '',
         },
         // Axios throws Network Error if the file is fetched and sent with `new File()`
         files: photos.map((photo) => {
