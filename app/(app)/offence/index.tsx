@@ -37,12 +37,7 @@ const OffencePage = () => {
     setIsSubmitting(true)
     setIsTouched(true)
 
-    if (
-      !(
-        offenceType &&
-        (isObjectiveResponsibility || (!isObjectiveResponsibility && resolutionType))
-      )
-    ) {
+    if (!(offenceType && (isObjectiveResponsibility || resolutionType))) {
       setIsSubmitting(false)
 
       return
