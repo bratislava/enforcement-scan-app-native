@@ -1,48 +1,18 @@
-import TextRecognition, { TextRecognitionResult } from '@react-native-ml-kit/text-recognition'
 import { useMutation } from '@tanstack/react-query'
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator'
 import * as Location from 'expo-location'
-import { router } from 'expo-router'
 import { useCallback } from 'react'
-import { useWindowDimensions } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { PhotoFile } from 'react-native-vision-camera'
+import { TextDataMap } from 'react-native-vision-camera-v3-text-recognition'
 
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import {
-  RequestCreateOrUpdateScanDto,
-  ScanReasonEnum,
-  ScanResultEnum,
-} from '@/modules/backend/openapi-generated'
-import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
+import { RequestCreateOrUpdateScanDto, ScanResultEnum } from '@/modules/backend/openapi-generated'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 export const HEADER_WITH_PADDING = 100
 export const CROPPED_PHOTO_HEIGHT = 150
 
-const biggestText = (ocr: TextRecognitionResult) => {
-  const ocrs = ocr?.blocks
-    .filter(({ frame }) => !!frame)
-    .map((block) => ({
-      ...block,
-      surfaceArea: block.frame ? block.frame.width * block.frame.height : 0,
-    }))
-
-  const numbers = ocrs.map(({ surfaceArea }) => surfaceArea)
-
-  if (!Array.isArray(numbers) || numbers.length === 0) return ''
-
-  const index = numbers.indexOf(Math.max(...numbers))
-
-  return ocrs[index].text
-}
-
 export const useScanLicencePlate = () => {
-  const { width } = useWindowDimensions()
-  const { top } = useSafeAreaInsets()
-
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const role = getRoleByKey(roleKey)
   const { setOffenceState } = useSetOffenceState()
@@ -53,10 +23,13 @@ export const useScanLicencePlate = () => {
       clientApi.scanControllerCreateOrUpdateScanEcv(bodyInner),
   })
 
-  const checkEcv = async (ecv: string) => {
+  /**
+   * Checks the ECV with BE and returns the scan result
+   */
+  const checkEcv = async (ecv: string): Promise<ScanResultEnum | null> => {
     const location = await Location.getLastKnownPositionAsync()
 
-    if (!(location && role)) return
+    if (!(location && role)) return null
 
     const res = await createScanMutation.mutateAsync({
       ecv,
@@ -70,70 +43,42 @@ export const useScanLicencePlate = () => {
 
     if (res.data) {
       setOffenceState({ scanUuid: res.data.uuid })
-      if (res.data.scanResult === ScanReasonEnum.Other) {
-        router.push('/offence')
-      } else
-        router.push({
-          pathname: '/scan/scan-result',
-          // TODO: remove fixed value after BE adds violations
-          params: { scanResult: ScanResultEnum.PaasParkingViolation || res.data.scanResult },
-        })
+
+      return res.data.scanResult || null
     }
+
+    return null
   }
 
   /**
-   * Get the originY and height of the cropped part for the photo from the camera
+   * Finds the biggest block of text in the frame and checks whether it meets the criteria for ECV
    */
-  const getPhotoOriginY = useCallback(
-    (photoHeight: number) => {
-      const cameraHeight = (width * 16) / 9
-      const topHeightRatio = (top + HEADER_WITH_PADDING) / cameraHeight
-      const croppedHeightRatio = CROPPED_PHOTO_HEIGHT / cameraHeight
+  const scanLicencePlate = useCallback((frameObject: TextDataMap) => {
+    const frameArray = Object.values(frameObject)
+      .filter((block) => block.blockText)
+      .map((block) => ({
+        ...block,
+        surfaceArea:
+          (block.blockFrameBottom - block.blockFrameTop) *
+          (block.blockFrameRight - block.blockFrameLeft),
+      }))
 
-      return {
-        originY: photoHeight * topHeightRatio,
-        height: photoHeight * croppedHeightRatio,
-      }
-    },
-    [width, top],
-  )
+    const numbers = frameArray.map(({ surfaceArea }) => surfaceArea)
 
-  const scanLicencePlate = useCallback(
-    async (photo: PhotoFile) => {
-      const photoUri = getPhotoUri(photo)
-      if (!photoUri) return ''
-      try {
-        const { originY, height } = getPhotoOriginY(photo.height)
+    if (!Array.isArray(numbers) || numbers.length === 0) return ''
 
-        const croppedPhoto = await manipulateAsync(
-          photoUri,
-          [
-            {
-              crop: { originX: 0, originY, width: photo.width, height },
-            },
-          ],
-          {
-            compress: 0.5,
-            format: SaveFormat.JPEG,
-          },
-        )
-        const newOcr = await TextRecognition.recognize(croppedPhoto.uri)
+    const index = numbers.indexOf(Math.max(...numbers))
 
-        if (newOcr) {
-          return (
-            biggestText(newOcr)
-              .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
-              .replaceAll(/[^\dA-Z]/g, '') || 'BR222BB' // ECV is here for testing purposes
-          )
-        }
-      } catch (error) {
-        console.error('Error scanning licence plate', error)
-      }
+    const newEcv = frameArray[index].blockText
+      .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
+      .replaceAll(/[^\dA-Z]/g, '')
 
-      return ''
-    },
-    [getPhotoOriginY],
-  )
+    if (newEcv.length > 5 && newEcv.length < 13) {
+      return newEcv
+    }
+
+    return ''
+  }, [])
 
   return { checkEcv, scanLicencePlate }
 }

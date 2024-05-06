@@ -1,5 +1,5 @@
 import BottomSheet from '@gorhom/bottom-sheet'
-import { forwardRef } from 'react'
+import { forwardRef, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSharedValue } from 'react-native-reanimated'
@@ -10,6 +10,7 @@ import MapZoneBottomSheetPanel from '@/components/map/MapZoneBottomSheetPanel'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/BottomSheetHandleWithShadow'
 import Typography from '@/components/shared/Typography'
+import { useMultipleRefsSetter } from '@/hooks/useMultipleRefsSetter'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { PositionObject } from '@/state/OffenceStore/OffenceStoreProvider'
 import { cn } from '@/utils/cn'
@@ -23,6 +24,10 @@ type Props = {
 
 const MapZoneBottomSheet = forwardRef<BottomSheet, Props>(
   ({ zone: selectedZone, setFlyToCenter, centerCoordinate, isZoomedOut }, ref) => {
+    const localRef = useRef<BottomSheet>(null)
+
+    const refSetter = useMultipleRefsSetter(ref, localRef)
+
     const { t } = useTranslation()
     const animatedPosition = useSharedValue(0)
 
@@ -31,10 +36,11 @@ const MapZoneBottomSheet = forwardRef<BottomSheet, Props>(
         <MapZoneBottomSheetAttachment {...{ animatedPosition, setFlyToCenter }} />
         <BottomSheet
           key="mapZoneBottomSheet"
-          ref={ref}
+          ref={refSetter}
           keyboardBehavior="interactive"
           handleComponent={BottomSheetHandleWithShadow}
           animatedPosition={animatedPosition}
+          onClose={localRef.current?.expand}
           enableDynamicSizing
         >
           <BottomSheetContent isDynamic className={cn('bg-white', selectedZone ? 'g-2' : 'g-3')}>

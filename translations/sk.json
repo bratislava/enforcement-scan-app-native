@@ -1,6 +1,7 @@
 {
-  "camera.permissions.cameraDenied.title": "Kamera je zamietnuta",
+  "camera.ocr.error.title": "Kamera nie je dostupná na tomto zariadení",
   "camera.permissions.cameraDenied.text": "Povolte pristup v nastaveniach",
+  "camera.permissions.cameraDenied.title": "Kamera je zamietnuta",
   "common.continue": "Pokračovať",
   "home.profile": "Profil",
   "home.title": "Enforcement",

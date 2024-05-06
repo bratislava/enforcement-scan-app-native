@@ -16,14 +16,14 @@ import IconButton from '@/components/shared/IconButton'
 type Props = FlashLightProps & {
   licencePlate?: string
   isLoading: boolean
-  takePicture: () => Promise<void>
+  onContinue: () => Promise<void>
   onChangeLicencePlate: (plate: string) => void
 }
 
 const LicencePlateCameraBottomSheet = ({
   licencePlate,
   isLoading,
-  takePicture,
+  onContinue,
   onChangeLicencePlate,
   ...rest
 }: Props) => {
@@ -66,8 +66,8 @@ const LicencePlateCameraBottomSheet = ({
             />
           </Field>
 
-          <Button loading={isLoading} onPress={takePicture}>
-            {licencePlate ? t('scanLicencePlate.next') : t('scanLicencePlate.scan')}
+          <Button loading={isLoading} disabled={!licencePlate} onPress={onContinue}>
+            {t('scanLicencePlate.next')}
           </Button>
         </BottomSheetContent>
       </BottomSheet>
