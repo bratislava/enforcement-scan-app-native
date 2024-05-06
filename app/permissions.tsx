@@ -1,4 +1,3 @@
-import { PermissionStatus } from 'expo-camera'
 import { router, Stack } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { useWindowDimensions, View } from 'react-native'
@@ -8,6 +7,7 @@ import { SceneRendererProps, TabView } from 'react-native-tab-view'
 import { SlideLocationPermissions, SlideNotificationPermission } from '@/assets/permissions'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import InfoSlide from '@/components/screen-layout/InfoSlide'
+import { PermissionStatuses } from '@/modules/camera/constants'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useLocationPermission } from '@/modules/permissions/useLocationPermission'
 import { cn } from '@/utils/cn'
@@ -41,7 +41,7 @@ const PermissionsRoute = ({ route, jumpTo }: RouteProps) => {
   }, [route.key, jumpTo])
 
   useEffect(() => {
-    if (permissionStatus !== PermissionStatus.UNDETERMINED) {
+    if (permissionStatus !== PermissionStatuses.UNDETERMINED) {
       onPermissionFinished()
     }
   }, [onPermissionFinished, permissionStatus])

@@ -1,5 +1,4 @@
 import { exchangeCodeAsync, makeRedirectUri, useAuthRequest } from 'expo-auth-session'
-import { PermissionStatus } from 'expo-camera'
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
 
@@ -8,6 +7,7 @@ import { useClearHistory } from '@/hooks/useClearHistory'
 import { AUTH_SCOPES, discovery, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
 import { useAuthStoreUpdateContext } from '@/modules/auth/state/useAuthStoreUpdateContext'
 import { getUserFromTokens } from '@/modules/auth/utils'
+import { PermissionStatuses } from '@/modules/camera/constants'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useLocationPermission } from '@/modules/permissions/useLocationPermission'
 
@@ -67,7 +67,7 @@ export const useSignIn = () => {
 
       if (
         locationPermissionStatus === Location.PermissionStatus.UNDETERMINED ||
-        cameraPermissionStatus === PermissionStatus.UNDETERMINED
+        cameraPermissionStatus === PermissionStatuses.UNDETERMINED
       ) {
         router.replace('/permissions')
       } else {

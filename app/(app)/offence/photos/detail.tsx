@@ -1,13 +1,15 @@
-import { Camera, CameraCapturedPicture, FlashMode } from 'expo-camera'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image } from 'react-native'
+import { Camera, PhotoFile } from 'react-native-vision-camera'
 
 import CameraBottomSheet from '@/components/camera/CameraBottomSheet'
+import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
+import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
@@ -26,16 +28,16 @@ const AppRoute = () => {
 
   const ref = useRef<Camera>(null)
 
-  const [photo, setPhoto] = useState<CameraCapturedPicture | null>(photos[photoIndex] || null)
+  const [photo, setPhoto] = useState<PhotoFile | null>(photos[photoIndex] || null)
   const [isRetaking, setIsRetaking] = useState(false)
-  const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off)
+  const [torch, setTorch] = useState<TorchState>('off')
   const [loading, setLoading] = useState(false)
 
   useCameraPermission({ autoAsk: true })
 
   const takePicture = async () => {
     setLoading(true)
-    const capturedPhoto = await ref.current?.takePictureAsync()
+    const capturedPhoto = await ref.current?.takePhoto()
 
     if (!capturedPhoto) {
       setLoading(false)
@@ -79,20 +81,23 @@ const AppRoute = () => {
       className="h-full"
     >
       {photo ? (
-        <Image source={{ uri: photo?.uri || photos[photoIndex].uri }} style={{ flex: 1 }} />
+        <Image
+          source={{ uri: getPhotoUri(photo) || getPhotoUri(photos[photoIndex]) }}
+          style={{ flex: 1 }}
+        />
       ) : (
-        <FullScreenCamera ref={ref} flashMode={flashMode} />
+        <FullScreenCamera ref={ref} torch={torch} />
       )}
 
       {isRetaking ? (
         <CameraBottomSheet
           hasPhoto={!!photo}
-          flashMode={flashMode}
+          torch={torch}
           isLoading={loading}
           takePicture={takePicture}
           selectPicture={selectPicture}
           retakePicture={retakePicture}
-          setFlashMode={setFlashMode}
+          setTorch={setTorch}
         />
       ) : null}
     </ScreenView>

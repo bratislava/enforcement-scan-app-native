@@ -1,12 +1,12 @@
 import TextRecognition, { TextRecognitionResult } from '@react-native-ml-kit/text-recognition'
 import { useMutation } from '@tanstack/react-query'
-import { CameraCapturedPicture } from 'expo-camera'
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator'
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
 import { useCallback } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { PhotoFile } from 'react-native-vision-camera'
 
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
@@ -15,6 +15,7 @@ import {
   ScanReasonEnum,
   ScanResultEnum,
 } from '@/modules/backend/openapi-generated'
+import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -98,12 +99,14 @@ export const useScanLicencePlate = () => {
   )
 
   const scanLicencePlate = useCallback(
-    async (photo: CameraCapturedPicture) => {
+    async (photo: PhotoFile) => {
+      const photoUri = getPhotoUri(photo)
+      if (!photoUri) return ''
       try {
         const { originY, height } = getPhotoOriginY(photo.height)
 
         const croppedPhoto = await manipulateAsync(
-          photo.uri,
+          photoUri,
           [
             {
               crop: { originX: 0, originY, width: photo.width, height },
