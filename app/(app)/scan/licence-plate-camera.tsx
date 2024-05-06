@@ -1,5 +1,5 @@
 import { router } from 'expo-router'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -32,6 +32,7 @@ const LicencePlateCameraComp = () => {
   const { top } = useSafeAreaInsets()
 
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
+  const licencePlatePicture = useOffenceStoreContext((state) => state.ecvPhoto)
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const role = getRoleByKey(roleKey)
   const { setOffenceState } = useSetOffenceState()
@@ -58,18 +59,22 @@ const LicencePlateCameraComp = () => {
     [checkEcv],
   )
 
+  const takeLicencePlatePicture = useCallback(async () => {
+    if (!ref.current) return
+
+    const ecvPhoto = await ref.current.takePhoto()
+    setOffenceState({ ecvPhoto })
+  }, [ref, setOffenceState])
+
   const onFrameCapture = useCallback(
     async (frame: TextDataMap) => {
-      if (!ref.current) return
-
       const ecv = scanLicencePlate(frame)
 
       if (ecv && !generatedEcv) {
         setIsLoading(true)
         setScanResult(null)
 
-        const ecvPhoto = await ref.current.takePhoto()
-        setOffenceState({ ecvPhoto, ecv })
+        setOffenceState({ ecv })
 
         const newScanResult = await onCheckEcv(ecv)
 
@@ -82,6 +87,10 @@ const LicencePlateCameraComp = () => {
     },
     [generatedEcv, onCheckEcv, role?.actions.scanCheck, scanLicencePlate, setOffenceState],
   )
+
+  useEffect(() => {
+    if (generatedEcv && !licencePlatePicture) takeLicencePlatePicture()
+  }, [licencePlatePicture, generatedEcv, takeLicencePlatePicture])
 
   const onContinue = async () => {
     setIsLoading(true)
@@ -126,7 +135,8 @@ const LicencePlateCameraComp = () => {
           if (scanResult) {
             setScanResult(null)
           }
-          setOffenceState({ ecv })
+
+          setOffenceState({ ecv, ecvPhoto: undefined })
         }}
       />
     </ScreenView>

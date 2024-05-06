@@ -6,6 +6,7 @@ import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
 import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import ScreenViewCentered from '@/components/screen-layout/ScreenViewCentered'
 import { ScanResultEnum } from '@/modules/backend/openapi-generated'
+import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 
 type AvailableScanResults = 'PAAS_PARKING_VIOLATION' | 'PAAS_PARKING_VIOLATION_DUPLICITY'
 
@@ -19,10 +20,11 @@ const getResultVariant = (result?: AvailableScanResults) => {
   return 'warning'
 }
 
-// TODO - texts
 const ScanResultPage = () => {
   const { t } = useTranslation()
   const { scanResult } = useLocalSearchParams<ScanResultSearchParams>()
+
+  const ecv = useOffenceStoreContext((state) => state.ecv)
 
   if (!scanResult) {
     return <ErrorScreen text={t('scanResult.unsuccessful')} />
@@ -31,12 +33,12 @@ const ScanResultPage = () => {
   const scanResultTextsMap = {
     [ScanResultEnum.PaasParkingViolationDuplicity]: {
       title: t('scanResult.duplicity.title'),
-      text: t('scanResult.duplicity.text'),
+      text: t('scanResult.duplicity.text', { ecv }),
       buttonText: t('scanResult.duplicity.buttonText'),
     },
     [ScanResultEnum.PaasParkingViolation]: {
       title: t('scanResult.offence.title'),
-      text: t('scanResult.offence.text'),
+      text: t('scanResult.offence.text', { ecv }),
       buttonText: t('scanResult.offence.buttonText'),
     },
   }
