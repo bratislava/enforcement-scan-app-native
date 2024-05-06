@@ -1,15 +1,23 @@
+import { t } from '@/i18n.config'
 import { ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
 
-// TODO: consult texts
 export const RESOLUTION_TYPES = [
-  { label: 'Blokovacie zariadenie', value: ResolutionOffenceTypeEnum.BlockingDevice },
-  { label: 'Pokuta', value: ResolutionOffenceTypeEnum.Fine },
-  { label: 'Odkaz na DI', value: ResolutionOffenceTypeEnum.ForwardedToDi },
-  { label: 'Iba registrácia', value: ResolutionOffenceTypeEnum.JustRegistration },
-  { label: 'Nepotrestané', value: ResolutionOffenceTypeEnum.NotCaught },
-  { label: 'Oznámenie', value: ResolutionOffenceTypeEnum.Notification },
-  { label: 'Papuča', value: ResolutionOffenceTypeEnum.SewedUp },
-  { label: 'Neoprávnené oznámenie', value: ResolutionOffenceTypeEnum.UnjustifiedReport },
+  {
+    label: t('offence.resolution.blockingDevice'),
+    value: ResolutionOffenceTypeEnum.BlockingDevice,
+  },
+  { label: t('offence.resolution.fine'), value: ResolutionOffenceTypeEnum.Fine },
+  { label: t('offence.resolution.forwardedToDi'), value: ResolutionOffenceTypeEnum.ForwardedToDi },
+  {
+    label: t('offence.resolution.justRegistration'),
+    value: ResolutionOffenceTypeEnum.JustRegistration,
+  },
+  { label: t('offence.resolution.notCaught'), value: ResolutionOffenceTypeEnum.NotCaught },
+  { label: t('offence.resolution.notification'), value: ResolutionOffenceTypeEnum.Notification },
+  {
+    label: t('offence.resolution.unjustifiedReport'),
+    value: ResolutionOffenceTypeEnum.UnjustifiedReport,
+  },
 ]
 
 export const getResolutionTypeLabel = (type: ResolutionOffenceTypeEnum) =>

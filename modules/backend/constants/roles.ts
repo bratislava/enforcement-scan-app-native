@@ -1,4 +1,5 @@
 import { IconName } from '@/components/shared/Icon'
+import { t } from '@/i18n.config'
 import {
   OffenceTypeEnum,
   ResolutionOffenceTypeEnum,
@@ -23,8 +24,8 @@ export const ROLES: RoleItem[] = [
   {
     key: 'paas',
     icon: 'map',
-    title: 'PAAS',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    title: t('roles.paas.title'),
+    description: t('roles.paas.description'),
     actions: {
       zone: true,
       offence: true,
@@ -37,8 +38,8 @@ export const ROLES: RoleItem[] = [
   {
     key: 'municipal-police',
     icon: 'camera',
-    title: 'Policia mesta',
-    description: 'Lorem ipsum dolor sit amet,consectetur adipiscing elit.',
+    title: t('roles.police.title'),
+    description: t('roles.police.description'),
     actions: {
       subjective: true,
       offence: true,
@@ -48,8 +49,8 @@ export const ROLES: RoleItem[] = [
   {
     key: 'petrzalka',
     icon: 'outlined-flag',
-    title: 'Testing',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    title: t('roles.petrzalka.title'),
+    description: t('roles.petrzalka.description'),
     actions: {
       offence: true,
     },
@@ -60,8 +61,8 @@ export const ROLES: RoleItem[] = [
   {
     key: 'research',
     icon: 'outlined-flag',
-    title: 'Testovanie',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    title: t('roles.research.title'),
+    description: t('roles.research.description'),
     actions: {},
     scanReason: ScanReasonEnum.Research,
   },
