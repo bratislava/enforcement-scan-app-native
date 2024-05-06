@@ -81,7 +81,6 @@ const LicencePlateCameraComp = () => {
 
   const onContinue = async () => {
     setIsLoading(true)
-
     if (generatedEcv) {
       const result = await onCheckEcv(generatedEcv)
 
