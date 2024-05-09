@@ -1,6 +1,7 @@
 import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps } from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Linking, Platform, View } from 'react-native'
 
 import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
@@ -12,8 +13,10 @@ import { useAppFocusEffect } from '@/hooks/useAppFocusEffect'
 import { useLocationPermission } from '@/modules/permissions/useLocationPermission'
 
 const LocationBottomSheet = () => {
+  const { t } = useTranslation()
+
   const ref = useRef<BottomSheet>(null)
-  const [locationPermissionStatus, getLocationPermission] = useLocationPermission()
+  const [locationPermissionStatus, getLocationPermission] = useLocationPermission({ autoAsk: true })
   const [isLocationOn, setIsLocationOn] = useState(true)
 
   const reloadLocationStatus = useCallback(async () => {
@@ -66,10 +69,19 @@ const LocationBottomSheet = () => {
     return null
   }
 
-  const translationKey =
-    locationPermissionStatus === Location.PermissionStatus.GRANTED
-      ? 'locationOff'
-      : 'locationDenied'
+  const getLocationTranslations = () => {
+    if (locationPermissionStatus === Location.PermissionStatus.GRANTED) {
+      return {
+        title: t('permissions.location.cameraOff.title'),
+        text: t('permissions.location.cameraOff.text'),
+      }
+    }
+
+    return {
+      title: t('permissions.location.cameraDenied.title'),
+      text: t('permissions.location.cameraDenied.text'),
+    }
+  }
 
   return (
     <BottomSheet
@@ -82,13 +94,13 @@ const LocationBottomSheet = () => {
       <BottomSheetContent>
         <ContentWithAvatar
           className="px-0 py-0 pb-3 g-3"
-          title={translationKey}
-          text={translationKey}
+          title={getLocationTranslations().title}
+          text={getLocationTranslations().text}
           customAvatarComponent={<AvatarCircleIcon name="location-disabled" />}
         >
           <View className="flex-row justify-between g-3">
             <Button className="flex-1" variant="primary" onPress={handleOpenSettingsPress}>
-              openSettings
+              {t('permissions.openSettings')}
             </Button>
           </View>
         </ContentWithAvatar>

@@ -15,7 +15,7 @@ import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 const CameraPermissionsBottomSheet = () => {
   const { t } = useTranslation()
   const ref = useRef<BottomSheet>(null)
-  const [CameraPermissionStatus, getCameraPermission] = useCameraPermission()
+  const [CameraPermissionStatus, getCameraPermission] = useCameraPermission({ autoAsk: true })
 
   const reloadCameraStatus = useCallback(async () => {
     if (CameraPermissionStatus === PermissionStatuses.UNDETERMINED) {
@@ -64,13 +64,13 @@ const CameraPermissionsBottomSheet = () => {
       <BottomSheetContent>
         <ContentWithAvatar
           className="px-0 py-0 pb-3 g-3"
-          title={t('camera.permissions.cameraDenied.title')}
-          text={t('camera.permissions.cameraDenied.text')}
+          title={t('permissions.camera.cameraDenied.title')}
+          text={t('permissions.camera.cameraDenied.text')}
           customAvatarComponent={<AvatarCircleIcon name="no-photography" />}
         >
           <View className="flex-row justify-between g-3">
             <Button className="flex-1" variant="primary" onPress={handleOpenSettingsPress}>
-              openSettings
+              {t('permissions.openSettings')}
             </Button>
           </View>
         </ContentWithAvatar>
