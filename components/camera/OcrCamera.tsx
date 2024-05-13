@@ -6,6 +6,7 @@ import {
   CameraProps,
   Frame,
   FrameProcessor,
+  runAtTargetFps,
   useCameraDevice,
   useCameraFormat,
   useFrameProcessor,
@@ -47,13 +48,12 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
     (frame: Frame): void => {
       'worklet'
 
-      // 30 frames per second means that frame is updated every 33.3ms we need to scan only one frame per second
-      if (new Date().getMilliseconds() < 34) {
+      runAtTargetFps(1, () => {
         const data = scanText(frame, { language: 'latin' })
 
         // the frame is rotated so width and height are swapped
         runWorklet(data, frame.width)
-      }
+      })
     },
     [runWorklet],
   )
