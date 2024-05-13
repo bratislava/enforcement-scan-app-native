@@ -69,7 +69,7 @@ export interface CustomErrorDependencyDto {
 }
 
 /**
- *
+ * Exact error name
  * @export
  * @enum {string}
  */
@@ -82,6 +82,7 @@ export const CustomErrorsDependencyEnum = {
   NUMBER_4: 4,
   NUMBER_5: 5,
   NUMBER_6: 6,
+  NUMBER_7: 7,
 } as const
 
 export type CustomErrorsDependencyEnum =
@@ -101,7 +102,7 @@ export interface DefaultResponseHealthcheck {
   appRunning: boolean
 }
 /**
- *
+ * State of offence
  * @export
  * @enum {string}
  */
@@ -116,7 +117,7 @@ export const OffenceStateEnum = {
 export type OffenceStateEnum = (typeof OffenceStateEnum)[keyof typeof OffenceStateEnum]
 
 /**
- *
+ * Type of offence by legislation
  * @export
  * @enum {string}
  */
@@ -205,7 +206,7 @@ export interface RequestCreateOffenceDataDto {
    * @type {number}
    * @memberof RequestCreateOffenceDataDto
    */
-  zonePhotoId?: number
+  favouritePhotoId?: number
 }
 
 /**
@@ -262,10 +263,22 @@ export interface RequestCreateOrUpdateScanDto {
    * @memberof RequestCreateOrUpdateScanDto
    */
   streetName: string
+  /**
+   * Permit area id used for parking validity check - if it is permit type
+   * @type {string}
+   * @memberof RequestCreateOrUpdateScanDto
+   */
+  udrOkpId?: string
+  /**
+   * Parking space id used for parking validity check - if it is ticket type
+   * @type {string}
+   * @memberof RequestCreateOrUpdateScanDto
+   */
+  udrGlobalId?: string
 }
 
 /**
- *
+ * Type of resolution in case of subjective responsibility
  * @export
  * @enum {string}
  */
@@ -356,6 +369,18 @@ export interface ResponseCreateOffenceDto {
    * @memberof ResponseCreateOffenceDto
    */
   scanVehicleId: number
+  /**
+   * Id of vehicle, may be used to identify vehicle in case of multiple items per ecv
+   * @type {string}
+   * @memberof ResponseCreateOffenceDto
+   */
+  registryVehicleId?: string | null
+  /**
+   * Reference in db
+   * @type {number}
+   * @memberof ResponseCreateOffenceDto
+   */
+  favouritePhotoId?: number | null
   /**
    *
    * @type {boolean}
@@ -477,7 +502,7 @@ export interface ResponseCreateOrUpdateScanDto {
    * @type {string}
    * @memberof ResponseCreateOrUpdateScanDto
    */
-  streetName: string
+  streetName?: string | null
   /**
    *
    * @type {ScanResultEnum}
@@ -569,7 +594,7 @@ export interface ResponseVehiclePropertiesItemDto {
   vehicleId: number
 }
 /**
- *
+ * Reason of scan
  * @export
  * @enum {string}
  */
@@ -584,7 +609,7 @@ export const ScanReasonEnum = {
 export type ScanReasonEnum = (typeof ScanReasonEnum)[keyof typeof ScanReasonEnum]
 
 /**
- *
+ * Result of scan, Is there paas parking authorization? This can be in the future used in other types automatic scans
  * @export
  * @enum {string}
  */
