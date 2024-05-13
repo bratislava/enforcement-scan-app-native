@@ -8,12 +8,12 @@ import Typography from '@/components/shared/Typography'
 
 type Props = {
   title: string
-  description: string
+  // description: string
   icon: IconName
   onPress: () => void
 }
 
-const RoleTile = ({ title, description, icon, onPress }: Props) => (
+const RoleTile = ({ title, icon, onPress }: Props) => (
   <PressableStyled onPress={onPress}>
     <Panel>
       <FlexRow className="items-center g-4">
@@ -21,7 +21,8 @@ const RoleTile = ({ title, description, icon, onPress }: Props) => (
 
         <View className="flex-1">
           <Typography variant="default-semibold">{title}</Typography>
-          <Typography>{description}</Typography>
+          {/* Hide description for now */}
+          {/* <Typography>{description}</Typography> */}
         </View>
 
         <Icon name="chevron-right" />
