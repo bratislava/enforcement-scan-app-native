@@ -69,6 +69,7 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
     <Camera
       ref={ref}
       device={device}
+      photo
       format={format}
       style={{ height: width * ASPECT_RATIO }}
       isActive
