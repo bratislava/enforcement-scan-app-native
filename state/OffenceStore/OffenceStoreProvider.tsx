@@ -28,13 +28,15 @@ export type OffenceState = {
   resolutionType?: ResolutionOffenceTypeEnum
   isObjectiveResponsibility: boolean
 
+  photos: PhotoFile[]
+  ecvPhoto?: PhotoFile
+
   // zone data
   zone?: MapUdrZoneWithTranslationProps
   zonePhoto?: ZonePhoto
 
   // vehicle data
   vehicleId?: number
-  photos: PhotoFile[]
 }
 
 export const OffenceStoreContext = createContext<Store<OffenceState>>(
