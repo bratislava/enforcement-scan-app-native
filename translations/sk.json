@@ -3,6 +3,8 @@
   "camera.permissions.cameraDenied.text": "Povolte pristup v nastaveniach",
   "camera.permissions.cameraDenied.title": "Kamera je zamietnuta",
   "common.continue": "Pokračovať",
+  "home.empty.text": "Požiadajte o práva nadriadeného.",
+  "home.empty.title": "Nemáte žiadne práva",
   "home.profile": "Profil",
   "home.title": "Enforcement",
   "offence.location": "Poloha",
