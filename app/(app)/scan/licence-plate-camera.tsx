@@ -13,7 +13,7 @@ import ScreenView from '@/components/screen-layout/ScreenView'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { ScanReasonEnum, ScanResultEnum } from '@/modules/backend/openapi-generated'
 import {
-  CROPPED_PHOTO_HEIGHT,
+  CROPPED_AREA_HEIGHT,
   HEADER_WITH_PADDING,
   useScanLicencePlate,
 } from '@/modules/camera/hooks/useScanLicencePlate'
@@ -59,8 +59,8 @@ const LicencePlateCameraComp = () => {
   )
 
   const onFrameCapture = useCallback(
-    async (frame: TextDataMap) => {
-      const ecv = scanLicencePlate(frame)
+    async (frame: TextDataMap, height: number) => {
+      const ecv = scanLicencePlate(frame, height)
 
       if (ecv && !generatedEcv) {
         setIsLoading(true)
@@ -103,7 +103,7 @@ const LicencePlateCameraComp = () => {
               'bg-green/80': scanResult === ScanResultEnum.NoViolation,
             })}
           />
-          <View style={{ height: CROPPED_PHOTO_HEIGHT }} className="items-center" />
+          <View style={{ height: CROPPED_AREA_HEIGHT }} className="items-center" />
           <View
             className={cn('flex-1 items-center bg-dark/80 bg-opacity-20', {
               'bg-green/80': scanResult === ScanResultEnum.NoViolation,

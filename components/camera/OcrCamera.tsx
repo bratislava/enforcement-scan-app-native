@@ -18,7 +18,7 @@ import { useRunInJS } from '@/utils/useRunInJS'
 const ASPECT_RATIO = 16 / 9
 
 type OcrCameraProps = Omit<CameraProps, 'device' | 'isActive' | 'frameProcessor'> & {
-  onFrameCapture: (data: TextDataMap) => void
+  onFrameCapture: (data: TextDataMap, height: number) => void
 }
 
 const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props }, ref) => {
@@ -32,9 +32,13 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
     },
   ])
 
-  const runWorklet = useRunInJS<void, [TextDataMap], (data: TextDataMap) => void>(
-    (data: TextDataMap): void => {
-      onFrameCapture(data)
+  const runWorklet = useRunInJS<
+    void,
+    [TextDataMap, number],
+    (data: TextDataMap, height: number) => void
+  >(
+    (data: TextDataMap, height: number): void => {
+      onFrameCapture(data, height)
     },
     [onFrameCapture],
   )
@@ -47,7 +51,8 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
       if (new Date().getMilliseconds() < 34) {
         const data = scanText(frame, { language: 'latin' })
 
-        runWorklet(data)
+        // the frame is rotated so width and height are swapped
+        runWorklet(data, frame.width)
       }
     },
     [runWorklet],
