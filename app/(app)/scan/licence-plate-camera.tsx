@@ -136,7 +136,7 @@ const LicencePlateCameraComp = () => {
             setScanResult(null)
           }
 
-          setOffenceState({ ecv, ecvPhoto: undefined })
+          setOffenceState({ ecv: ecv.toUpperCase(), ecvPhoto: undefined })
         }}
       />
     </ScreenView>

@@ -10,7 +10,7 @@ export const defaultOffenceState: OffenceState = {
 // TODO: Add default values for other roles when needed
 export const defaultValuesForRoles: { [key in RoleKeyType]: Partial<OffenceState> } = {
   paas: {
-    offenceType: OffenceTypeEnum.A,
+    offenceType: OffenceTypeEnum.O,
     resolutionType: ResolutionOffenceTypeEnum.JustRegistration,
   },
   'municipal-police': {},

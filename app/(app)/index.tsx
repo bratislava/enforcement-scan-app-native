@@ -3,6 +3,7 @@ import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
+import EmptyStateScreen from '@/components/screen-layout/EmptyStateScreen'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
@@ -23,6 +24,26 @@ const AppRoute = () => {
   }
 
   const allowedRoles = ROLES.filter((role) => user?.roles.includes(role.key))
+
+  if (allowedRoles.length === 0) {
+    return (
+      <EmptyStateScreen
+        options={{
+          headerTransparent: true,
+          headerRight: () => (
+            <IconButton
+              name="person"
+              accessibilityLabel={t('home.profile')}
+              onPress={() => router.push('profile')}
+            />
+          ),
+        }}
+        title={t('home.title')}
+        contentTitle={t('home.empty.title')}
+        text={t('home.empty.text')}
+      />
+    )
+  }
 
   return (
     <ScreenView
