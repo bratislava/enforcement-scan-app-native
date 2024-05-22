@@ -4,18 +4,25 @@ on: [ pull_request ]
 
 jobs:
   validate:
-    - name: Validate typescript
-      uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable
-      with:
-        workdir: './next'
+    steps:
+      - uses: actions/checkout@v3
 
-    - name: Typescript check
-      run: yarn ts:check
-   
-    - name: ESlint check
-      uses: sibiraj-s/action-eslint@v2
+      - uses: actions/setup-node@v3
       with:
-        eslint-args: '--ignore-path=.gitignore --quiet'
-        extensions: 'md,ts,tsx'
-        annotations: true
+        node-version: '18'
+
+      - name: Validate typescript
+        uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable
+        with:
+          workdir: './next'
+
+      - name: Typescript check
+        run: yarn ts:check
+ 
+      - name: ESlint check
+        uses: sibiraj-s/action-eslint@v2
+        with:
+          eslint-args: '--ignore-path=.gitignore --quiet'
+          extensions: 'md,ts,tsx'
+          annotations: true
 
