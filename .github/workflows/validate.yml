@@ -4,18 +4,19 @@ on: [ pull_request ]
 
 jobs:
   validate:
+    name: Validate typescript
+    uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable
+    with:
+      workdir: './next'
+
+  typescript-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
-
-      - name: Validate typescript
-        uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable
-        with:
-          workdir: './next'
+          node-version: '20'
 
       - name: Typescript check
         run: yarn ts:check
@@ -26,3 +27,4 @@ jobs:
           eslint-args: '--ignore-path=.gitignore --quiet'
           extensions: 'md,ts,tsx'
           annotations: true
+
