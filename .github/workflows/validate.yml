@@ -4,12 +4,13 @@ on: [ pull_request ]
 
 jobs:
   validate:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
-      with:
-        node-version: '18'
+        with:
+          node-version: '18'
 
       - name: Validate typescript
         uses: bratislava/github-actions/.github/workflows/validate-typescript.yml@stable
@@ -25,4 +26,3 @@ jobs:
           eslint-args: '--ignore-path=.gitignore --quiet'
           extensions: 'md,ts,tsx'
           annotations: true
-
