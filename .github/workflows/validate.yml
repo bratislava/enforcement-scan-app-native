@@ -18,6 +18,8 @@ jobs:
         with:
           node-version: '20'
 
+      - run: yarn --frozen-lockfile
+
       - name: Typescript check
         run: yarn ts:check
  
