@@ -32,18 +32,9 @@ export const useCameraPermission = ({ autoAsk }: Options = {}) => {
     if (!doNotAskAgain) {
       setDoNotAskAgain(true)
 
-      const currentStatus = await Camera.getCameraPermissionStatus()
-      console.log('currentStatus', currentStatus)
+      const requestedStatus = await Camera.requestCameraPermission()
 
-      if (currentStatus === PermissionStatuses.UNDETERMINED) {
-        const requestedStatus = await Camera.requestCameraPermission()
-
-        setPermissionStatus(requestedStatus)
-
-        return
-      }
-
-      setPermissionStatus(currentStatus)
+      setPermissionStatus(requestedStatus)
     }
   }, [doNotAskAgain])
 

@@ -66,12 +66,12 @@ export const useSignIn = () => {
       }
 
       if (
-        locationPermissionStatus === Location.PermissionStatus.UNDETERMINED ||
-        cameraPermissionStatus === PermissionStatuses.UNDETERMINED
+        locationPermissionStatus === Location.PermissionStatus.GRANTED ||
+        cameraPermissionStatus === PermissionStatuses.GRANTED
       ) {
-        router.replace('/permissions')
-      } else {
         router.replace('/')
+      } else {
+        router.replace('/permissions')
       }
       clearHistory()
     } catch (error) {
