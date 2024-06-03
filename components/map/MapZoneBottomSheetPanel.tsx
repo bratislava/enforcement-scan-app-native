@@ -7,15 +7,13 @@ import FlexRow from '@/components/shared/FlexRow'
 import Panel from '@/components/shared/Panel'
 import Typography from '@/components/shared/Typography'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
-import { PositionObject } from '@/state/OffenceStore/OffenceStoreProvider'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 type Props = {
   selectedZone: MapUdrZoneWithTranslationProps | null
-  centerCoordinate?: PositionObject
 }
 
-const MapZoneBottomSheetPanel = ({ selectedZone, centerCoordinate }: Props) => {
+const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
   const { setOffenceState } = useSetOffenceState()
 
   if (selectedZone) {
@@ -39,7 +37,6 @@ const MapZoneBottomSheetPanel = ({ selectedZone, centerCoordinate }: Props) => {
             setOffenceState({
               zone: selectedZone,
               zonePhoto: undefined,
-              location: centerCoordinate,
             })
           }
         >

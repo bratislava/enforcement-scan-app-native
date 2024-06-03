@@ -1,6 +1,6 @@
 module.exports = {
   expo: {
-    name: 'enforcement-scan-app',
+    name: 'Skenovacia aplikácia',
     slug: 'enforcement-scan-app',
     scheme: 'enforcement-scan-app',
     version: '1.0.0',

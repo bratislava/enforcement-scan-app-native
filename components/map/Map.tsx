@@ -36,7 +36,6 @@ type Props = {
   onZoneChange?: (feature: MapUdrZoneWithTranslationProps | null) => void
   processedData: ProcessedMapData
   onMapPinVisibilityChange?: (isShown: boolean) => void
-  onCenterChange?: (center: Position) => void
 }
 
 export type MapRef = {
@@ -46,10 +45,7 @@ export type MapRef = {
 const ZOOM_ON_PLACE_SELECT = 15
 
 const Map = forwardRef(
-  (
-    { onZoneChange, processedData, onMapPinVisibilityChange, onCenterChange }: Props,
-    ref: ForwardedRef<MapRef>,
-  ) => {
+  ({ onZoneChange, processedData, onMapPinVisibilityChange }: Props, ref: ForwardedRef<MapRef>) => {
     const camera = useRef<Camera>(null)
     const map = useRef<MapView>(null)
     const updateMapStoreContext = useMapStoreUpdateContext()
@@ -110,7 +106,6 @@ const Map = forwardRef(
       setSelectedPolygon,
       onStateChange,
       setFlyToCenter,
-      onCenterChange,
     })
 
     return (
