@@ -1,6 +1,7 @@
 import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps } from '@gorhom/bottom-sheet'
 import * as Location from 'expo-location'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Linking, Platform, View } from 'react-native'
 
 import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
@@ -12,6 +13,7 @@ import { useAppFocusEffect } from '@/hooks/useAppFocusEffect'
 import { useLocationPermission } from '@/modules/permissions/useLocationPermission'
 
 const LocationBottomSheet = () => {
+  const { t } = useTranslation()
   const ref = useRef<BottomSheet>(null)
   const [locationPermissionStatus, getLocationPermission] = useLocationPermission()
   const [isLocationOn, setIsLocationOn] = useState(true)
@@ -66,29 +68,33 @@ const LocationBottomSheet = () => {
     return null
   }
 
-  const translationKey =
-    locationPermissionStatus === Location.PermissionStatus.GRANTED
-      ? 'locationOff'
-      : 'locationDenied'
-
   return (
     <BottomSheet
       ref={ref}
       key="LocationBottomSheet"
       handleComponent={BottomSheetHandleWithShadow}
       enableDynamicSizing
+      enablePanDownToClose
       backdropComponent={renderBackdrop}
     >
       <BottomSheetContent>
         <ContentWithAvatar
           className="px-0 py-0 pb-3 g-3"
-          title={translationKey}
-          text={translationKey}
+          title={
+            isLocationOn
+              ? t('permissions.location.locationDenied.title')
+              : t('permissions.location.locationOff.title')
+          }
+          text={
+            isLocationOn
+              ? t('permissions.location.locationDenied.text')
+              : t('permissions.location.locationOff.text')
+          }
           customAvatarComponent={<AvatarCircleIcon name="location-disabled" />}
         >
           <View className="flex-row justify-between g-3">
             <Button className="flex-1" variant="primary" onPress={handleOpenSettingsPress}>
-              openSettings
+              {t('permissions.button')}
             </Button>
           </View>
         </ContentWithAvatar>

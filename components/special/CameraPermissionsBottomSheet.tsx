@@ -59,18 +59,19 @@ const CameraPermissionsBottomSheet = () => {
       key="CameraPermissionsBottomSheet"
       handleComponent={BottomSheetHandleWithShadow}
       enableDynamicSizing
+      enablePanDownToClose
       backdropComponent={renderBackdrop}
     >
       <BottomSheetContent>
         <ContentWithAvatar
           className="px-0 py-0 pb-3 g-3"
-          title={t('camera.permissions.cameraDenied.title')}
-          text={t('camera.permissions.cameraDenied.text')}
+          title={t('permissions.camera.cameraDenied.title')}
+          text={t('permissions.camera.cameraDenied.text')}
           customAvatarComponent={<AvatarCircleIcon name="no-photography" />}
         >
           <View className="flex-row justify-between g-3">
             <Button className="flex-1" variant="primary" onPress={handleOpenSettingsPress}>
-              openSettings
+              {t('permissions.button')}
             </Button>
           </View>
         </ContentWithAvatar>
