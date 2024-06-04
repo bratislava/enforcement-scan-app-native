@@ -12,18 +12,16 @@ import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/
 import Typography from '@/components/shared/Typography'
 import { useMultipleRefsSetter } from '@/hooks/useMultipleRefsSetter'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
-import { PositionObject } from '@/state/OffenceStore/OffenceStoreProvider'
 import { cn } from '@/utils/cn'
 
 type Props = {
   zone: MapUdrZoneWithTranslationProps | null
   setFlyToCenter?: MapRef['setFlyToCenter']
   isZoomedOut?: boolean
-  centerCoordinate?: PositionObject
 }
 
 const MapZoneBottomSheet = forwardRef<BottomSheet, Props>(
-  ({ zone: selectedZone, setFlyToCenter, centerCoordinate, isZoomedOut }, ref) => {
+  ({ zone: selectedZone, setFlyToCenter, isZoomedOut }, ref) => {
     const localRef = useRef<BottomSheet>(null)
 
     const refSetter = useMultipleRefsSetter(ref, localRef)
@@ -49,10 +47,7 @@ const MapZoneBottomSheet = forwardRef<BottomSheet, Props>(
                 <Typography className="text-center">{t('zone.zoomIn')}</Typography>
               </View>
             ) : (
-              <MapZoneBottomSheetPanel
-                centerCoordinate={centerCoordinate}
-                selectedZone={selectedZone}
-              />
+              <MapZoneBottomSheetPanel selectedZone={selectedZone} />
             )}
           </BottomSheetContent>
         </BottomSheet>

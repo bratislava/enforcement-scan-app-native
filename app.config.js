@@ -1,6 +1,6 @@
 module.exports = {
   expo: {
-    name: 'enforcement-scan-app',
+    name: 'Skenovacia aplikácia',
     slug: 'enforcement-scan-app',
     scheme: 'enforcement-scan-app',
     version: '1.0.0',
@@ -16,7 +16,7 @@ module.exports = {
     android: {
       package: 'com.bratislava.enforcement',
       adaptiveIcon: {
-        foregroundImage: './assets/adaptive-icon.png',
+        foregroundImage: './assets/icon.png',
         backgroundColor: '#ffffff',
       },
     },

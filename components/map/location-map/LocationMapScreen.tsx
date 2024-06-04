@@ -3,23 +3,29 @@ import { router } from 'expo-router'
 import { useCallback, useRef, useState } from 'react'
 import { View } from 'react-native'
 
+import { ChangeZoneModal } from '@/components/map/location-map/ChangeZoneModal'
 import LocationMap from '@/components/map/location-map/LocationMap'
 import LocationMapBottomSheet from '@/components/map/location-map/LocationMapBottomSheet'
 import { MapRef } from '@/components/map/Map'
-import { getRoleByKey } from '@/modules/backend/constants/roles'
+import { RoleItem } from '@/modules/backend/constants/roles'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
-const LocationMapScreen = () => {
+type Props = {
+  role: RoleItem
+}
+
+const LocationMapScreen = ({ role }: Props) => {
   const zoneBottomSheetRef = useRef<BottomSheet>(null)
   const mapRef = useRef<MapRef>(null)
 
   const location = useOffenceStoreContext((state) => state.location)
-  const roleKey = useOffenceStoreContext((state) => state.roleKey)
-  const role = getRoleByKey(roleKey)
+  const zoneUdrId = useOffenceStoreContext((state) => state.zone?.udrId)
+
   const { setOffenceState } = useSetOffenceState()
 
+  const [isModalShown, setIsModalShown] = useState(false)
   const [selectedZone, setSelectedZone] = useState<MapUdrZoneWithTranslationProps | null>(null)
   const handleZoneChange = useCallback(
     (zone: MapUdrZoneWithTranslationProps | null) => {
@@ -31,9 +37,15 @@ const LocationMapScreen = () => {
   const [centerCoordinate, setCenterCoordinate] = useState(location)
 
   const onLocationSelect = useCallback(() => {
+    if (role.actions.zone && zoneUdrId !== selectedZone?.udrId) {
+      setIsModalShown(true)
+
+      return
+    }
+
     if (centerCoordinate) setOffenceState({ location: centerCoordinate })
     router.back()
-  }, [centerCoordinate, setOffenceState])
+  }, [centerCoordinate, setOffenceState, role.actions.zone, selectedZone, zoneUdrId])
 
   return (
     <View className="flex-1 items-stretch">
@@ -53,6 +65,8 @@ const LocationMapScreen = () => {
         ref={zoneBottomSheetRef}
         setFlyToCenter={mapRef.current?.setFlyToCenter}
       />
+
+      <ChangeZoneModal visible={isModalShown} onCloseModal={() => setIsModalShown(false)} />
     </View>
   )
 }
