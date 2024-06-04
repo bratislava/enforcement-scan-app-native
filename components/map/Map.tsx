@@ -10,7 +10,6 @@ import {
 } from '@rnmapbox/maps'
 import { Position } from 'geojson'
 import {
-  ForwardedRef,
   forwardRef,
   useCallback,
   useEffect,
@@ -44,8 +43,8 @@ export type MapRef = {
 
 const ZOOM_ON_PLACE_SELECT = 15
 
-const Map = forwardRef(
-  ({ onZoneChange, processedData, onMapPinVisibilityChange }: Props, ref: ForwardedRef<MapRef>) => {
+const Map = forwardRef<MapRef, Props>(
+  ({ onZoneChange, processedData, onMapPinVisibilityChange }, ref) => {
     const camera = useRef<Camera>(null)
     const map = useRef<MapView>(null)
     const updateMapStoreContext = useMapStoreUpdateContext()
