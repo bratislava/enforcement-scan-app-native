@@ -9165,20 +9165,20 @@ react-native-toast-notifications@^3.4.0:
   resolved "https://registry.yarnpkg.com/react-native-toast-notifications/-/react-native-toast-notifications-3.4.0.tgz#9f2c79ec80fba4af6b788ecddf704f94cf21dbc2"
   integrity sha512-ZvB//jLhRiBRemtcH7vGP1maiKCikqtW4aDqo+QYvEIOcX0y3GrjxRayVAqI4oh0qJgd/26DkbM8COobj+0MEQ==
 
-react-native-vision-camera-v3-text-recognition@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/react-native-vision-camera-v3-text-recognition/-/react-native-vision-camera-v3-text-recognition-1.0.6.tgz#984ddf19076a8b9dc90503075737f967fd246f8f"
-  integrity sha512-aX6co2JTBokpia/FzoCKXTf5ys1JxWyxUVPRtqQR0lbWzEp1QrG23czFzFMuqR/kH6jL9jYtajfL8BVWuvAY+g==
+react-native-vision-camera-v3-text-recognition@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-vision-camera-v3-text-recognition/-/react-native-vision-camera-v3-text-recognition-1.1.1.tgz#957491b0dddd0d146daa6957327ee3f9ed2c3a2d"
+  integrity sha512-8cKi52ZM/75eN80tCMWc6w4g+MgTwvHDUkPwcFEdXGEF8vxKFPlRF3eRiPceDXKurNtaRGduE/7RQQsr3kDi5w==
 
-react-native-vision-camera@^3.9.0:
+react-native-vision-camera@^3.9.2:
   version "3.9.2"
   resolved "https://registry.yarnpkg.com/react-native-vision-camera/-/react-native-vision-camera-3.9.2.tgz#d6656a4c0af929916d5e6b57af5adfe94ff8c65a"
   integrity sha512-watHRWbeH7CBYq/5sPj2fpZj87V8J5nGdmYO61aYsDLuJ2Pkij7anAzBf8B8oZiyoSUuYpAzX4lIIi+LjWVedA==
 
-react-native-worklets-core@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-worklets-core/-/react-native-worklets-core-0.4.0.tgz#708f204d89327d88e155cccb5fc23421ca764b6f"
-  integrity sha512-0rYCwxnG6L85mih+3xe1r2RhhwKqjgVN9jikVh0iMPKDf9L4OZMJnl6Kh4zjXiW9rkyI5lBghfM4XIcLMfeU6w==
+react-native-worklets-core@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-worklets-core/-/react-native-worklets-core-0.5.0.tgz#b4c948009bb77604930716c04da6a88e708c3616"
+  integrity sha512-mhupmI4ikjMJokYMMQCaUjS5ADEmTleSr4Bt8lAfXBdALrDeikEgwvmlGuec3/yue2/JeVCD+D59cBH/1xCBrw==
   dependencies:
     string-hash-64 "^1.0.3"
 

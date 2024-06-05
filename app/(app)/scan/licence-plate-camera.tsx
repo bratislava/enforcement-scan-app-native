@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Camera } from 'react-native-vision-camera'
-import { TextDataMap } from 'react-native-vision-camera-v3-text-recognition'
+import { Text } from 'react-native-vision-camera-v3-text-recognition/lib/typescript/src/types'
 
 import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
@@ -42,8 +42,8 @@ const LicencePlateCameraComp = () => {
   const { scanLicencePlate, checkEcv } = useScanLicencePlate()
 
   const onCheckEcv = useCallback(
-    async (ecv: string) => {
-      const newScanResult = await checkEcv(ecv)
+    async (ecv: string, isManual?: boolean) => {
+      const newScanResult = await checkEcv(ecv, isManual)
 
       if (newScanResult === ScanReasonEnum.Other) {
         return router.push('/offence')
@@ -67,7 +67,7 @@ const LicencePlateCameraComp = () => {
   }, [ref, setOffenceState])
 
   const onFrameCapture = useCallback(
-    async (frame: TextDataMap, height: number) => {
+    async (frame: Text, height: number) => {
       const ecv = scanLicencePlate(frame, height)
 
       if (ecv && !generatedEcv) {
@@ -96,7 +96,7 @@ const LicencePlateCameraComp = () => {
     setIsLoading(true)
 
     if (generatedEcv) {
-      const result = await onCheckEcv(generatedEcv)
+      const result = await onCheckEcv(generatedEcv, true)
 
       if (result) router.push('/offence')
     }

@@ -3,7 +3,7 @@ import * as Location from 'expo-location'
 import { useCallback } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { TextDataMap } from 'react-native-vision-camera-v3-text-recognition'
+import { Text } from 'react-native-vision-camera-v3-text-recognition/lib/typescript/src/types'
 
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
@@ -32,7 +32,7 @@ export const useScanLicencePlate = () => {
   /**
    * Checks the ECV with BE and returns the scan result
    */
-  const checkEcv = async (ecv: string): Promise<ScanResultEnum | null> => {
+  const checkEcv = async (ecv: string, isManual?: boolean): Promise<ScanResultEnum | null> => {
     const location = await Location.getLastKnownPositionAsync()
 
     if (!(location && role)) return null
@@ -43,7 +43,7 @@ export const useScanLicencePlate = () => {
       udr: udrId,
       lat: location.coords.latitude.toString(),
       long: location.coords.longitude.toString(),
-      ecvUpdatedManually: false,
+      ecvUpdatedManually: !!isManual,
       streetName: 'auto',
     })
 
@@ -53,6 +53,8 @@ export const useScanLicencePlate = () => {
       return res.data.scanResult || null
     }
 
+    setOffenceState({ scanUuid: undefined })
+
     return null
   }
 
@@ -60,7 +62,7 @@ export const useScanLicencePlate = () => {
    * Finds the biggest block of text in the frame and checks whether it meets the criteria for ECV
    */
   const scanLicencePlate = useCallback(
-    (frameObject: TextDataMap, height: number) => {
+    (frameObject: Text, height: number) => {
       // translate cropped element size from window height into frame height
       const translateHeight = (heightToTranslate: number) =>
         (heightToTranslate / screenHeight) * height
