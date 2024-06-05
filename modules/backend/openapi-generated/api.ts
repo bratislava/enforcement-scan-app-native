@@ -143,6 +143,8 @@ export const OffenceTypeEnum = {
   R: 'R',
   S: 'S',
   T: 'T',
+  U: 'U',
+  Dz: 'DZ',
 } as const
 
 export type OffenceTypeEnum = (typeof OffenceTypeEnum)[keyof typeof OffenceTypeEnum]
@@ -262,7 +264,7 @@ export interface RequestCreateOrUpdateScanDto {
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  streetName: string
+  streetName?: string
   /**
    * Permit area id used for parking validity check - if it is permit type
    * @type {string}
@@ -933,6 +935,62 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
     },
     /**
+     * Search for offences by ecv, gps coordinates and optionally offence type
+     * @summary Find offences
+     * @param {string} ecv Vehicle ecv
+     * @param {string} udr Udr code
+     * @param {Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>} [offenceTypes] Find offences filtered by offence type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerGetDuplicitOffence: async (
+      ecv: string,
+      udr: string,
+      offenceTypes?: Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'ecv' is not null or undefined
+      assertParamExists('scanControllerGetDuplicitOffence', 'ecv', ecv)
+      // verify required parameter 'udr' is not null or undefined
+      assertParamExists('scanControllerGetDuplicitOffence', 'udr', udr)
+      const localVarPath = `/scan/offences`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      if (offenceTypes) {
+        localVarQueryParameter['offenceTypes'] = offenceTypes
+      }
+
+      if (ecv !== undefined) {
+        localVarQueryParameter['ecv'] = ecv
+      }
+
+      if (udr !== undefined) {
+        localVarQueryParameter['udr'] = udr
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
      * Return photos made today by authenticated user
      * @summary Get favourite photos
      * @param {*} [options] Override http request option.
@@ -1121,6 +1179,42 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
+     * Search for offences by ecv, gps coordinates and optionally offence type
+     * @summary Find offences
+     * @param {string} ecv Vehicle ecv
+     * @param {string} udr Udr code
+     * @param {Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>} [offenceTypes] Find offences filtered by offence type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async scanControllerGetDuplicitOffence(
+      ecv: string,
+      udr: string,
+      offenceTypes?: Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ResponseCreateOffenceDto>>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerGetDuplicitOffence(
+        ecv,
+        udr,
+        offenceTypes,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ScannersAndOffencesApi.scanControllerGetDuplicitOffence']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
      * Return photos made today by authenticated user
      * @summary Get favourite photos
      * @param {*} [options] Override http request option.
@@ -1242,6 +1336,25 @@ export const ScannersAndOffencesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
+     * Search for offences by ecv, gps coordinates and optionally offence type
+     * @summary Find offences
+     * @param {string} ecv Vehicle ecv
+     * @param {string} udr Udr code
+     * @param {Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>} [offenceTypes] Find offences filtered by offence type
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerGetDuplicitOffence(
+      ecv: string,
+      udr: string,
+      offenceTypes?: Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<Array<ResponseCreateOffenceDto>> {
+      return localVarFp
+        .scanControllerGetDuplicitOffence(ecv, udr, offenceTypes, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
      * Return photos made today by authenticated user
      * @summary Get favourite photos
      * @param {*} [options] Override http request option.
@@ -1337,6 +1450,27 @@ export class ScannersAndOffencesApi extends BaseAPI {
   }
 
   /**
+   * Search for offences by ecv, gps coordinates and optionally offence type
+   * @summary Find offences
+   * @param {string} ecv Vehicle ecv
+   * @param {string} udr Udr code
+   * @param {Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>} [offenceTypes] Find offences filtered by offence type
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ScannersAndOffencesApi
+   */
+  public scanControllerGetDuplicitOffence(
+    ecv: string,
+    udr: string,
+    offenceTypes?: Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ScannersAndOffencesApiFp(this.configuration)
+      .scanControllerGetDuplicitOffence(ecv, udr, offenceTypes, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
    * Return photos made today by authenticated user
    * @summary Get favourite photos
    * @param {*} [options] Override http request option.
@@ -1363,3 +1497,33 @@ export class ScannersAndOffencesApi extends BaseAPI {
       .then((request) => request(this.axios, this.basePath))
   }
 }
+
+/**
+ * @export
+ */
+export const ScanControllerGetDuplicitOffenceOffenceTypesEnum = {
+  A: 'A',
+  B: 'B',
+  C: 'C',
+  D: 'D',
+  E: 'E',
+  F: 'F',
+  G: 'G',
+  H: 'H',
+  I: 'I',
+  J: 'J',
+  K: 'K',
+  L: 'L',
+  M: 'M',
+  N: 'N',
+  O: 'O',
+  P: 'P',
+  Q: 'Q',
+  R: 'R',
+  S: 'S',
+  T: 'T',
+  U: 'U',
+  Dz: 'DZ',
+} as const
+export type ScanControllerGetDuplicitOffenceOffenceTypesEnum =
+  (typeof ScanControllerGetDuplicitOffenceOffenceTypesEnum)[keyof typeof ScanControllerGetDuplicitOffenceOffenceTypesEnum]

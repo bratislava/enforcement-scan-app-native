@@ -32,10 +32,15 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
       'worklet'
 
       runAtTargetFps(1, () => {
-        const data = scanText(frame)
+        try {
+          const data = scanText(frame)
 
-        // the frame is rotated so width and height are swapped
-        runWorklet(data, frame.width)
+          // the frame is rotated so width and height are swapped
+          runWorklet(data, frame.width)
+        } catch (error) {
+          // catch block is here to handle error when accessing frames after unmounting camera
+          // nothing should happen when this error occurs
+        }
       })
     },
     [runWorklet, scanText],

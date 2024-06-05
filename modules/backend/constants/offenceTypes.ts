@@ -2,7 +2,7 @@ import { t } from '@/i18n.config'
 import { OffenceTypeEnum } from '@/modules/backend/openapi-generated'
 
 export const OFFENCE_TYPES = [
-  { label: t('offence.type.3/2b'), value: OffenceTypeEnum.A },
+  { label: t('offence.type.3/2b'), value: OffenceTypeEnum.Dz },
   { label: t('offence.type.25/1a'), value: OffenceTypeEnum.A },
   { label: t('offence.type.25/1b'), value: OffenceTypeEnum.B },
   { label: t('offence.type.25/1c'), value: OffenceTypeEnum.C },
@@ -23,7 +23,7 @@ export const OFFENCE_TYPES = [
   { label: t('offence.type.25/1r'), value: OffenceTypeEnum.R },
   { label: t('offence.type.25/1s'), value: OffenceTypeEnum.S },
   { label: t('offence.type.25/1t'), value: OffenceTypeEnum.T },
-  { label: t('offence.type.25/1u'), value: OffenceTypeEnum.T },
+  { label: t('offence.type.25/1u'), value: OffenceTypeEnum.U },
 ]
 
 export const getOffenceTypeLabel = (type: OffenceTypeEnum) =>
