@@ -44,6 +44,7 @@ const CameraBottomSheet = ({
         handleComponent={null}
         keyboardBehavior="interactive"
         ref={modalRef}
+        onClose={modalRef.current?.expand}
         enableDynamicSizing
         animatedPosition={animatedPosition}
       >

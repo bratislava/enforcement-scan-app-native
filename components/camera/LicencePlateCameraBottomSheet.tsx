@@ -53,6 +53,7 @@ const LicencePlateCameraBottomSheet = ({
         handleComponent={BottomSheetHandleWithShadow}
         keyboardBehavior="interactive"
         ref={modalRef}
+        onClose={modalRef.current?.expand}
         enableDynamicSizing
         animatedPosition={animatedPosition}
       >
