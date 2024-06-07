@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
 
+import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
@@ -21,7 +22,7 @@ const Page = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
 
-  const { ecv, vehicleId } = useOffenceStoreContext((state) => state)
+  const { ecv, vehicleId, photos } = useOffenceStoreContext((state) => state)
   const { setOffenceState } = useSetOffenceState()
 
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(
@@ -33,6 +34,8 @@ const Page = () => {
       setOffenceState({ vehicleId: data.items[0].vehicleId })
     }
   }, [data, setOffenceState])
+
+  const redirectPath = photos.length < MAX_PHOTOS ? '/offence/photos' : '/offence/photos/library'
 
   useEffect(() => {
     return navigation.addListener('beforeRemove', (e) => {
@@ -61,7 +64,7 @@ const Page = () => {
   if (!data || data?.items.length === 0) {
     return (
       <ScreenView title={t('vehicleDetail.title')}>
-        <Redirect href="/offence/photos" />
+        <Redirect href={redirectPath} />
       </ScreenView>
     )
   }
@@ -81,7 +84,7 @@ const Page = () => {
             />
           ))}
 
-          <ContinueButton onPress={() => router.push('/offence/photos')} />
+          <ContinueButton onPress={() => router.push(redirectPath)} />
         </ScreenContent>
       </ScrollView>
     </ScreenView>

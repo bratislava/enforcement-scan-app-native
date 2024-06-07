@@ -44,7 +44,7 @@ export const useCreateOffence = () => {
   })
 
   const onCreateOffence = async () => {
-    if (!(ecv && location && offenceType && scanUuid && photos.length === MAX_PHOTOS)) {
+    if (!(ecv && location && offenceType && scanUuid && photos.length >= MAX_PHOTOS)) {
       onRouteToResult('error')
 
       return

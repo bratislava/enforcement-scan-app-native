@@ -1,4 +1,4 @@
-import { Redirect } from 'expo-router'
+import { router } from 'expo-router'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Camera } from 'react-native-vision-camera'
@@ -45,14 +45,11 @@ const AppRoute = () => {
     setOffenceState({ photos: newPhotos })
 
     setLoading(false)
-  }
 
-  if (photos.length >= MAX_PHOTOS) {
-    return (
-      <ScreenView title={t('offenceCamera.title')}>
-        <Redirect href="/offence/photos/library" />
-      </ScreenView>
-    )
+    if (newPhotos.length >= MAX_PHOTOS) {
+      router.back()
+      router.navigate('/offence/photos/library')
+    }
   }
 
   return (

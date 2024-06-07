@@ -23,7 +23,6 @@ export type OffenceState = {
 
   // offence data
   location?: PositionObject
-  offencePhotos?: string[]
   offenceType?: OffenceTypeEnum
   resolutionType?: ResolutionOffenceTypeEnum
   isObjectiveResponsibility: boolean

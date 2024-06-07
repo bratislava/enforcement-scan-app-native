@@ -4,6 +4,7 @@ import { Image, View } from 'react-native'
 
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import Icon from '@/components/shared/Icon'
 import IconButton from '@/components/shared/IconButton'
 import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
@@ -59,7 +60,7 @@ const ZonePhotoPage = () => {
         renderItem={({ item }) => (
           <PressableStyled
             key={item.id}
-            className="w-full items-center justify-center bg-dark-light"
+            className="relative w-full items-center justify-center overflow-hidden rounded px-6 py-3"
             onPress={() => {
               setOffenceState({ zonePhoto: item })
 
@@ -67,9 +68,13 @@ const ZonePhotoPage = () => {
             }}
           >
             <Image
-              className="aspect-square w-full"
+              className="aspect-square w-full rounded border"
               source={{ uri: createUrlFromImageObject(item) }}
             />
+
+            <View className="absolute h-full w-full items-center justify-center bg-black/10">
+              <Icon name="image" size={40} className="text-white" />
+            </View>
           </PressableStyled>
         )}
         estimatedItemSize={100}

@@ -5,6 +5,7 @@ import { Image, View } from 'react-native'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import IconButton from '@/components/shared/IconButton'
 import PressableStyled from '@/components/shared/PressableStyled'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useCreateOffence } from '@/state/OffenceStore/useCreateOffence'
@@ -33,6 +34,15 @@ const PhotosPage = () => {
       actionButton={<ContinueButton loading={isLoading} onPress={onCreateOffence} />}
       title={t('offence.pictures.title')}
       className="flex-1 justify-start"
+      options={{
+        headerRight: () => (
+          <IconButton
+            accessibilityLabel={t('offence.picture.detail.add')}
+            name="add"
+            onPress={() => router.navigate('/offence/photos')}
+          />
+        ),
+      }}
     >
       <FlashList
         className="h-full w-full flex-1"
