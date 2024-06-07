@@ -3,11 +3,11 @@ import * as Location from 'expo-location'
 import { useCallback } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Text } from 'react-native-vision-camera-v3-text-recognition/lib/typescript/src/types'
 
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { RequestCreateOrUpdateScanDto, ScanResultEnum } from '@/modules/backend/openapi-generated'
+import { TextData } from '@/modules/camera/types'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -62,7 +62,7 @@ export const useScanLicencePlate = () => {
    * Finds the biggest block of text in the frame and checks whether it meets the criteria for ECV
    */
   const scanLicencePlate = useCallback(
-    (frameObject: Text, height: number) => {
+    (frameObject: TextData, height: number) => {
       // translate cropped element size from window height into frame height
       const translateHeight = (heightToTranslate: number) =>
         (heightToTranslate / screenHeight) * height
@@ -73,18 +73,17 @@ export const useScanLicencePlate = () => {
         topBackdropHeight + CROPPED_AREA_HEIGHT + SCAN_LICENCE_PLATE_BUFFER,
       )
 
-      const frameArray = Object.values(frameObject)
+      const frameArray = frameObject.result.blocks
         .filter(
           (block) =>
-            block.blockText &&
-            block.blockFrameLeft >= croppedAreaStart &&
-            block.blockFrameRight <= croppedAreaEnd,
+            block &&
+            block.cornerPoints[2].x >= croppedAreaStart &&
+            block.cornerPoints[3].x <= croppedAreaEnd,
         )
         .map((block) => ({
           ...block,
-          surfaceArea:
-            (block.blockFrameBottom - block.blockFrameTop) *
-            (block.blockFrameRight - block.blockFrameLeft),
+          text: block.lines.map((line) => line.text).join(''),
+          surfaceArea: block.frame.width * block.frame.height,
         }))
 
       const numbers = frameArray.map(({ surfaceArea }) => surfaceArea)
@@ -93,7 +92,7 @@ export const useScanLicencePlate = () => {
 
       const index = numbers.indexOf(Math.max(...numbers))
 
-      const newEcv = frameArray[index].blockText
+      const newEcv = frameArray[index].text
         .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
         .replaceAll(/[^\dA-Z]/g, '')
 
