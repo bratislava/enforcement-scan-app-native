@@ -20,6 +20,7 @@ import { TextData } from '@/modules/camera/types'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { addTimestamp } from '@/utils/addTimestamp'
 import { cn } from '@/utils/cn'
 
 const LicencePlateCameraComp = () => {
@@ -46,10 +47,10 @@ const LicencePlateCameraComp = () => {
       const newScanResult = await checkEcv(ecv, isManual)
 
       if (newScanResult === ScanReasonEnum.Other) {
-        return router.push('/offence')
+        return router.navigate('/offence')
       }
       if (newScanResult !== ScanResultEnum.NoViolation)
-        return router.push({
+        return router.navigate({
           pathname: '/scan/scan-result',
           params: { scanResult: newScanResult },
         })
@@ -63,7 +64,9 @@ const LicencePlateCameraComp = () => {
     if (!ref.current) return
 
     const ecvPhoto = await ref.current.takePhoto()
-    setOffenceState({ ecvPhoto })
+    const imageWithTimestampUri = await addTimestamp(ecvPhoto?.path)
+
+    setOffenceState({ ecvPhoto: imageWithTimestampUri })
   }, [ref, setOffenceState])
 
   const onFrameCapture = useCallback(
@@ -100,7 +103,7 @@ const LicencePlateCameraComp = () => {
     setIsLoading(true)
 
     if (scanResult && role?.actions.scanCheck) {
-      router.push('/offence')
+      router.navigate('/offence')
 
       return
     }

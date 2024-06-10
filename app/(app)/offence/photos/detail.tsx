@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image } from 'react-native'
-import { Camera, PhotoFile } from 'react-native-vision-camera'
+import { Camera } from 'react-native-vision-camera'
 
 import CameraBottomSheet from '@/components/camera/CameraBottomSheet'
 import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
@@ -13,6 +13,7 @@ import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { addTimestamp } from '@/utils/addTimestamp'
 
 type PhotoDetailSearchParams = {
   index: string
@@ -28,7 +29,7 @@ const AppRoute = () => {
 
   const ref = useRef<Camera>(null)
 
-  const [photo, setPhoto] = useState<PhotoFile | null>(photos[photoIndex] || null)
+  const [photo, setPhoto] = useState<string | null>(photos[photoIndex] || null)
   const [isRetaking, setIsRetaking] = useState(false)
   const [torch, setTorch] = useState<TorchState>('off')
   const [loading, setLoading] = useState(false)
@@ -38,14 +39,15 @@ const AppRoute = () => {
   const takePicture = async () => {
     setLoading(true)
     const capturedPhoto = await ref.current?.takePhoto()
+    const imageWithTimestampUri = await addTimestamp(capturedPhoto?.path)
 
-    if (!capturedPhoto) {
+    if (!imageWithTimestampUri) {
       setLoading(false)
 
       return
     }
 
-    setPhoto(capturedPhoto)
+    setPhoto(imageWithTimestampUri)
 
     setLoading(false)
   }
