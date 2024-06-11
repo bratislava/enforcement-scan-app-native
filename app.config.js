@@ -40,6 +40,12 @@ module.exports = {
         },
       ],
       [
+        'expo-updates',
+        {
+          username: 'bratislava',
+        },
+      ],
+      [
         'expo-location',
         {
           locationWhenInUsePermission: 'Show current location on map.',
@@ -50,6 +56,12 @@ module.exports = {
       eas: {
         projectId: '28f73650-074c-4565-94ac-c5cbe5b9658f',
       },
+    },
+    updates: {
+      url: 'https://u.expo.dev/28f73650-074c-4565-94ac-c5cbe5b9658f',
+    },
+    runtimeVersion: {
+      policy: 'appVersion',
     },
     owner: 'bratislava',
   },
