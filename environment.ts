@@ -19,4 +19,5 @@ export const environment = {
   clientId: assertEnv('EXPO_PUBLIC_CLIENT_ID', process.env.EXPO_PUBLIC_CLIENT_ID),
   tenantId: assertEnv('EXPO_PUBLIC_TENANT_ID', process.env.EXPO_PUBLIC_TENANT_ID),
   imageCdn: assertEnv('EXPO_PUBLIC_IMAGE_CDN', process.env.EXPO_PUBLIC_IMAGE_CDN),
+  deployment: assertEnv('EXPO_PUBLIC_DEPLOYMENT', process.env.EXPO_PUBLIC_DEPLOYMENT),
 }
