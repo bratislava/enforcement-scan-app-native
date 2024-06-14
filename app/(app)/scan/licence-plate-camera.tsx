@@ -101,7 +101,6 @@ const LicencePlateCameraComp = () => {
 
   const onContinue = async () => {
     setIsLoading(true)
-
     if (scanResult && role?.actions.scanCheck) {
       router.navigate('/offence')
 
