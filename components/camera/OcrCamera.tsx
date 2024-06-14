@@ -1,82 +1,52 @@
 import { forwardRef } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useWindowDimensions, View } from 'react-native'
 import {
   Camera,
   CameraProps,
   Frame,
-  FrameProcessor,
   runAtTargetFps,
-  useCameraDevice,
-  useCameraFormat,
   useFrameProcessor,
 } from 'react-native-vision-camera'
-import { scanText, TextDataMap } from 'react-native-vision-camera-v3-text-recognition'
+import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
+import { useRunOnJS } from 'react-native-worklets-core'
 
-import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
-import { useRunInJS } from '@/utils/useRunInJS'
-
-const ASPECT_RATIO = 16 / 9
+import FullScreenCamera from '@/components/camera/FullScreenCamera'
+import { TextData } from '@/modules/camera/types'
 
 type OcrCameraProps = Omit<CameraProps, 'device' | 'isActive' | 'frameProcessor'> & {
-  onFrameCapture: (data: TextDataMap, height: number) => void
+  onFrameCapture: (data: TextData, height: number) => void
 }
 
 const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props }, ref) => {
-  const { t } = useTranslation()
+  const { scanText } = useTextRecognition()
 
-  const { width } = useWindowDimensions()
-  const device = useCameraDevice('back')
-  const format = useCameraFormat(device, [
-    {
-      videoResolution: { width, height: 720 },
-    },
-  ])
-
-  const runWorklet = useRunInJS<
-    void,
-    [TextDataMap, number],
-    (data: TextDataMap, height: number) => void
-  >(
-    (data: TextDataMap, height: number): void => {
+  const runWorklet = useRunOnJS(
+    (data: TextData, height: number): void => {
       onFrameCapture(data, height)
     },
     [onFrameCapture],
   )
 
-  const frameProcessor: FrameProcessor = useFrameProcessor(
+  const frameProcessor = useFrameProcessor(
     (frame: Frame): void => {
       'worklet'
 
       runAtTargetFps(1, () => {
-        const data = scanText(frame, { language: 'latin' })
+        try {
+          // the scanText has wrong types from library so we need to cast it
+          const data = scanText(frame) as unknown as TextData
 
-        // the frame is rotated so width and height are swapped
-        runWorklet(data, frame.width)
+          // the frame is rotated so width and height are swapped
+          runWorklet(data, frame.width)
+        } catch (error) {
+          // catch block is here to handle error when accessing frames after unmounting camera
+          // nothing should happen when this error occurs
+        }
       })
     },
-    [runWorklet],
+    [scanText, runWorklet],
   )
 
-  if (!device)
-    return (
-      <View className="h-full items-center bg-white pt-10">
-        <ContentWithAvatar variant="error" title={t('camera.ocr.error.title')} />
-      </View>
-    )
-
-  return (
-    <Camera
-      ref={ref}
-      device={device}
-      photo
-      format={format}
-      style={{ height: width * ASPECT_RATIO }}
-      isActive
-      frameProcessor={frameProcessor}
-      {...props}
-    />
-  )
+  return <FullScreenCamera isActive ref={ref} frameProcessor={frameProcessor} {...props} />
 })
 
 export default OcrCamera

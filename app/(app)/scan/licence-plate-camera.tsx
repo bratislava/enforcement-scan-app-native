@@ -1,10 +1,9 @@
 import { router } from 'expo-router'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Camera } from 'react-native-vision-camera'
-import { TextDataMap } from 'react-native-vision-camera-v3-text-recognition'
 
 import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
@@ -17,6 +16,7 @@ import {
   HEADER_WITH_PADDING,
   useScanLicencePlate,
 } from '@/modules/camera/hooks/useScanLicencePlate'
+import { TextData } from '@/modules/camera/types'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
@@ -28,11 +28,11 @@ const LicencePlateCameraComp = () => {
   const [torch, setTorch] = useState<TorchState>('off')
   const [isLoading, setIsLoading] = useState(false)
   const [scanResult, setScanResult] = useState<ScanResultEnum | null>(null)
+  const [isManual, setIsManual] = useState(false)
 
   const { top } = useSafeAreaInsets()
 
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
-  const licencePlatePicture = useOffenceStoreContext((state) => state.ecvPhoto)
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const role = getRoleByKey(roleKey)
   const { setOffenceState } = useSetOffenceState()
@@ -43,7 +43,7 @@ const LicencePlateCameraComp = () => {
 
   const onCheckEcv = useCallback(
     async (ecv: string) => {
-      const newScanResult = await checkEcv(ecv)
+      const newScanResult = await checkEcv(ecv, isManual)
 
       if (newScanResult === ScanReasonEnum.Other) {
         return router.push('/offence')
@@ -56,7 +56,7 @@ const LicencePlateCameraComp = () => {
 
       return newScanResult
     },
-    [checkEcv],
+    [checkEcv, isManual],
   )
 
   const takeLicencePlatePicture = useCallback(async () => {
@@ -67,14 +67,15 @@ const LicencePlateCameraComp = () => {
   }, [ref, setOffenceState])
 
   const onFrameCapture = useCallback(
-    async (frame: TextDataMap, height: number) => {
+    async (frame: TextData, height: number) => {
       const ecv = scanLicencePlate(frame, height)
-
       if (ecv && !generatedEcv) {
         setIsLoading(true)
         setScanResult(null)
 
         setOffenceState({ ecv })
+        setIsManual(false)
+        takeLicencePlatePicture()
 
         const newScanResult = await onCheckEcv(ecv)
 
@@ -85,23 +86,49 @@ const LicencePlateCameraComp = () => {
         setIsLoading(false)
       }
     },
-    [generatedEcv, onCheckEcv, role?.actions.scanCheck, scanLicencePlate, setOffenceState],
+    [
+      generatedEcv,
+      onCheckEcv,
+      role?.actions.scanCheck,
+      scanLicencePlate,
+      setOffenceState,
+      takeLicencePlatePicture,
+    ],
   )
-
-  useEffect(() => {
-    if (generatedEcv && !licencePlatePicture) takeLicencePlatePicture()
-  }, [licencePlatePicture, generatedEcv, takeLicencePlatePicture])
 
   const onContinue = async () => {
     setIsLoading(true)
 
+    if (scanResult && role?.actions.scanCheck) {
+      router.push('/offence')
+
+      return
+    }
+
+    setScanResult(null)
+
     if (generatedEcv) {
       const result = await onCheckEcv(generatedEcv)
 
-      if (result) router.push('/offence')
+      if (result) {
+        if (role?.actions.scanCheck) {
+          setScanResult(result)
+        } else {
+          router.push('/offence')
+        }
+      }
     }
 
     setIsLoading(false)
+  }
+
+  const onChangeLicencePlate = (ecv: string) => {
+    if (scanResult) {
+      setScanResult(null)
+    }
+
+    setIsManual(true)
+    setOffenceState({ ecv: ecv.toUpperCase(), ecvPhoto: undefined })
   }
 
   return (
@@ -131,13 +158,7 @@ const LicencePlateCameraComp = () => {
         setTorch={setTorch}
         licencePlate={generatedEcv}
         onContinue={onContinue}
-        onChangeLicencePlate={(ecv) => {
-          if (scanResult) {
-            setScanResult(null)
-          }
-
-          setOffenceState({ ecv: ecv.toUpperCase(), ecvPhoto: undefined })
-        }}
+        onChangeLicencePlate={onChangeLicencePlate}
       />
     </ScreenView>
   )

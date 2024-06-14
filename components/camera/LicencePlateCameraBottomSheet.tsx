@@ -60,7 +60,6 @@ const LicencePlateCameraBottomSheet = ({
         <BottomSheetContent className="g-2">
           <Field label="EČV">
             <TextInput
-              isInsideBottomSheet
               accessibilityLabel={t('scanLicencePlate.licencePlate')}
               value={licencePlate}
               onChangeText={onChangeLicencePlate}
