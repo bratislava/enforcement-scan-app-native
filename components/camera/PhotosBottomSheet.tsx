@@ -29,6 +29,7 @@ const PhotosBottomSheet = ({ isLoading, takePicture, ...rest }: Props) => {
         handleComponent={null}
         keyboardBehavior="interactive"
         ref={modalRef}
+        onClose={modalRef.current?.expand}
         enableDynamicSizing
         animatedPosition={animatedPosition}
       >
