@@ -16,7 +16,7 @@ import { getVehiclePropertiesOptions } from '@/modules/backend/constants/queryPa
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
-const ALLOWED_VEHICLE_ERRORS = new Set([404, 424])
+const ALLOWED_VEHICLE_ERRORS = new Set([400, 404, 422, 424])
 
 const Page = () => {
   const { t } = useTranslation()

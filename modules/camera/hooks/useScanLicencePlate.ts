@@ -44,7 +44,7 @@ export const useScanLicencePlate = () => {
       lat: location.coords.latitude.toString(),
       long: location.coords.longitude.toString(),
       ecvUpdatedManually: !!isManual,
-      streetName: 'auto',
+      streetName: '',
     })
 
     if (res.data) {
