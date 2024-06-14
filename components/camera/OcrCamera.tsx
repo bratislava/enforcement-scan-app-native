@@ -1,5 +1,11 @@
 import { forwardRef } from 'react'
-import { Camera, CameraProps, Frame, runAsync, useFrameProcessor } from 'react-native-vision-camera'
+import {
+  Camera,
+  CameraProps,
+  Frame,
+  runAtTargetFps,
+  useFrameProcessor,
+} from 'react-native-vision-camera'
 import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
 import { useRunOnJS } from 'react-native-worklets-core'
 
@@ -24,9 +30,7 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
     (frame: Frame): void => {
       'worklet'
 
-      runAsync(frame, () => {
-        'worklet'
-
+      runAtTargetFps(1, () => {
         try {
           // the scanText has wrong types from library so we need to cast it
           const data = scanText(frame) as unknown as TextData
