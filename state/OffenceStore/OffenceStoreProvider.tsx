@@ -1,5 +1,4 @@
 import { createContext, ReactNode, useRef } from 'react'
-import { PhotoFile } from 'react-native-vision-camera'
 
 import { OffenceTypeEnum, ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
@@ -23,13 +22,12 @@ export type OffenceState = {
 
   // offence data
   location?: PositionObject
-  offencePhotos?: string[]
   offenceType?: OffenceTypeEnum
   resolutionType?: ResolutionOffenceTypeEnum
   isObjectiveResponsibility: boolean
 
-  photos: PhotoFile[]
-  ecvPhoto?: PhotoFile
+  photos: string[]
+  ecvPhoto?: string
 
   // zone data
   zone?: MapUdrZoneWithTranslationProps

@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
+import { View } from 'react-native'
 
+import AppVersion from '@/components/info/AppVersion'
 import AvatarCirclePerson from '@/components/info/AvatarCirclePerson'
 import ActionRow from '@/components/list-rows/ActionRow'
 import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
@@ -20,15 +22,19 @@ const ProfilePage = () => {
   return (
     <ScreenView title={t('profile.title')}>
       <ScreenContent>
-        <ContentWithAvatar
-          customAvatarComponent={<AvatarCirclePerson />}
-          title={user.name}
-          text={user.email}
-        />
+        <View className="flex-1">
+          <ContentWithAvatar
+            customAvatarComponent={<AvatarCirclePerson />}
+            title={user.name}
+            text={user.email}
+          />
 
-        <PressableStyled onPress={signOut}>
-          <ActionRow startIcon="logout" label={t('profile.logout')} variant="negative" />
-        </PressableStyled>
+          <PressableStyled onPress={signOut}>
+            <ActionRow startIcon="logout" label={t('profile.logout')} variant="negative" />
+          </PressableStyled>
+        </View>
+
+        <AppVersion />
       </ScreenContent>
     </ScreenView>
   )

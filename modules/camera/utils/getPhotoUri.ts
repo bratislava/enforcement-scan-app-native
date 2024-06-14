@@ -1,3 +1,1 @@
-import { PhotoFile } from 'react-native-vision-camera'
-
-export const getPhotoUri = (photo?: PhotoFile) => (photo ? `file://${photo.path}` : undefined)
+export const getPhotoUri = (path?: string) => (path ? `file://${path}` : '')

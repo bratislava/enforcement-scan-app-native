@@ -1,4 +1,5 @@
 {
+  "appVersion": "Verzia aplikácie {{version}}",
   "camera.ocr.error.title": "Kamera nie je dostupná na tomto zariadení",
   "common.continue": "Pokračovať",
   "home.empty.text": "Požiadajte o práva nadriadeného.",
@@ -13,6 +14,7 @@
   "offence.offenceResolutionPlaceholder": "Vyberte druh vyriešenia",
   "offence.offenceType": "Druh priestupku",
   "offence.offenceTypePlaceholder": "Vyberte druh priestupku",
+  "offence.picture.detail.add": "Pridať fotku",
   "offence.picture.detail.retake": "Opakovať",
   "offence.picture.detail.title": "Detail fotky",
   "offence.pictures.title": "Prehľad fotiek",
@@ -51,7 +53,6 @@
   "offenceCamera.addPicture": "Odfotiť",
   "offenceCamera.addPictureTitle": "Pridajte fotku",
   "offenceCamera.error": "Pri fotení sa vyskytla chyba",
-  "offenceCamera.title": "Ďalšie fotky",
   "offenceCamera.titleWithCount": "Ďalšie fotky ({{currentCount}}/{{maxCount}})",
   "offenceResult.description": "Hlásenie bolo úspešne vytvorené, môžete pokračovať ďalej.",
   "offenceResult.home": "Domov",

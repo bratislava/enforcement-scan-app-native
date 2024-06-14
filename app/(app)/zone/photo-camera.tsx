@@ -11,10 +11,10 @@ import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
-import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { addTimestamp } from '@/utils/addTimestamp'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const AppRoute = () => {
@@ -42,10 +42,9 @@ const AppRoute = () => {
   const takePicture = async () => {
     setLoading(true)
     const capturedPhoto = await ref.current?.takePhoto()
+    const imageWithTimestameUri = await addTimestamp(capturedPhoto?.path)
 
-    const photoUri = getPhotoUri(capturedPhoto)
-
-    if (!photoUri) {
+    if (!imageWithTimestameUri) {
       setLoading(false)
 
       return
@@ -54,9 +53,9 @@ const AppRoute = () => {
     try {
       const photoResponse = await createPhotoMutation.mutateAsync({
         file: {
-          uri: photoUri,
+          uri: imageWithTimestameUri,
           type: 'image/jpeg',
-          name: photoUri.split('/').pop()!,
+          name: imageWithTimestameUri.split('/').pop()!,
         } as unknown as File,
         tag: udrUuid!,
       })
