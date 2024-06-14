@@ -50,7 +50,7 @@ const PhotosPage = () => {
         ItemSeparatorComponent={() => <View className="h-2 w-2" />}
         renderItem={({ item, index }) => (
           <PressableStyled
-            key={item.path}
+            key={item}
             className={cn('w-full items-center justify-center')}
             onPress={() => onShowDetail(index)}
           >
