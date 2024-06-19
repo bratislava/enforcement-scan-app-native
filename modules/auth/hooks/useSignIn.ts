@@ -1,4 +1,4 @@
-import { exchangeCodeAsync, makeRedirectUri, useAuthRequest } from 'expo-auth-session'
+import { exchangeCodeAsync, makeRedirectUri, Prompt, useAuthRequest } from 'expo-auth-session'
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
 
@@ -30,6 +30,8 @@ export const useSignIn = () => {
       clientId: environment.clientId,
       scopes: AUTH_SCOPES,
       redirectUri,
+      // prompt value is here to force user to login with credentials to get rid of the issue with multiple accounts on one device.
+      prompt: Prompt.Login,
     },
     discovery,
   )

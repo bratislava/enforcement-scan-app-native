@@ -112,6 +112,7 @@ export const OffenceStateEnum = {
   Updated: 'UPDATED',
   Registered: 'REGISTERED',
   NotOffence: 'NOT_OFFENCE',
+  BackofficeError: 'BACKOFFICE_ERROR',
 } as const
 
 export type OffenceStateEnum = (typeof OffenceStateEnum)[keyof typeof OffenceStateEnum]
@@ -145,6 +146,7 @@ export const OffenceTypeEnum = {
   T: 'T',
   U: 'U',
   Dz: 'DZ',
+  NB: 'N_B',
 } as const
 
 export type OffenceTypeEnum = (typeof OffenceTypeEnum)[keyof typeof OffenceTypeEnum]
@@ -266,17 +268,17 @@ export interface RequestCreateOrUpdateScanDto {
    */
   streetName?: string
   /**
-   * Permit area id used for parking validity check - if it is permit type
-   * @type {string}
+   * Code of area
+   * @type {Array<string>}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  udrOkpId?: string
+  areaCodes?: Array<string> | null
   /**
-   * Parking space id used for parking validity check - if it is ticket type
+   * Uuid of udr, generated from gis, used for paas parking authorization - part of request to Parkdots
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  udrGlobalId?: string
+  udrGlobalId?: string | null
 }
 
 /**
@@ -1524,6 +1526,7 @@ export const ScanControllerGetDuplicitOffenceOffenceTypesEnum = {
   T: 'T',
   U: 'U',
   Dz: 'DZ',
+  NB: 'N_B',
 } as const
 export type ScanControllerGetDuplicitOffenceOffenceTypesEnum =
   (typeof ScanControllerGetDuplicitOffenceOffenceTypesEnum)[keyof typeof ScanControllerGetDuplicitOffenceOffenceTypesEnum]
