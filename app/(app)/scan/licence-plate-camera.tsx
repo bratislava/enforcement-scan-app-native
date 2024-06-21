@@ -44,18 +44,22 @@ const LicencePlateCameraComp = () => {
 
   const onCheckEcv = useCallback(
     async (ecv: string) => {
-      const newScanResult = await checkEcv(ecv, isManual)
+      try {
+        const newScanResult = await checkEcv(ecv, isManual)
 
-      if (newScanResult === ScanReasonEnum.Other) {
-        return router.navigate('/offence')
+        if (newScanResult === ScanReasonEnum.Other) {
+          return router.navigate('/offence')
+        }
+        if (newScanResult !== ScanResultEnum.NoViolation)
+          return router.navigate({
+            pathname: '/scan/scan-result',
+            params: { scanResult: newScanResult },
+          })
+
+        return newScanResult
+      } catch {
+        return null
       }
-      if (newScanResult !== ScanResultEnum.NoViolation)
-        return router.navigate({
-          pathname: '/scan/scan-result',
-          params: { scanResult: newScanResult },
-        })
-
-      return newScanResult
     },
     [checkEcv, isManual],
   )
