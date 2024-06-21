@@ -69,6 +69,7 @@ const OffencePage = () => {
             <Field label={t('offence.vehicle')}>
               <TextInput
                 value={ecv}
+                className="font-source-500medium"
                 isDisabled={!!role?.actions.scanCheck}
                 onChangeText={(value) => setOffenceState({ ecv: value })}
               />

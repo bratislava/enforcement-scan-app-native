@@ -58,6 +58,7 @@ module.exports = {
         'inter-400regular': ['Inter_400Regular'],
         'inter-600semibold': ['Inter_600SemiBold'],
         'inter-700bold': ['Inter_700Bold'],
+        'source-500medium': ['SourceCodePro_500Medium'],
       },
     },
   },

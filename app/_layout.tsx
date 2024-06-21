@@ -43,6 +43,7 @@ const RootLayout = () => {
   const [fontsLoaded] = useFonts({
     /* eslint-disable unicorn/prefer-module,global-require */
     BelfastGrotesk_700Bold: require('@/assets/fonts/Belfast-Grotesk-Bold.otf'),
+    SourceCodePro_500Medium: require('@/assets/fonts/SourceCodePro-Medium.ttf'),
     Inter_400Regular,
     Inter_600SemiBold,
     Inter_700Bold,

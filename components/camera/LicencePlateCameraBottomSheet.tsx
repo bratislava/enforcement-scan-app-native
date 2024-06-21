@@ -63,13 +63,16 @@ const LicencePlateCameraBottomSheet = ({
       >
         <BottomSheetContent className="g-2">
           {showCheckLicencePlateWarning ? (
-            <Panel className="bg-warning-light">
-              <Typography>{t('scanLicencePlate.checkLicencePlateWarning')}</Typography>
+            <Panel className="flex-row bg-warning-light">
+              <Typography className="font-source-500medium">
+                {t('scanLicencePlate.checkLicencePlateWarning')}
+              </Typography>
             </Panel>
           ) : null}
 
           <Field label="EČV">
             <TextInput
+              className="font-source-500medium"
               accessibilityLabel={t('scanLicencePlate.licencePlate')}
               value={licencePlate}
               onChangeText={onChangeLicencePlate}
