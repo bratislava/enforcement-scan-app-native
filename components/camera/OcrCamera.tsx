@@ -46,7 +46,7 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
     [scanText, runWorklet],
   )
 
-  return <FullScreenCamera isActive ref={ref} frameProcessor={frameProcessor} {...props} />
+  return <FullScreenCamera ref={ref} frameProcessor={frameProcessor} {...props} />
 })
 
 export default OcrCamera
