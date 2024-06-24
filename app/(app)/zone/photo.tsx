@@ -10,7 +10,6 @@ import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
-import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
@@ -20,8 +19,6 @@ const ZonePhotoPage = () => {
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavouritePhotosOptions())
   const { setOffenceState } = useSetOffenceState()
 
-  const udrUuid = useOffenceStoreContext((state) => state.zone?.udrUuid)
-
   if (isPending) {
     return <LoadingScreen title="Vyberte zónovú značku" asScreenView />
   }
@@ -30,9 +27,7 @@ const ZonePhotoPage = () => {
     return <Typography>Error: {error.message}</Typography>
   }
 
-  const selectedZonePhotos = data.photos.filter((photo) => photo.tag === udrUuid)
-
-  if (selectedZonePhotos.length === 0) {
+  if (data.photos.length === 0) {
     return <Redirect href={ZONE_PHOTO_CAMERA_ROUTE} />
   }
 
@@ -55,7 +50,7 @@ const ZonePhotoPage = () => {
     >
       <FlashList
         className="h-full w-full flex-1"
-        data={selectedZonePhotos}
+        data={data.photos}
         ItemSeparatorComponent={() => <View className="h-2" />}
         renderItem={({ item }) => (
           <PressableStyled
@@ -72,8 +67,14 @@ const ZonePhotoPage = () => {
               source={{ uri: createUrlFromImageObject(item) }}
             />
 
-            <View className="absolute h-full w-full items-center justify-center bg-black/10">
+            <View className="absolute h-full w-full items-center justify-center bg-black/10 ">
               <Icon name="image" size={40} className="text-white" />
+
+              {item.tag ? (
+                <Typography variant="h2" className="rounded bg-black/80 p-2 text-white">
+                  {item.tag}
+                </Typography>
+              ) : null}
             </View>
           </PressableStyled>
         )}

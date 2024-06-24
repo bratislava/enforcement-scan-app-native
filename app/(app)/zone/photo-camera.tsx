@@ -1,11 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { router } from 'expo-router'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image } from 'react-native'
 import { Camera } from 'react-native-vision-camera'
 
-import CameraBottomSheet from '@/components/camera/CameraBottomSheet'
 import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
@@ -16,12 +14,12 @@ import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreCont
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addTimestamp } from '@/utils/addTimestamp'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
+import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 
 const AppRoute = () => {
   const { t } = useTranslation()
   const { setOffenceState } = useSetOffenceState()
   const zonePhoto = useOffenceStoreContext((state) => state.zonePhoto)
-  const udrUuid = useOffenceStoreContext((state) => state.zone?.udrUuid)
 
   const ref = useRef<Camera>(null)
   const [torch, setTorch] = useState<TorchState>('off')
@@ -39,7 +37,7 @@ const AppRoute = () => {
 
   useCameraPermission({ autoAsk: true })
 
-  const takePicture = async () => {
+  const takePicture = async (tag: string) => {
     setLoading(true)
     const capturedPhoto = await ref.current?.takePhoto()
     const imageWithTimestameUri = await addTimestamp(capturedPhoto?.path)
@@ -57,7 +55,7 @@ const AppRoute = () => {
           type: 'image/jpeg',
           name: imageWithTimestameUri.split('/').pop()!,
         } as unknown as File,
-        tag: udrUuid!,
+        tag,
       })
 
       setOffenceState({ zonePhoto: photoResponse.data })
@@ -76,10 +74,8 @@ const AppRoute = () => {
         <FullScreenCamera ref={ref} torch={torch} />
       )}
 
-      <CameraBottomSheet
+      <ZoneCameraBottomSheet
         hasPhoto={!!zonePhoto}
-        retakePicture={() => setOffenceState({ zonePhoto: undefined })}
-        selectPicture={() => router.push('/scan/licence-plate-camera')}
         torch={torch}
         isLoading={loading}
         takePicture={takePicture}

@@ -70,7 +70,7 @@ const LicencePlateCameraComp = () => {
     const ecvPhoto = await ref.current.takePhoto()
     const imageWithTimestampUri = await addTimestamp(ecvPhoto?.path)
 
-    setOffenceState({ ecvPhoto: imageWithTimestampUri })
+    setOffenceState({ photos: [imageWithTimestampUri] })
   }, [ref, setOffenceState])
 
   const onFrameCapture = useCallback(
@@ -84,12 +84,10 @@ const LicencePlateCameraComp = () => {
         setIsManual(false)
         takeLicencePlatePicture()
 
-        if (!(ecv.includes('0') || ecv.includes('O'))) {
-          const newScanResult = await onCheckEcv(ecv)
+        const newScanResult = await onCheckEcv(ecv)
 
-          if (newScanResult && role?.actions.scanCheck) {
-            setScanResult(newScanResult)
-          }
+        if (newScanResult && role?.actions.scanCheck) {
+          setScanResult(newScanResult)
         }
 
         setIsLoading(false)
@@ -136,7 +134,7 @@ const LicencePlateCameraComp = () => {
     }
 
     setIsManual(true)
-    setOffenceState({ ecv: ecv.toUpperCase(), ecvPhoto: undefined })
+    setOffenceState({ ecv: ecv.toUpperCase() })
   }
 
   return (

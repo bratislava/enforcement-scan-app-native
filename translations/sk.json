@@ -109,6 +109,8 @@
   "zone.takePicture": "Odfotiť",
   "zone.takePictureTitle": "Pridajte fotku",
   "zone.title": "Vyberte zónu",
+  "zone.tag": "Popis: {{tag}}",
+  "zone.tag.placeholder": "Vložte popis",
   "zone.zonePicture": "Zónová fotka",
   "zone.zoomIn": "Priblížte"
 }
