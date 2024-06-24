@@ -268,6 +268,18 @@ export interface RequestCreateOrUpdateScanDto {
    */
   streetName?: string
   /**
+   *
+   * @type {string}
+   * @memberof RequestCreateOrUpdateScanDto
+   */
+  district?: string
+  /**
+   *
+   * @type {string}
+   * @memberof RequestCreateOrUpdateScanDto
+   */
+  areaName?: string
+  /**
    * Code of area
    * @type {Array<string>}
    * @memberof RequestCreateOrUpdateScanDto
