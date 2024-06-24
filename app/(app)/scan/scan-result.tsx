@@ -4,9 +4,13 @@ import { useTranslation } from 'react-i18next'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
 import ErrorScreen from '@/components/screen-layout/ErrorScreen'
+import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenViewCentered from '@/components/screen-layout/ScreenViewCentered'
+import Panel from '@/components/shared/Panel'
+import Typography from '@/components/shared/Typography'
 import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
+import { cn } from '@/utils/cn'
 
 type AvailableScanResults = 'PAAS_PARKING_VIOLATION' | 'PAAS_PARKING_VIOLATION_DUPLICITY'
 
@@ -15,7 +19,7 @@ type ScanResultSearchParams = {
 }
 
 const getResultVariant = (result?: AvailableScanResults) => {
-  if (result === 'PAAS_PARKING_VIOLATION') return 'error'
+  if (result === ScanResultEnum.PaasParkingViolation) return 'error'
 
   return 'warning'
 }
@@ -33,12 +37,14 @@ const ScanResultPage = () => {
   const scanResultTextsMap = {
     [ScanResultEnum.PaasParkingViolationDuplicity]: {
       title: t('scanResult.duplicity.title'),
-      text: t('scanResult.duplicity.text', { ecv }),
+      text: t('scanResult.duplicity.text'),
+      infoText: t('scanResult.duplicity.infoText', { ecv }),
       buttonText: t('scanResult.duplicity.buttonText'),
     },
     [ScanResultEnum.PaasParkingViolation]: {
       title: t('scanResult.offence.title'),
-      text: t('scanResult.offence.text', { ecv }),
+      text: t('scanResult.offence.text'),
+      infoText: t('scanResult.offence.infoText', { ecv }),
       buttonText: t('scanResult.offence.buttonText'),
     },
   }
@@ -52,12 +58,23 @@ const ScanResultPage = () => {
         </ContinueButton>
       }
     >
-      <ContentWithAvatar
-        variant={getResultVariant(scanResult)}
-        title={scanResultTextsMap[scanResult].title}
-        text={scanResultTextsMap[scanResult].text}
-        asMarkdown
-      />
+      <ScreenContent className="justify-center">
+        <ContentWithAvatar
+          variant={getResultVariant(scanResult)}
+          title={scanResultTextsMap[scanResult].title}
+          text={scanResultTextsMap[scanResult].text}
+          asMarkdown
+        />
+
+        <Panel
+          className={cn('px-5', {
+            'bg-warning-light': scanResult === ScanResultEnum.PaasParkingViolationDuplicity,
+            'bg-negative-light': scanResult === ScanResultEnum.PaasParkingViolation,
+          })}
+        >
+          <Typography>{scanResultTextsMap[scanResult].infoText}</Typography>
+        </Panel>
+      </ScreenContent>
     </ScreenViewCentered>
   )
 }

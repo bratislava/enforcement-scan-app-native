@@ -31,7 +31,11 @@ const PhotosPage = () => {
 
   return (
     <ScreenView
-      actionButton={<ContinueButton loading={isLoading} onPress={onCreateOffence} />}
+      actionButton={
+        <ContinueButton loading={isLoading} onPress={onCreateOffence}>
+          {t('offence.pictures.createOffence')}
+        </ContinueButton>
+      }
       title={t('offence.pictures.title')}
       className="flex-1 justify-start"
       options={{
