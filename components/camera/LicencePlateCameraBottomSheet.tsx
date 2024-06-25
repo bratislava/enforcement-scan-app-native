@@ -63,7 +63,7 @@ const LicencePlateCameraBottomSheet = ({
       >
         <BottomSheetContent className="g-2">
           {showCheckLicencePlateWarning ? (
-            <Panel className="flex-row bg-warning-light">
+            <Panel className="bg-warning-light">
               <Typography className="font-source-500medium">
                 {t('scanLicencePlate.checkLicencePlateWarning')}
               </Typography>
