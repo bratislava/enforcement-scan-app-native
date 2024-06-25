@@ -84,10 +84,12 @@ const LicencePlateCameraComp = () => {
         setIsManual(false)
         takeLicencePlatePicture()
 
-        const newScanResult = await onCheckEcv(ecv)
+        if (!(ecv.includes('0') || ecv.includes('O'))) {
+          const newScanResult = await onCheckEcv(ecv)
 
-        if (newScanResult && role?.actions.scanCheck) {
-          setScanResult(newScanResult)
+          if (newScanResult && role?.actions.scanCheck) {
+            setScanResult(newScanResult)
+          }
         }
 
         setIsLoading(false)
