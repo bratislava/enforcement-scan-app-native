@@ -6,6 +6,8 @@ import { clientApi } from '@/modules/backend/client-api'
 import { RequestCreateOffenceDataDto } from '@/modules/backend/openapi-generated'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
+import { Position } from 'react-native-image-marker'
+import { addTextToImage } from '@/utils/addTextToImage'
 
 const onRouteToResult = (offenceResult: 'success' | 'error') => {
   router.push({
@@ -49,6 +51,18 @@ export const useCreateOffence = () => {
       return
     }
 
+    const photosWithLocation = await Promise.all(
+      photos.map(async (photo) => {
+        const photoWithLocation = await addTextToImage(
+          `${location.lat.toString()}, ${location.long.toString()}`,
+          photo,
+          Position.bottomLeft,
+        )
+
+        return photoWithLocation
+      }),
+    )
+
     try {
       const res = await createOffenceMutation.mutateAsync({
         lastScanUuid: scanUuid,
@@ -64,7 +78,7 @@ export const useCreateOffence = () => {
           vehicleId,
         },
         // Axios throws Network Error if the file is fetched and sent with `new File()`
-        files: photos.map((photo) => {
+        files: photosWithLocation.map((photo) => {
           const photoUri = getPhotoUri(photo)
 
           return {
