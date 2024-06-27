@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
 import { router } from 'expo-router'
+import { Position } from 'react-native-image-marker'
 
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
 import { clientApi } from '@/modules/backend/client-api'
 import { RequestCreateOffenceDataDto } from '@/modules/backend/openapi-generated'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
-import { Position } from 'react-native-image-marker'
 import { addTextToImage } from '@/utils/addTextToImage'
 
 const onRouteToResult = (offenceResult: 'success' | 'error') => {
@@ -52,15 +52,13 @@ export const useCreateOffence = () => {
     }
 
     const photosWithLocation = await Promise.all(
-      photos.map(async (photo) => {
-        const photoWithLocation = await addTextToImage(
+      photos.map(async (photo) =>
+        addTextToImage(
           `${location.lat.toString()}, ${location.long.toString()}`,
           photo,
           Position.bottomLeft,
-        )
-
-        return photoWithLocation
-      }),
+        ),
+      ),
     )
 
     try {

@@ -8,9 +8,9 @@ import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { RequestCreateOrUpdateScanDto, ScanResultEnum } from '@/modules/backend/openapi-generated'
 import { TextData } from '@/modules/camera/types'
+import { correctLicencePlate } from '@/modules/camera/utils/correctLicencePlate'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
-import { correctLicencePlate } from '@/modules/camera/utils/correctLicencePlate'
 
 export const HEADER_WITH_PADDING = 100
 export const CROPPED_AREA_HEIGHT = 150

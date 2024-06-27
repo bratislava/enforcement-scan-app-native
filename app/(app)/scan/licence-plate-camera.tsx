@@ -20,8 +20,8 @@ import { TextData } from '@/modules/camera/types'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
-import { cn } from '@/utils/cn'
 import { addTextToImage } from '@/utils/addTextToImage'
+import { cn } from '@/utils/cn'
 
 const LicencePlateCameraComp = () => {
   const { t } = useTranslation()

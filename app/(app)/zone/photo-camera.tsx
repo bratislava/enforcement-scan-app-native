@@ -6,15 +6,15 @@ import { Camera } from 'react-native-vision-camera'
 
 import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import FullScreenCamera from '@/components/camera/FullScreenCamera'
+import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
-import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
-import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 import { addTextToImage } from '@/utils/addTextToImage'
+import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const AppRoute = () => {
   const { t } = useTranslation()
