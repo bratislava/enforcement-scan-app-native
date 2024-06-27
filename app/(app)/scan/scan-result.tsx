@@ -72,7 +72,10 @@ const ScanResultPage = () => {
             'bg-negative-light': scanResult === ScanResultEnum.PaasParkingViolation,
           })}
         >
-          <Typography>{scanResultTextsMap[scanResult].infoText}</Typography>
+          <Typography className="text-center">{scanResultTextsMap[scanResult].infoText}</Typography>
+          <Typography variant="h2" className="text-center font-source-500medium">
+            {ecv}
+          </Typography>
         </Panel>
       </ScreenContent>
     </ScreenViewCentered>

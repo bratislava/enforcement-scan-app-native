@@ -29,6 +29,7 @@ const FullScreenCamera = forwardRef<Camera, Omit<Partial<CameraProps>, 'device'>
       ref={ref}
       photo
       format={format}
+      onError={(error) => console.error('Camera error', error)}
       device={device}
       style={{ height: width * ASPECT_RATIO }}
       isActive={focused && AppState.currentState === 'active'}

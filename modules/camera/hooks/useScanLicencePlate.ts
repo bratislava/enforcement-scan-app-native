@@ -10,6 +10,7 @@ import { RequestCreateOrUpdateScanDto, ScanResultEnum } from '@/modules/backend/
 import { TextData } from '@/modules/camera/types'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { correctLicencePlate } from '@/modules/camera/utils/correctLicencePlate'
 
 export const HEADER_WITH_PADDING = 100
 export const CROPPED_AREA_HEIGHT = 150
@@ -100,8 +101,8 @@ export const useScanLicencePlate = () => {
         .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
         .replaceAll(/[^\dA-Z]/g, '')
 
-      if (newEcv.length > 5 && newEcv.length < 13) {
-        return newEcv
+      if (newEcv.length > 6 && newEcv.length < 10) {
+        return correctLicencePlate(newEcv)
       }
 
       return ''
