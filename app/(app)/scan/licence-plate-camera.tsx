@@ -70,7 +70,7 @@ const LicencePlateCameraComp = () => {
     const ecvPhoto = await ref.current.takePhoto()
     const imageWithTimestampUri = await addTimestamp(ecvPhoto?.path)
 
-    setOffenceState({ ecvPhoto: imageWithTimestampUri })
+    setOffenceState({ photos: [imageWithTimestampUri] })
   }, [ref, setOffenceState])
 
   const onFrameCapture = useCallback(
@@ -136,7 +136,7 @@ const LicencePlateCameraComp = () => {
     }
 
     setIsManual(true)
-    setOffenceState({ ecv: ecv.toUpperCase(), ecvPhoto: undefined })
+    setOffenceState({ ecv: ecv.toUpperCase() })
   }
 
   return (

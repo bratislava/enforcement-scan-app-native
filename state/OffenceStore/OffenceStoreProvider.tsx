@@ -8,6 +8,7 @@ import { createStore, Store } from '@/utils/store'
 export type ZonePhoto = {
   id: number
   photoUrl: string
+  tag?: string | null
 }
 
 export type PositionObject = {
@@ -27,7 +28,6 @@ export type OffenceState = {
   isObjectiveResponsibility: boolean
 
   photos: string[]
-  ecvPhoto?: string
 
   // zone data
   zone?: MapUdrZoneWithTranslationProps
