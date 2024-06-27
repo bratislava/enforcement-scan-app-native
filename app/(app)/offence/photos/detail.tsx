@@ -13,7 +13,7 @@ import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
-import { addTimestamp } from '@/utils/addTimestamp'
+import { addTextToImage } from '@/utils/addTextToImage'
 
 type PhotoDetailSearchParams = {
   index: string
@@ -39,7 +39,10 @@ const AppRoute = () => {
   const takePicture = async () => {
     setLoading(true)
     const capturedPhoto = await ref.current?.takePhoto()
-    const imageWithTimestampUri = await addTimestamp(capturedPhoto?.path)
+    const imageWithTimestampUri = await addTextToImage(
+      new Date().toLocaleString(),
+      capturedPhoto?.path,
+    )
 
     if (!imageWithTimestampUri) {
       setLoading(false)

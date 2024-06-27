@@ -2,12 +2,20 @@ import Marker, { ImageFormat, Position, TextBackgroundType } from 'react-native-
 
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 
-export const addTimestamp = async (imagePath?: string) => {
+/**
+ * Add provided text to the image
+ * @param imagePath path to image in the device
+ * @param text
+ * @returns path to the new image with the given text in it
+ */
+export const addTextToImage = async (
+  text: string,
+  imagePath?: string,
+  position: Position | undefined = Position.bottomRight,
+) => {
   const imageUri = getPhotoUri(imagePath)
 
   if (!imageUri) return ''
-
-  const timestamp = new Date().toLocaleString()
 
   try {
     const newUri = await Marker.markText({
@@ -16,9 +24,9 @@ export const addTimestamp = async (imagePath?: string) => {
       },
       watermarkTexts: [
         {
-          text: timestamp,
+          text,
           positionOptions: {
-            position: Position.bottomRight,
+            position,
           },
           style: {
             color: '#fff',
@@ -39,7 +47,7 @@ export const addTimestamp = async (imagePath?: string) => {
 
     return getPhotoUri(newUri)
   } catch (error) {
-    console.error('Error adding timestamp:', error)
+    console.error('Error adding text:', error)
   }
 
   return imageUri
