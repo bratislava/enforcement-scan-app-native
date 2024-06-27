@@ -23,9 +23,7 @@ export const useScanLicencePlate = () => {
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const role = getRoleByKey(roleKey)
   const { setOffenceState } = useSetOffenceState()
-  const udrId = useOffenceStoreContext((state) => state.zone?.udrId)
-  const udrGlobalId = useOffenceStoreContext((state) => state.zone?.udrUuid)
-  const stringAreaCodes = useOffenceStoreContext((state) => state.zone?.odpRpk)
+  const zone = useOffenceStoreContext((state) => state.zone)
 
   const createScanMutation = useMutation({
     mutationFn: (bodyInner: RequestCreateOrUpdateScanDto) =>
@@ -43,13 +41,15 @@ export const useScanLicencePlate = () => {
     const res = await createScanMutation.mutateAsync({
       ecv,
       scanReason: role.scanReason,
-      udr: udrId,
+      udr: zone?.udrId,
       lat: location.coords.latitude.toString(),
       long: location.coords.longitude.toString(),
       ecvUpdatedManually: !!isManual,
       streetName: 'auto',
-      areaCodes: stringAreaCodes ? stringAreaCodes.replaceAll(' ', '').split(',') : undefined,
-      udrGlobalId,
+      areaCodes: zone?.odpRpk ? zone?.odpRpk.replaceAll(' ', '').split(',') : undefined,
+      udrGlobalId: zone?.udrUuid,
+      district: zone?.cityDistrict,
+      areaName: zone?.name,
     })
 
     if (res.data) {
