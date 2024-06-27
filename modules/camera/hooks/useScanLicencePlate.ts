@@ -1,31 +1,29 @@
 import { useMutation } from '@tanstack/react-query'
 import * as Location from 'expo-location'
 import { useCallback } from 'react'
-import { useWindowDimensions } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { RequestCreateOrUpdateScanDto, ScanResultEnum } from '@/modules/backend/openapi-generated'
-import { TextData } from '@/modules/camera/types'
-import { correctLicencePlate } from '@/modules/camera/utils/correctLicencePlate'
+import { BlockData, TextData } from '@/modules/camera/types'
+import { correctLicencePlate, ECV_FORMAT_REGEX } from '@/modules/camera/utils/correctLicencePlate'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 export const HEADER_WITH_PADDING = 100
 export const CROPPED_AREA_HEIGHT = 150
-const SCAN_LICENCE_PLATE_BUFFER = 30
+
+const removeSpecialCharacters = (text: string) =>
+  text
+    .toUpperCase()
+    .replaceAll('|', 'I')
+    .replaceAll(/[^\dA-Z]/g, '')
 
 export const useScanLicencePlate = () => {
-  const { top } = useSafeAreaInsets()
-  const { height: screenHeight } = useWindowDimensions()
-
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
   const role = getRoleByKey(roleKey)
   const { setOffenceState } = useSetOffenceState()
-  const udrId = useOffenceStoreContext((state) => state.zone?.udrId)
-  const udrGlobalId = useOffenceStoreContext((state) => state.zone?.udrUuid)
-  const stringAreaCodes = useOffenceStoreContext((state) => state.zone?.odpRpk)
+  const zone = useOffenceStoreContext((state) => state.zone)
 
   const createScanMutation = useMutation({
     mutationFn: (bodyInner: RequestCreateOrUpdateScanDto) =>
@@ -43,13 +41,15 @@ export const useScanLicencePlate = () => {
     const res = await createScanMutation.mutateAsync({
       ecv,
       scanReason: role.scanReason,
-      udr: udrId,
+      udr: zone?.udrId,
       lat: location.coords.latitude.toString(),
       long: location.coords.longitude.toString(),
       ecvUpdatedManually: !!isManual,
       streetName: 'auto',
-      areaCodes: stringAreaCodes ? stringAreaCodes.replaceAll(' ', '').split(',') : undefined,
-      udrGlobalId,
+      areaCodes: zone?.odpRpk ? zone?.odpRpk.replaceAll(' ', '').split(',') : undefined,
+      udrGlobalId: zone?.udrUuid,
+      district: zone?.cityDistrict,
+      areaName: zone?.name,
     })
 
     if (res.data) {
@@ -66,49 +66,37 @@ export const useScanLicencePlate = () => {
   /**
    * Finds the biggest block of text in the frame and checks whether it meets the criteria for ECV
    */
-  const scanLicencePlate = useCallback(
-    (frameObject: TextData, height: number) => {
-      // translate cropped element size from window height into frame height
-      const translateHeight = (heightToTranslate: number) =>
-        (heightToTranslate / screenHeight) * height
+  const scanLicencePlate = useCallback((frameObject: TextData) => {
+    if (!frameObject.blocks) return ''
 
-      const topBackdropHeight = top + HEADER_WITH_PADDING
-      const croppedAreaStart = translateHeight(topBackdropHeight - SCAN_LICENCE_PLATE_BUFFER)
-      const croppedAreaEnd = translateHeight(
-        topBackdropHeight + CROPPED_AREA_HEIGHT + SCAN_LICENCE_PLATE_BUFFER,
-      )
+    const extractTextAndArea = (block: BlockData) => {
+      const blockText =
+        block.lines
+          .map((line) => removeSpecialCharacters(line.lineText))
+          .find((text) => ECV_FORMAT_REGEX.test(text) || text.length === 7) || ''
 
-      const frameArray = frameObject.result.blocks
-        .filter(
-          (block) =>
-            block &&
-            block.cornerPoints[2].x >= croppedAreaStart &&
-            block.cornerPoints[3].x <= croppedAreaEnd,
-        )
-        .map((block) => ({
-          ...block,
-          text: block.lines.map((line) => line.text).join(''),
-          surfaceArea: block.frame.width * block.frame.height,
-        }))
+      const surfaceArea = block.blockFrame.width * block.blockFrame.height
 
-      const numbers = frameArray.map(({ surfaceArea }) => surfaceArea)
+      return { text: blockText, surfaceArea }
+    }
 
-      if (!Array.isArray(numbers) || numbers.length === 0) return ''
+    // Filter and map the text blocks within the cropped area
+    const frameBlocks = frameObject.blocks?.map(extractTextAndArea)
+    // Return an empty string if no valid blocks are found
+    if (frameBlocks?.length === 0) return ''
 
-      const index = numbers.indexOf(Math.max(...numbers))
+    // Get the surface areas of the filtered blocks
+    const surfaceAreas = frameBlocks.map(({ surfaceArea }) => surfaceArea)
 
-      const newEcv = frameArray[index].text
-        .replaceAll(/(\r\n|\n|\r|\s)/gm, '')
-        .replaceAll(/[^\dA-Z]/g, '')
+    const maxIndex = surfaceAreas.indexOf(Math.max(...surfaceAreas))
+    const newEcv = frameBlocks[maxIndex].text
 
-      if (newEcv.length > 6 && newEcv.length < 10) {
-        return correctLicencePlate(newEcv)
-      }
+    if (newEcv.length > 6 && newEcv.length < 10) {
+      return ECV_FORMAT_REGEX.test(newEcv) ? correctLicencePlate(newEcv) : newEcv
+    }
 
-      return ''
-    },
-    [screenHeight, top],
-  )
+    return ''
+  }, [])
 
-  return { checkEcv, scanLicencePlate }
+  return { checkEcv, scanLicencePlate, isLoading: createScanMutation.isPending }
 }

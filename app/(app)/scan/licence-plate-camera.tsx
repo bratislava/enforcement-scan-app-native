@@ -1,5 +1,5 @@
-import { router } from 'expo-router'
-import { useCallback, useRef, useState } from 'react'
+import { router, usePathname } from 'expo-router'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -9,7 +9,8 @@ import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import OcrCamera from '@/components/camera/OcrCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
-import { getRoleByKey } from '@/modules/backend/constants/roles'
+import DismissKeyboard from '@/components/shared/DissmissKeyboard'
+import IconButton from '@/components/shared/IconButton'
 import { ScanReasonEnum, ScanResultEnum } from '@/modules/backend/openapi-generated'
 import {
   CROPPED_AREA_HEIGHT,
@@ -23,24 +24,26 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addTextToImage } from '@/utils/addTextToImage'
 import { cn } from '@/utils/cn'
 
+let plates: string[] = []
+
 const LicencePlateCameraComp = () => {
   const { t } = useTranslation()
   const ref = useRef<Camera>(null)
   const [torch, setTorch] = useState<TorchState>('off')
-  const [isLoading, setIsLoading] = useState(false)
   const [scanResult, setScanResult] = useState<ScanResultEnum | null>(null)
   const [isManual, setIsManual] = useState(false)
 
   const { top } = useSafeAreaInsets()
 
+  const pathname = usePathname()
+
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
-  const roleKey = useOffenceStoreContext((state) => state.roleKey)
-  const role = getRoleByKey(roleKey)
+
   const { setOffenceState } = useSetOffenceState()
 
   useCameraPermission({ autoAsk: true })
 
-  const { scanLicencePlate, checkEcv } = useScanLicencePlate()
+  const { scanLicencePlate, checkEcv, isLoading } = useScanLicencePlate()
 
   const onCheckEcv = useCallback(
     async (ecv: string) => {
@@ -48,13 +51,15 @@ const LicencePlateCameraComp = () => {
         const newScanResult = await checkEcv(ecv, isManual)
 
         if (newScanResult === ScanReasonEnum.Other) {
-          return router.navigate('/offence')
+          router.navigate('/offence')
+
+          return null
         }
-        if (newScanResult !== ScanResultEnum.NoViolation)
-          return router.navigate({
-            pathname: '/scan/scan-result',
-            params: { scanResult: newScanResult },
-          })
+        // if (newScanResult !== ScanResultEnum.NoViolation)
+        //   return router.navigate({
+        //     pathname: '/scan/scan-result',
+        //     params: { scanResult: newScanResult },
+        //   })
 
         return newScanResult
       } catch {
@@ -67,47 +72,49 @@ const LicencePlateCameraComp = () => {
   const takeLicencePlatePicture = useCallback(async () => {
     if (!ref.current) return
 
-    const ecvPhoto = await ref.current.takePhoto()
-    const imageWithTimestampUri = await addTextToImage(new Date().toLocaleString(), ecvPhoto?.path)
+    try {
+      const ecvPhoto = await ref.current?.takePhoto()
+      const imageWithTimestampUri = await addTextToImage({
+        text: new Date().toLocaleString(),
+        imagePath: ecvPhoto?.path,
+      })
 
-    setOffenceState({ photos: [imageWithTimestampUri] })
+      setOffenceState({ photos: [imageWithTimestampUri] })
+    } catch {
+      // TODO: handle error
+      console.log('error')
+    }
   }, [ref, setOffenceState])
 
   const onFrameCapture = useCallback(
-    async (frame: TextData, height: number) => {
-      const ecv = scanLicencePlate(frame, height)
-      if (ecv && !generatedEcv) {
-        setIsLoading(true)
-        setScanResult(null)
+    async (frame: TextData) => {
+      if (generatedEcv) return
 
-        setOffenceState({ ecv })
-        setIsManual(false)
-        takeLicencePlatePicture()
+      const ecv = scanLicencePlate(frame)
 
-        if (!(ecv.includes('0') || ecv.includes('O'))) {
-          const newScanResult = await onCheckEcv(ecv)
+      if (ecv) {
+        if (!plates.includes(ecv)) {
+          plates.push(ecv)
+          if (plates.length > 5) plates.shift()
 
-          if (newScanResult && role?.actions.scanCheck) {
-            setScanResult(newScanResult)
-          }
+          return
         }
 
-        setIsLoading(false)
+        setOffenceState({ ecv })
+        takeLicencePlatePicture()
+
+        const newScanResult = await onCheckEcv(ecv)
+
+        if (newScanResult) {
+          setScanResult(newScanResult)
+        }
       }
     },
-    [
-      generatedEcv,
-      onCheckEcv,
-      role?.actions.scanCheck,
-      scanLicencePlate,
-      setOffenceState,
-      takeLicencePlatePicture,
-    ],
+    [generatedEcv, onCheckEcv, scanLicencePlate, setOffenceState, takeLicencePlatePicture],
   )
 
   const onContinue = async () => {
-    setIsLoading(true)
-    if (scanResult && role?.actions.scanCheck) {
+    if (scanResult && scanResult !== ScanResultEnum.Other) {
       router.navigate('/offence')
 
       return
@@ -119,56 +126,83 @@ const LicencePlateCameraComp = () => {
       const result = await onCheckEcv(generatedEcv)
 
       if (result) {
-        if (role?.actions.scanCheck) {
-          setScanResult(result)
-        } else {
-          router.push('/offence')
-        }
+        setScanResult(result)
       }
     }
-
-    setIsLoading(false)
   }
 
-  const onChangeLicencePlate = (ecv: string) => {
-    if (scanResult) {
-      setScanResult(null)
+  const onChangeLicencePlate = useCallback(
+    (ecv: string) => {
+      if (scanResult) {
+        setScanResult(null)
+      }
+
+      plates = []
+
+      setIsManual(!!ecv)
+      setOffenceState({ ecv: ecv.toUpperCase() })
+    },
+    [scanResult, setOffenceState],
+  )
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+
+    if (scanResult === ScanResultEnum.NoViolation && pathname === '/scan/licence-plate-camera') {
+      timeout = setTimeout(() => {
+        onChangeLicencePlate('')
+      }, 2000)
     }
 
-    setIsManual(true)
-    setOffenceState({ ecv: ecv.toUpperCase() })
-  }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [scanResult, onChangeLicencePlate, pathname])
+
+  const backgroundClassName = cn('items-center bg-dark/75', {
+    'bg-green/75': scanResult === ScanResultEnum.NoViolation,
+    'bg-negative/75': scanResult === ScanResultEnum.PaasParkingViolation,
+    'bg-warning/75': scanResult === ScanResultEnum.PaasParkingViolationDuplicity,
+  })
 
   return (
-    <ScreenView title={t('scanLicencePlate.title')} className="h-full">
-      <View className="relative">
-        <OcrCamera ref={ref} torch={torch} onFrameCapture={onFrameCapture} />
+    <DismissKeyboard>
+      <ScreenView
+        title={t('scanLicencePlate.title')}
+        options={{
+          headerRight: () => (
+            <IconButton
+              name="home"
+              accessibilityLabel={t('offenceResult.home')}
+              onPress={() => router.navigate('/')}
+            />
+          ),
+        }}
+        className="h-full"
+      >
+        <View className="relative">
+          <OcrCamera ref={ref} torch={torch} onFrameCapture={onFrameCapture} />
 
-        <View className="absolute h-full w-full">
-          <View
-            style={{ paddingTop: top, height: HEADER_WITH_PADDING }}
-            className={cn('items-center justify-start bg-dark/80', {
-              'bg-green/80': scanResult === ScanResultEnum.NoViolation,
-            })}
-          />
-          <View style={{ height: CROPPED_AREA_HEIGHT }} className="items-center" />
-          <View
-            className={cn('flex-1 items-center bg-dark/80 bg-opacity-20', {
-              'bg-green/80': scanResult === ScanResultEnum.NoViolation,
-            })}
-          />
+          <View className="absolute h-full w-full">
+            <View
+              style={{ paddingTop: top, height: HEADER_WITH_PADDING }}
+              className={cn('justify-start', backgroundClassName)}
+            />
+            <View style={{ height: CROPPED_AREA_HEIGHT }} className="items-center" />
+            <View className={cn('flex-1 ', backgroundClassName)} />
+          </View>
         </View>
-      </View>
 
-      <LicencePlateCameraBottomSheet
-        isLoading={isLoading}
-        torch={torch}
-        setTorch={setTorch}
-        licencePlate={generatedEcv}
-        onContinue={onContinue}
-        onChangeLicencePlate={onChangeLicencePlate}
-      />
-    </ScreenView>
+        <LicencePlateCameraBottomSheet
+          isLoading={isLoading}
+          torch={torch}
+          setTorch={setTorch}
+          licencePlate={generatedEcv}
+          onContinue={onContinue}
+          onChangeLicencePlate={onChangeLicencePlate}
+        />
+      </ScreenView>
+    </DismissKeyboard>
   )
 }
 

@@ -10,10 +10,13 @@ import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
+import { useLocation } from '@/modules/map/hooks/useLocation'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { addGpsMetadataToImage } from '@/utils/addGpsMetadataToImage'
 import { addTextToImage } from '@/utils/addTextToImage'
+import { coordsToString } from '@/utils/coordsToString'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const AppRoute = () => {
@@ -27,6 +30,8 @@ const AppRoute = () => {
 
   const queryClient = useQueryClient()
 
+  const [currentLocation] = useLocation()
+
   const createPhotoMutation = useMutation({
     mutationFn: ({ file, tag }: { file: File; tag: string }) =>
       clientApi.scanControllerCreateFavouritePhoto(file, tag),
@@ -39,11 +44,24 @@ const AppRoute = () => {
 
   const takePicture = async (tag: string) => {
     setLoading(true)
+
+    const { coords } = currentLocation ?? {}
+    const locationString = coords ? `${coordsToString(coords.latitude, coords.longitude)}; ` : ''
+
     const capturedPhoto = await ref.current?.takePhoto()
-    const imageWithTimestampUri = await addTextToImage(
-      new Date().toLocaleString(),
-      capturedPhoto?.path,
-    )
+
+    const imageWithTimestampUri = await addTextToImage({
+      text: `${locationString}${new Date().toLocaleString()}`,
+      imagePath: capturedPhoto?.path,
+    })
+
+    const imageWithMetadataUri = coords
+      ? await addGpsMetadataToImage({
+          imagePath: imageWithTimestampUri,
+          lat: coords.latitude,
+          long: coords.longitude,
+        })
+      : imageWithTimestampUri
 
     if (!imageWithTimestampUri) {
       setLoading(false)
@@ -54,9 +72,9 @@ const AppRoute = () => {
     try {
       const photoResponse = await createPhotoMutation.mutateAsync({
         file: {
-          uri: imageWithTimestampUri,
+          uri: imageWithMetadataUri,
           type: 'image/jpeg',
-          name: imageWithTimestampUri.split('/').pop()!,
+          name: imageWithMetadataUri.split('/').pop()!,
         } as unknown as File,
         tag,
       })
@@ -69,10 +87,16 @@ const AppRoute = () => {
     setLoading(false)
   }
 
+  console.log(zonePhoto ? createUrlFromImageObject(zonePhoto) : undefined)
+
   return (
     <ScreenView hasBackButton title={t('zone.zonePicture')} className="h-full">
       {zonePhoto ? (
-        <Image source={{ uri: createUrlFromImageObject(zonePhoto) }} style={{ flex: 1 }} />
+        <Image
+          source={{ uri: createUrlFromImageObject(zonePhoto) }}
+          className="object-contain"
+          style={{ flex: 1 }}
+        />
       ) : (
         <FullScreenCamera ref={ref} torch={torch} />
       )}
