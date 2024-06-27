@@ -1,4 +1,5 @@
 import BottomSheet from '@gorhom/bottom-sheet'
+import { useRouter } from 'expo-router'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
@@ -7,13 +8,12 @@ import FlashlightBottomSheetAttachment, {
   FlashLightProps,
 } from '@/components/camera/FlashlightBottomSheetAttachment'
 import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAttachment'
+import TextInput from '@/components/inputs/TextInput'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import Button from '@/components/shared/Button'
 import Typography from '@/components/shared/Typography'
-import TextInput from '@/components/inputs/TextInput'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
-import { router } from 'expo-router'
 
 type Props = FlashLightProps & {
   isLoading: boolean
@@ -25,6 +25,7 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture, ...rest }: Pr
   const { setOffenceState } = useSetOffenceState()
   const { t } = useTranslation()
   const modalRef = useRef<BottomSheet>(null)
+  const router = useRouter()
 
   const zonePhotoTag = useOffenceStoreContext((state) => state.zonePhoto?.tag)
   const [tag, setTag] = useState('')

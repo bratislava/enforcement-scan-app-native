@@ -6,15 +6,15 @@ import { Camera } from 'react-native-vision-camera'
 
 import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import FullScreenCamera from '@/components/camera/FullScreenCamera'
+import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
-import { addTimestamp } from '@/utils/addTimestamp'
+import { addTextToImage } from '@/utils/addTextToImage'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
-import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 
 const AppRoute = () => {
   const { t } = useTranslation()
@@ -40,9 +40,12 @@ const AppRoute = () => {
   const takePicture = async (tag: string) => {
     setLoading(true)
     const capturedPhoto = await ref.current?.takePhoto()
-    const imageWithTimestameUri = await addTimestamp(capturedPhoto?.path)
+    const imageWithTimestampUri = await addTextToImage(
+      new Date().toLocaleString(),
+      capturedPhoto?.path,
+    )
 
-    if (!imageWithTimestameUri) {
+    if (!imageWithTimestampUri) {
       setLoading(false)
 
       return
@@ -51,9 +54,9 @@ const AppRoute = () => {
     try {
       const photoResponse = await createPhotoMutation.mutateAsync({
         file: {
-          uri: imageWithTimestameUri,
+          uri: imageWithTimestampUri,
           type: 'image/jpeg',
-          name: imageWithTimestameUri.split('/').pop()!,
+          name: imageWithTimestampUri.split('/').pop()!,
         } as unknown as File,
         tag,
       })

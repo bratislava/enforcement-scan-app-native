@@ -20,7 +20,7 @@ import { TextData } from '@/modules/camera/types'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
-import { addTimestamp } from '@/utils/addTimestamp'
+import { addTextToImage } from '@/utils/addTextToImage'
 import { cn } from '@/utils/cn'
 
 const LicencePlateCameraComp = () => {
@@ -68,7 +68,7 @@ const LicencePlateCameraComp = () => {
     if (!ref.current) return
 
     const ecvPhoto = await ref.current.takePhoto()
-    const imageWithTimestampUri = await addTimestamp(ecvPhoto?.path)
+    const imageWithTimestampUri = await addTextToImage(new Date().toLocaleString(), ecvPhoto?.path)
 
     setOffenceState({ photos: [imageWithTimestampUri] })
   }, [ref, setOffenceState])
