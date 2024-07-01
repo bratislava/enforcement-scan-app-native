@@ -74,9 +74,12 @@ const LicencePlateCameraComp = () => {
   }, [ref, setOffenceState])
 
   const onFrameCapture = useCallback(
-    async (frame: TextData, height: number) => {
-      const ecv = scanLicencePlate(frame, height)
-      if (ecv && !generatedEcv) {
+    async (frame: TextData) => {
+      if (generatedEcv) return
+
+      const ecv = scanLicencePlate(frame)
+
+      if (ecv) {
         setIsLoading(true)
         setScanResult(null)
 

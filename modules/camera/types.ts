@@ -1,15 +1,13 @@
 export type TextData = {
-  result: {
-    blocks: BlocksData[]
-    text: string
-  }
+  blocks: BlockData[]
+  resultText: string
 }
 
-type BlocksData = {
-  cornerPoints: CornerPoints
-  frame: FrameType
+export type BlockData = {
+  blockCornerPoints: CornerPoints
+  blockFrame: FrameType
   lines: LineType[]
-  recognizedLanguages: string[] | []
+  blockText: string
 }
 
 type CornerPoints = [
@@ -29,11 +27,11 @@ type FrameType = {
 }
 
 type LineType = {
-  cornerPoints: CornerPoints
+  lineCornerPoints: CornerPoints
   elements: ElementsType
-  frame: FrameType
-  recognizedLanguages: string[]
-  text: string
+  lineFrame: FrameType
+  lineLanguages: string[] | []
+  lineText: string
 }
 
 type ElementsType = [cornerPoints: CornerPoints, frame: FrameType, text: string]
