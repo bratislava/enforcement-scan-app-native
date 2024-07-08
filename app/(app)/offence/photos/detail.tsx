@@ -13,6 +13,7 @@ import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { addImageCdnUrl } from '@/utils/addImageCdnUrl'
 import { addTextToImage } from '@/utils/addTextToImage'
 
 type PhotoDetailSearchParams = {
@@ -26,10 +27,13 @@ const AppRoute = () => {
 
   const { setOffenceState } = useSetOffenceState()
   const photos = useOffenceStoreContext((state) => state.photos)
+  const zonePhotoUrl = useOffenceStoreContext((state) => state.zonePhoto?.photoUrl)
 
   const ref = useRef<Camera>(null)
 
-  const [photo, setPhoto] = useState<string | null>(photos[photoIndex] || null)
+  const [photo, setPhoto] = useState<string | null>(
+    (index ? photos[photoIndex] : zonePhotoUrl) || null,
+  )
   const [isRetaking, setIsRetaking] = useState(false)
   const [torch, setTorch] = useState<TorchState>('off')
   const [loading, setLoading] = useState(false)
@@ -74,20 +78,28 @@ const AppRoute = () => {
     <ScreenView
       hasBackButton
       title={t('offence.picture.detail.title')}
-      options={{
-        headerRight: () => (
-          <IconButton
-            accessibilityLabel={t('offence.picture.detail.retake')}
-            name="cached"
-            onPress={retakePicture}
-          />
-        ),
-      }}
+      options={
+        index
+          ? {
+              headerRight: () => (
+                <IconButton
+                  accessibilityLabel={t('offence.picture.detail.retake')}
+                  name="cached"
+                  onPress={retakePicture}
+                />
+              ),
+            }
+          : undefined
+      }
       className="h-full"
     >
       {photo ? (
         <Image
-          source={{ uri: getPhotoUri(photo) || getPhotoUri(photos[photoIndex]) }}
+          source={{
+            uri: index
+              ? getPhotoUri(photo) || getPhotoUri(photos[photoIndex])
+              : addImageCdnUrl(photo),
+          }}
           style={{ flex: 1 }}
         />
       ) : (
@@ -101,7 +113,7 @@ const AppRoute = () => {
           isLoading={loading}
           takePicture={takePicture}
           selectPicture={selectPicture}
-          retakePicture={retakePicture}
+          retakePicture={index ? retakePicture : undefined}
           setTorch={setTorch}
         />
       ) : null}

@@ -15,7 +15,7 @@ type Props = FlashLightProps & {
   isLoading: boolean
   hasPhoto: boolean
   takePicture: () => Promise<void>
-  retakePicture: () => void
+  retakePicture?: () => void
   selectPicture: () => void
 }
 
@@ -35,7 +35,12 @@ const CameraBottomSheet = ({
   return (
     <>
       {hasPhoto ? (
-        <PhotoBottomSheetAttachment animatedPosition={animatedPosition} onRetake={retakePicture} />
+        retakePicture ? (
+          <PhotoBottomSheetAttachment
+            animatedPosition={animatedPosition}
+            onRetake={retakePicture}
+          />
+        ) : null
       ) : (
         <FlashlightBottomSheetAttachment {...rest} animatedPosition={animatedPosition} />
       )}
