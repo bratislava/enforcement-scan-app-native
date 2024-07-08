@@ -9,6 +9,7 @@ import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import OcrCamera from '@/components/camera/OcrCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import DismissKeyboard from '@/components/shared/DissmissKeyboard'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { ScanReasonEnum, ScanResultEnum } from '@/modules/backend/openapi-generated'
 import {
@@ -158,29 +159,31 @@ const LicencePlateCameraComp = () => {
   })
 
   return (
-    <ScreenView title={t('scanLicencePlate.title')} className="h-full">
-      <View className="relative">
-        <OcrCamera ref={ref} torch={torch} onFrameCapture={onFrameCapture} />
+    <DismissKeyboard>
+      <ScreenView title={t('scanLicencePlate.title')} className="h-full">
+        <View className="relative">
+          <OcrCamera ref={ref} torch={torch} onFrameCapture={onFrameCapture} />
 
-        <View className="absolute h-full w-full">
-          <View
-            style={{ paddingTop: top, height: HEADER_WITH_PADDING }}
-            className={cn('justify-start', backgroundClassName)}
-          />
-          <View style={{ height: CROPPED_AREA_HEIGHT }} className="items-center" />
-          <View className={cn('flex-1 ', backgroundClassName)} />
+          <View className="absolute h-full w-full">
+            <View
+              style={{ paddingTop: top, height: HEADER_WITH_PADDING }}
+              className={cn('justify-start', backgroundClassName)}
+            />
+            <View style={{ height: CROPPED_AREA_HEIGHT }} className="items-center" />
+            <View className={cn('flex-1 ', backgroundClassName)} />
+          </View>
         </View>
-      </View>
 
-      <LicencePlateCameraBottomSheet
-        isLoading={isLoading}
-        torch={torch}
-        setTorch={setTorch}
-        licencePlate={generatedEcv}
-        onContinue={onContinue}
-        onChangeLicencePlate={onChangeLicencePlate}
-      />
-    </ScreenView>
+        <LicencePlateCameraBottomSheet
+          isLoading={isLoading}
+          torch={torch}
+          setTorch={setTorch}
+          licencePlate={generatedEcv}
+          onContinue={onContinue}
+          onChangeLicencePlate={onChangeLicencePlate}
+        />
+      </ScreenView>
+    </DismissKeyboard>
   )
 }
 
