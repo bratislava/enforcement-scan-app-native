@@ -3,6 +3,10 @@
 Starting template for expo mobile app development under the city of Bratislava.
 In general, follow https://docs.expo.dev/, below are some quick references.
 
+## Product specification
+
+[Product specification](https://magistratba.sharepoint.com/:w:/r/sites/Enforcement/_layouts/15/Doc.aspx?sourcedoc=%7BEBC17B4A-11F8-4897-80BF-5A10EB066269%7D&file=Nov%25u00e1%20skenovacia%20aplik%25u00e1cia%20HMBA_verzia%203.docx&action=default&mobileredirect=true)
+
 ## Connection with Expo
 
 - You have to install eas-cli to connect and build project
