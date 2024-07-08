@@ -13,6 +13,7 @@ import { PortalProvider } from '@gorhom/portal'
 /* eslint-enable babel/camelcase */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
 import * as Updates from 'expo-updates'
 import { Suspense, useEffect } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -80,6 +81,10 @@ const RootLayout = () => {
                   <GestureHandlerRootView style={{ flex: 1 }}>
                     <OmnipresentComponent />
 
+                    <StatusBar
+                      // eslint-disable-next-line  react/style-prop-object
+                      style="dark"
+                    />
                     <Stack
                       screenOptions={{
                         headerBackTitleVisible: false,
