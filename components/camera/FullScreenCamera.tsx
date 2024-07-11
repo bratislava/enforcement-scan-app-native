@@ -1,16 +1,15 @@
-import { useNavigation } from 'expo-router'
 import { forwardRef } from 'react'
 import { useWindowDimensions } from 'react-native'
 import { Camera, CameraProps, useCameraDevice, useCameraFormat } from 'react-native-vision-camera'
 
 import { NoDeviceError } from '@/components/camera/NoDeviceError'
 import { useAppState } from '@/hooks/useAppState'
+import { useIsFocused } from '@/hooks/useIsFocused'
 
 const ASPECT_RATIO = 16 / 9
 
 const FullScreenCamera = forwardRef<Camera, Omit<Partial<CameraProps>, 'device'>>((props, ref) => {
-  const navigation = useNavigation()
-  const focused = navigation.isFocused()
+  const focused = useIsFocused()
   const appState = useAppState()
 
   const { width } = useWindowDimensions()

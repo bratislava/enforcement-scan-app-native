@@ -42,7 +42,7 @@ const AppRoute = () => {
 
   const takePicture = async () => {
     setLoading(true)
-    const capturedPhoto = await ref.current?.takePhoto()
+    const capturedPhoto = await ref.current?.takeSnapshot()
     const imageWithTimestampUri = await addTextToImage(
       new Date().toLocaleString(),
       capturedPhoto?.path,

@@ -1,5 +1,5 @@
-import { router } from 'expo-router'
-import { useCallback, useRef, useState } from 'react'
+import { router, usePathname } from 'expo-router'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -10,6 +10,7 @@ import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCamer
 import OcrCamera from '@/components/camera/OcrCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DissmissKeyboard'
+import IconButton from '@/components/shared/IconButton'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { ScanReasonEnum, ScanResultEnum } from '@/modules/backend/openapi-generated'
 import {
@@ -30,11 +31,12 @@ const LicencePlateCameraComp = () => {
   const { t } = useTranslation()
   const ref = useRef<Camera>(null)
   const [torch, setTorch] = useState<TorchState>('off')
-  const [isLoading, setIsLoading] = useState(false)
   const [scanResult, setScanResult] = useState<ScanResultEnum | null>(null)
   const [isManual, setIsManual] = useState(false)
 
   const { top } = useSafeAreaInsets()
+
+  const pathname = usePathname()
 
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
@@ -43,7 +45,7 @@ const LicencePlateCameraComp = () => {
 
   useCameraPermission({ autoAsk: true })
 
-  const { scanLicencePlate, checkEcv } = useScanLicencePlate()
+  const { scanLicencePlate, checkEcv, isLoading } = useScanLicencePlate()
 
   const onCheckEcv = useCallback(
     async (ecv: string) => {
@@ -69,8 +71,7 @@ const LicencePlateCameraComp = () => {
 
   const takeLicencePlatePicture = useCallback(async () => {
     if (!ref.current) return
-
-    const ecvPhoto = await ref.current.takePhoto()
+    const ecvPhoto = await ref.current.takeSnapshot()
     const imageWithTimestampUri = await addTextToImage(new Date().toLocaleString(), ecvPhoto?.path)
 
     setOffenceState({ photos: [imageWithTimestampUri] })
@@ -90,11 +91,7 @@ const LicencePlateCameraComp = () => {
           return
         }
 
-        setIsLoading(true)
-        setScanResult(null)
-
         setOffenceState({ ecv })
-        setIsManual(false)
         takeLicencePlatePicture()
 
         const newScanResult = await onCheckEcv(ecv)
@@ -102,8 +99,6 @@ const LicencePlateCameraComp = () => {
         if (newScanResult && role?.actions.scanCheck) {
           setScanResult(newScanResult)
         }
-
-        setIsLoading(false)
       }
     },
     [
@@ -117,7 +112,6 @@ const LicencePlateCameraComp = () => {
   )
 
   const onContinue = async () => {
-    setIsLoading(true)
     if (scanResult && role?.actions.scanCheck) {
       router.navigate('/offence')
 
@@ -137,20 +131,35 @@ const LicencePlateCameraComp = () => {
         }
       }
     }
-
-    setIsLoading(false)
   }
 
-  const onChangeLicencePlate = (ecv: string) => {
-    if (scanResult) {
-      setScanResult(null)
+  const onChangeLicencePlate = useCallback(
+    (ecv: string) => {
+      if (scanResult) {
+        setScanResult(null)
+      }
+
+      plates = []
+
+      setIsManual(!!ecv)
+      setOffenceState({ ecv: ecv.toUpperCase() })
+    },
+    [scanResult, setOffenceState],
+  )
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout
+
+    if (scanResult === ScanResultEnum.NoViolation && pathname === '/scan/licence-plate-camera') {
+      timeout = setTimeout(() => {
+        onChangeLicencePlate('')
+      }, 2000)
     }
 
-    plates = []
-
-    setIsManual(true)
-    setOffenceState({ ecv: ecv.toUpperCase() })
-  }
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [scanResult, onChangeLicencePlate, pathname])
 
   const backgroundClassName = cn('items-center bg-dark/75', {
     'bg-green/75': scanResult === ScanResultEnum.NoViolation,
@@ -160,7 +169,19 @@ const LicencePlateCameraComp = () => {
 
   return (
     <DismissKeyboard>
-      <ScreenView title={t('scanLicencePlate.title')} className="h-full">
+      <ScreenView
+        title={t('scanLicencePlate.title')}
+        options={{
+          headerRight: () => (
+            <IconButton
+              name="home"
+              accessibilityLabel={t('offenceResult.home')}
+              onPress={() => router.navigate('/')}
+            />
+          ),
+        }}
+        className="h-full"
+      >
         <View className="relative">
           <OcrCamera ref={ref} torch={torch} onFrameCapture={onFrameCapture} />
 

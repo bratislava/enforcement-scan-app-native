@@ -3,7 +3,6 @@ import {
   Camera,
   CameraProps,
   Frame,
-  runAtTargetFps,
   useCameraDevice,
   useCameraFormat,
   useFrameProcessor,
@@ -13,6 +12,7 @@ import { useRunOnJS } from 'react-native-worklets-core'
 
 import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import { TextData } from '@/modules/camera/types'
+import { runAsync } from '@/utils/runAsync'
 
 type OcrCameraProps = Omit<CameraProps, 'device' | 'isActive' | 'frameProcessor'> & {
   onFrameCapture: (data: TextData) => void
@@ -45,7 +45,7 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
     (frame: Frame): void => {
       'worklet'
 
-      runAtTargetFps(1, () => {
+      runAsync(frame, () => {
         'worklet'
 
         try {
