@@ -71,7 +71,7 @@ const LicencePlateCameraComp = () => {
 
   const takeLicencePlatePicture = useCallback(async () => {
     if (!ref.current) return
-    const ecvPhoto = await ref.current.takeSnapshot()
+    const ecvPhoto = await ref.current?.takeSnapshot({ quality: 20 })
     const imageWithTimestampUri = await addTextToImage(new Date().toLocaleString(), ecvPhoto?.path)
 
     setOffenceState({ photos: [imageWithTimestampUri] })

@@ -1,12 +1,5 @@
 import { forwardRef } from 'react'
-import {
-  Camera,
-  CameraProps,
-  Frame,
-  useCameraDevice,
-  useCameraFormat,
-  useFrameProcessor,
-} from 'react-native-vision-camera'
+import { Camera, CameraProps, Frame, useFrameProcessor } from 'react-native-vision-camera'
 import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
 import { useRunOnJS } from 'react-native-worklets-core'
 
@@ -18,21 +11,8 @@ type OcrCameraProps = Omit<CameraProps, 'device' | 'isActive' | 'frameProcessor'
   onFrameCapture: (data: TextData) => void
 }
 
-const width = 640
-const height = 360
-
 const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props }, ref) => {
   const { scanText } = useTextRecognition()
-
-  const device = useCameraDevice('back')
-
-  const format = useCameraFormat(device, [
-    {
-      photoAspectRatio: width / height,
-      photoResolution: { width, height },
-      videoResolution: { width, height },
-    },
-  ])
 
   const runWorklet = useRunOnJS(
     (data: TextData): void => {
@@ -62,7 +42,7 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
     [scanText, runWorklet],
   )
 
-  return <FullScreenCamera format={format} ref={ref} frameProcessor={frameProcessor} {...props} />
+  return <FullScreenCamera ref={ref} frameProcessor={frameProcessor} {...props} />
 })
 
 export default OcrCamera
