@@ -53,7 +53,9 @@ const LicencePlateCameraComp = () => {
         const newScanResult = await checkEcv(ecv, isManual)
 
         if (newScanResult === ScanReasonEnum.Other) {
-          return router.navigate('/offence')
+          router.navigate('/offence')
+
+          return null
         }
         // if (newScanResult !== ScanResultEnum.NoViolation)
         //   return router.navigate({
@@ -96,23 +98,16 @@ const LicencePlateCameraComp = () => {
 
         const newScanResult = await onCheckEcv(ecv)
 
-        if (newScanResult && role?.actions.scanCheck) {
+        if (newScanResult) {
           setScanResult(newScanResult)
         }
       }
     },
-    [
-      generatedEcv,
-      onCheckEcv,
-      role?.actions.scanCheck,
-      scanLicencePlate,
-      setOffenceState,
-      takeLicencePlatePicture,
-    ],
+    [generatedEcv, onCheckEcv, scanLicencePlate, setOffenceState, takeLicencePlatePicture],
   )
 
   const onContinue = async () => {
-    if (scanResult && role?.actions.scanCheck) {
+    if (scanResult && scanResult !== ScanResultEnum.Other) {
       router.navigate('/offence')
 
       return
@@ -124,11 +119,7 @@ const LicencePlateCameraComp = () => {
       const result = await onCheckEcv(generatedEcv)
 
       if (result) {
-        if (role?.actions.scanCheck) {
-          setScanResult(result)
-        } else {
-          router.push('/offence')
-        }
+        setScanResult(result)
       }
     }
   }

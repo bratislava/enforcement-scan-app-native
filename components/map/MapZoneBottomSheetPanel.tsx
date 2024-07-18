@@ -6,6 +6,7 @@ import ContinueButton from '@/components/navigation/ContinueButton'
 import FlexRow from '@/components/shared/FlexRow'
 import Panel from '@/components/shared/Panel'
 import Typography from '@/components/shared/Typography'
+import { OffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -15,6 +16,16 @@ type Props = {
 
 const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
   const { setOffenceState } = useSetOffenceState()
+
+  const onZonePick = () => {
+    if (selectedZone) {
+      setOffenceState({
+        zone: selectedZone,
+        zonePhoto: undefined,
+        offenceType: selectedZone?.udrId === '0' ? OffenceTypeEnum.NB : OffenceTypeEnum.O,
+      })
+    }
+  }
 
   if (selectedZone) {
     return (
@@ -30,16 +41,7 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
           </FlexRow>
         </Panel>
 
-        <Link
-          asChild
-          href="/zone/photo"
-          onPress={() =>
-            setOffenceState({
-              zone: selectedZone,
-              zonePhoto: undefined,
-            })
-          }
-        >
+        <Link asChild href="/zone/photo" onPress={onZonePick}>
           <ContinueButton />
         </Link>
       </>
