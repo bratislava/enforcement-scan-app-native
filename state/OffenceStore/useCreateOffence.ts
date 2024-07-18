@@ -8,6 +8,7 @@ import { RequestCreateOffenceDataDto } from '@/modules/backend/openapi-generated
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { addTextToImage } from '@/utils/addTextToImage'
+import { coordsToString } from '@/utils/coordsToString'
 
 const onRouteToResult = (offenceResult: 'success' | 'error') => {
   router.push({
@@ -53,11 +54,7 @@ export const useCreateOffence = () => {
 
     const photosWithLocation = await Promise.all(
       photos.map(async (photo) =>
-        addTextToImage(
-          `${location.lat.toString()}, ${location.long.toString()}`,
-          photo,
-          Position.bottomLeft,
-        ),
+        addTextToImage(coordsToString(location.lat, location.long), photo, Position.bottomLeft),
       ),
     )
 

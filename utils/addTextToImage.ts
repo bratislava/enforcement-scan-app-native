@@ -30,19 +30,19 @@ export const addTextToImage = async (
           },
           style: {
             color: '#fff',
-            fontSize: 12,
+            fontSize: 16,
             fontName: 'Arial',
             textBackgroundStyle: {
-              paddingX: 2,
-              paddingY: 2,
+              paddingX: 4,
+              paddingY: 4,
               type: TextBackgroundType.none,
               color: '#000',
             },
           },
         },
       ],
-      quality: 100,
-      saveFormat: ImageFormat.png,
+      quality: 20,
+      saveFormat: ImageFormat.jpg,
     })
 
     return getPhotoUri(newUri)
