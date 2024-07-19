@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { router } from 'expo-router'
+import { useState } from 'react'
 import { Position } from 'react-native-image-marker'
 
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
@@ -33,6 +34,8 @@ export const useCreateOffence = () => {
     resolutionType,
   } = useOffenceStoreContext((state) => state)
 
+  const [isLoading, setLoading] = useState(false)
+
   const createOffenceMutation = useMutation({
     mutationFn: ({
       lastScanUuid,
@@ -46,8 +49,11 @@ export const useCreateOffence = () => {
   })
 
   const onCreateOffence = async () => {
+    setLoading(true)
+
     if (!(ecv && location && offenceType && scanUuid && photos.length >= MAX_PHOTOS)) {
       onRouteToResult('error')
+      setLoading(false)
 
       return
     }
@@ -88,7 +94,9 @@ export const useCreateOffence = () => {
     } catch (error) {
       onRouteToResult('error')
     }
+
+    setLoading(false)
   }
 
-  return { onCreateOffence, isLoading: createOffenceMutation.isPending }
+  return { onCreateOffence, isLoading }
 }
