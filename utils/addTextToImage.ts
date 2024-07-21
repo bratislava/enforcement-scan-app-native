@@ -44,7 +44,6 @@ export const addTextToImage = async ({
             color: '#fff',
             fontSize: 16,
             fontName: 'Arial',
-            rotate,
             textBackgroundStyle: {
               paddingX: 4,
               paddingY: 4,
