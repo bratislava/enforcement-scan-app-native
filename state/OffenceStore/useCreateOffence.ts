@@ -60,7 +60,11 @@ export const useCreateOffence = () => {
 
     const photosWithLocation = await Promise.all(
       photos.map(async (photo) =>
-        addTextToImage(coordsToString(location.lat, location.long), photo, Position.bottomLeft),
+        addTextToImage({
+          text: coordsToString(location.lat, location.long),
+          imagePath: photo,
+          position: Position.bottomLeft,
+        }),
       ),
     )
 

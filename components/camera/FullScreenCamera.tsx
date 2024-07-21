@@ -30,6 +30,7 @@ const FullScreenCamera = forwardRef<Camera, Omit<Partial<CameraProps>, 'device'>
     <Camera
       ref={ref}
       photo
+      enableLocation
       format={format}
       onError={(error) => console.error('Camera error', error)}
       device={device}

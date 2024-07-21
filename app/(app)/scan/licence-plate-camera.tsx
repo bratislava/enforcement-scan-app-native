@@ -11,7 +11,6 @@ import OcrCamera from '@/components/camera/OcrCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DissmissKeyboard'
 import IconButton from '@/components/shared/IconButton'
-import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { ScanReasonEnum, ScanResultEnum } from '@/modules/backend/openapi-generated'
 import {
   CROPPED_AREA_HEIGHT,
@@ -39,8 +38,7 @@ const LicencePlateCameraComp = () => {
   const pathname = usePathname()
 
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
-  const roleKey = useOffenceStoreContext((state) => state.roleKey)
-  const role = getRoleByKey(roleKey)
+
   const { setOffenceState } = useSetOffenceState()
 
   useCameraPermission({ autoAsk: true })
@@ -73,10 +71,20 @@ const LicencePlateCameraComp = () => {
 
   const takeLicencePlatePicture = useCallback(async () => {
     if (!ref.current) return
-    const ecvPhoto = await ref.current?.takeSnapshot({ quality: 20 })
-    const imageWithTimestampUri = await addTextToImage(new Date().toLocaleString(), ecvPhoto?.path)
 
-    setOffenceState({ photos: [imageWithTimestampUri] })
+    try {
+      const ecvPhoto = await ref.current?.takeSnapshot({ quality: 20 })
+      const imageWithTimestampUri = await addTextToImage({
+        text: new Date().toLocaleString(),
+        imagePath: ecvPhoto?.path,
+        orientation: ecvPhoto?.orientation,
+      })
+
+      setOffenceState({ photos: [imageWithTimestampUri] })
+    } catch {
+      // TODO: handle error
+      console.log('error')
+    }
   }, [ref, setOffenceState])
 
   const onFrameCapture = useCallback(
