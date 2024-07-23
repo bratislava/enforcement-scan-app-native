@@ -165,6 +165,12 @@ const LicencePlateCameraComp = () => {
     'bg-warning/75': scanResult === ScanResultEnum.PaasParkingViolationDuplicity,
   })
 
+  const backgroundClassName = cn('items-center bg-dark/75', {
+    'bg-green/75': scanResult === ScanResultEnum.NoViolation,
+    'bg-negative/75': scanResult === ScanResultEnum.PaasParkingViolation,
+    'bg-warning/75': scanResult === ScanResultEnum.PaasParkingViolationDuplicity,
+  })
+
   return (
     <DismissKeyboard>
       <ScreenView
