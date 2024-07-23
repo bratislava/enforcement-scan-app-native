@@ -49,10 +49,11 @@ const AppRoute = () => {
 
     const capturedPhoto = await ref.current?.takeSnapshot({ quality: 20 })
 
-    const imageWithTimestampUri = await addTextToImage(
-      `${locationString}${new Date().toLocaleString()}`,
-      capturedPhoto?.path,
-    )
+    const imageWithTimestampUri = await addTextToImage({
+      text: `${locationString}${new Date().toLocaleString()}`,
+      imagePath: capturedPhoto?.path,
+      orientation: capturedPhoto?.orientation,
+    })
 
     if (!imageWithTimestampUri) {
       setLoading(false)
@@ -81,7 +82,11 @@ const AppRoute = () => {
   return (
     <ScreenView hasBackButton title={t('zone.zonePicture')} className="h-full">
       {zonePhoto ? (
-        <Image source={{ uri: createUrlFromImageObject(zonePhoto) }} style={{ flex: 1 }} />
+        <Image
+          source={{ uri: createUrlFromImageObject(zonePhoto) }}
+          className="object-contain"
+          style={{ flex: 1 }}
+        />
       ) : (
         <FullScreenCamera ref={ref} torch={torch} />
       )}

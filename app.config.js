@@ -31,7 +31,13 @@ module.exports = {
     },
     plugins: [
       'expo-router',
-      'react-native-vision-camera',
+      [
+        'react-native-vision-camera',
+        {
+          enableLocation: true,
+          locationPermissionText: 'Aplikácia potrebuje prístup k vašej polohe.',
+        },
+      ],
       [
         '@rnmapbox/maps',
         {

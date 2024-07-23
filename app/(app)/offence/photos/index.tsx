@@ -30,10 +30,11 @@ const AppRoute = () => {
   const takePicture = async () => {
     setLoading(true)
     const capturedPhoto = await ref.current?.takeSnapshot({ quality: 20 })
-    const imageWithTimestampUri = await addTextToImage(
-      new Date().toLocaleString(),
-      capturedPhoto?.path,
-    )
+    const imageWithTimestampUri = await addTextToImage({
+      text: new Date().toLocaleString(),
+      imagePath: capturedPhoto?.path,
+      orientation: capturedPhoto?.orientation,
+    })
 
     if (!imageWithTimestampUri) {
       snackbar.show(t('offenceCamera.error'), {
