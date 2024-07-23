@@ -4,6 +4,8 @@ import {
   CameraProps,
   Frame,
   runAtTargetFps,
+  useCameraDevice,
+  useCameraFormat,
   useFrameProcessor,
 } from 'react-native-vision-camera'
 import { useTextRecognition } from 'react-native-vision-camera-text-recognition'
@@ -13,15 +15,28 @@ import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import { TextData } from '@/modules/camera/types'
 
 type OcrCameraProps = Omit<CameraProps, 'device' | 'isActive' | 'frameProcessor'> & {
-  onFrameCapture: (data: TextData, height: number) => void
+  onFrameCapture: (data: TextData) => void
 }
+
+const width = 640
+const height = 360
 
 const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props }, ref) => {
   const { scanText } = useTextRecognition()
 
+  const device = useCameraDevice('back')
+
+  const format = useCameraFormat(device, [
+    {
+      photoAspectRatio: width / height,
+      photoResolution: { width, height },
+      videoResolution: { width, height },
+    },
+  ])
+
   const runWorklet = useRunOnJS(
-    (data: TextData, height: number): void => {
-      onFrameCapture(data, height)
+    (data: TextData): void => {
+      onFrameCapture(data)
     },
     [onFrameCapture],
   )
@@ -31,12 +46,13 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
       'worklet'
 
       runAtTargetFps(1, () => {
+        'worklet'
+
         try {
           // the scanText has wrong types from library so we need to cast it
           const data = scanText(frame) as unknown as TextData
 
-          // the frame is rotated so width and height are swapped
-          runWorklet(data, frame.width)
+          runWorklet(data)
         } catch (error) {
           // catch block is here to handle error when accessing frames after unmounting camera
           // nothing should happen when this error occurs
@@ -46,7 +62,7 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
     [scanText, runWorklet],
   )
 
-  return <FullScreenCamera ref={ref} frameProcessor={frameProcessor} {...props} />
+  return <FullScreenCamera format={format} ref={ref} frameProcessor={frameProcessor} {...props} />
 })
 
 export default OcrCamera

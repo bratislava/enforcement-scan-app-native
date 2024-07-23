@@ -23,6 +23,8 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addTextToImage } from '@/utils/addTextToImage'
 import { cn } from '@/utils/cn'
 
+let plates: string[] = []
+
 const LicencePlateCameraComp = () => {
   const { t } = useTranslation()
   const ref = useRef<Camera>(null)
@@ -50,11 +52,11 @@ const LicencePlateCameraComp = () => {
         if (newScanResult === ScanReasonEnum.Other) {
           return router.navigate('/offence')
         }
-        if (newScanResult !== ScanResultEnum.NoViolation)
-          return router.navigate({
-            pathname: '/scan/scan-result',
-            params: { scanResult: newScanResult },
-          })
+        // if (newScanResult !== ScanResultEnum.NoViolation)
+        //   return router.navigate({
+        //     pathname: '/scan/scan-result',
+        //     params: { scanResult: newScanResult },
+        //   })
 
         return newScanResult
       } catch {
@@ -74,9 +76,19 @@ const LicencePlateCameraComp = () => {
   }, [ref, setOffenceState])
 
   const onFrameCapture = useCallback(
-    async (frame: TextData, height: number) => {
-      const ecv = scanLicencePlate(frame, height)
-      if (ecv && !generatedEcv) {
+    async (frame: TextData) => {
+      if (generatedEcv) return
+
+      const ecv = scanLicencePlate(frame)
+
+      if (ecv) {
+        if (!plates.includes(ecv)) {
+          plates.push(ecv)
+          if (plates.length > 5) plates.shift()
+
+          return
+        }
+
         setIsLoading(true)
         setScanResult(null)
 
@@ -84,12 +96,10 @@ const LicencePlateCameraComp = () => {
         setIsManual(false)
         takeLicencePlatePicture()
 
-        if (!(ecv.includes('0') || ecv.includes('O'))) {
-          const newScanResult = await onCheckEcv(ecv)
+        const newScanResult = await onCheckEcv(ecv)
 
-          if (newScanResult && role?.actions.scanCheck) {
-            setScanResult(newScanResult)
-          }
+        if (newScanResult && role?.actions.scanCheck) {
+          setScanResult(newScanResult)
         }
 
         setIsLoading(false)
@@ -135,9 +145,17 @@ const LicencePlateCameraComp = () => {
       setScanResult(null)
     }
 
+    plates = []
+
     setIsManual(true)
     setOffenceState({ ecv: ecv.toUpperCase() })
   }
+
+  const backgroundClassName = cn('items-center bg-dark/75', {
+    'bg-green/75': scanResult === ScanResultEnum.NoViolation,
+    'bg-negative/75': scanResult === ScanResultEnum.PaasParkingViolation,
+    'bg-warning/75': scanResult === ScanResultEnum.PaasParkingViolationDuplicity,
+  })
 
   return (
     <ScreenView title={t('scanLicencePlate.title')} className="h-full">
@@ -147,16 +165,10 @@ const LicencePlateCameraComp = () => {
         <View className="absolute h-full w-full">
           <View
             style={{ paddingTop: top, height: HEADER_WITH_PADDING }}
-            className={cn('items-center justify-start bg-dark/80', {
-              'bg-green/80': scanResult === ScanResultEnum.NoViolation,
-            })}
+            className={cn('justify-start', backgroundClassName)}
           />
           <View style={{ height: CROPPED_AREA_HEIGHT }} className="items-center" />
-          <View
-            className={cn('flex-1 items-center bg-dark/80 bg-opacity-20', {
-              'bg-green/80': scanResult === ScanResultEnum.NoViolation,
-            })}
-          />
+          <View className={cn('flex-1 ', backgroundClassName)} />
         </View>
       </View>
 
