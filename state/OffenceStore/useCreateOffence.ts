@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { router } from 'expo-router'
+import { useState } from 'react'
 import { Position } from 'react-native-image-marker'
 
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
@@ -8,6 +9,7 @@ import { RequestCreateOffenceDataDto } from '@/modules/backend/openapi-generated
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { addTextToImage } from '@/utils/addTextToImage'
+import { coordsToString } from '@/utils/coordsToString'
 
 const onRouteToResult = (offenceResult: 'success' | 'error') => {
   router.push({
@@ -32,6 +34,8 @@ export const useCreateOffence = () => {
     resolutionType,
   } = useOffenceStoreContext((state) => state)
 
+  const [isLoading, setLoading] = useState(false)
+
   const createOffenceMutation = useMutation({
     mutationFn: ({
       lastScanUuid,
@@ -45,19 +49,18 @@ export const useCreateOffence = () => {
   })
 
   const onCreateOffence = async () => {
+    setLoading(true)
+
     if (!(ecv && location && offenceType && scanUuid && photos.length >= MAX_PHOTOS)) {
       onRouteToResult('error')
+      setLoading(false)
 
       return
     }
 
     const photosWithLocation = await Promise.all(
       photos.map(async (photo) =>
-        addTextToImage(
-          `${location.lat.toString()}, ${location.long.toString()}`,
-          photo,
-          Position.bottomLeft,
-        ),
+        addTextToImage(coordsToString(location.lat, location.long), photo, Position.bottomLeft),
       ),
     )
 
@@ -91,7 +94,9 @@ export const useCreateOffence = () => {
     } catch (error) {
       onRouteToResult('error')
     }
+
+    setLoading(false)
   }
 
-  return { onCreateOffence, isLoading: createOffenceMutation.isPending }
+  return { onCreateOffence, isLoading }
 }
