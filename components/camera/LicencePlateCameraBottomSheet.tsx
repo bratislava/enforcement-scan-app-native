@@ -12,8 +12,6 @@ import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/
 import Button from '@/components/shared/Button'
 import Field from '@/components/shared/Field'
 import IconButton from '@/components/shared/IconButton'
-import Panel from '@/components/shared/Panel'
-import Typography from '@/components/shared/Typography'
 
 type Props = FlashLightProps & {
   licencePlate?: string
@@ -33,8 +31,6 @@ const LicencePlateCameraBottomSheet = ({
   const modalRef = useRef<BottomSheet>(null)
 
   const animatedPosition = useSharedValue(0)
-
-  const showCheckLicencePlateWarning = licencePlate?.includes('0') || licencePlate?.includes('O')
 
   return (
     <>
@@ -62,17 +58,9 @@ const LicencePlateCameraBottomSheet = ({
         animatedPosition={animatedPosition}
       >
         <BottomSheetContent className="g-2">
-          {showCheckLicencePlateWarning ? (
-            <Panel className="bg-warning-light">
-              <Typography className="font-source-500medium">
-                {t('scanLicencePlate.checkLicencePlateWarning')}
-              </Typography>
-            </Panel>
-          ) : null}
-
           <Field label="EČV">
             <TextInput
-              className="font-source-500medium"
+              className="h-auto text-center font-source-500medium text-[62px]"
               accessibilityLabel={t('scanLicencePlate.licencePlate')}
               value={licencePlate}
               onChangeText={onChangeLicencePlate}

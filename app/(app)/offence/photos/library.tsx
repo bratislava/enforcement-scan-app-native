@@ -10,11 +10,14 @@ import PressableStyled from '@/components/shared/PressableStyled'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useCreateOffence } from '@/state/OffenceStore/useCreateOffence'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
+import { addImageCdnUrl } from '@/utils/addImageCdnUrl'
 import { cn } from '@/utils/cn'
+import { isDefined } from '@/utils/isDefined'
 
 const PhotosPage = () => {
   const { t } = useTranslation()
-  const { photos } = useOffenceStoreContext((state) => state)
+  const photos = useOffenceStoreContext((state) => state.photos)
+  const zonePhotoUrl = useOffenceStoreContext((state) => state.zonePhoto?.photoUrl)
 
   const router = useRouter()
 
@@ -22,7 +25,7 @@ const PhotosPage = () => {
     router.push({
       pathname: '/offence/photos/detail',
       params: {
-        index,
+        index: zonePhotoUrl ? (index === 0 ? undefined : String(index - 1)) : String(index),
       },
     })
   }
@@ -50,7 +53,7 @@ const PhotosPage = () => {
     >
       <FlashList
         className="h-full w-full flex-1"
-        data={photos}
+        data={[zonePhotoUrl, ...photos].filter(isDefined)}
         ItemSeparatorComponent={() => <View className="h-2 w-2" />}
         renderItem={({ item, index }) => (
           <PressableStyled
@@ -58,7 +61,12 @@ const PhotosPage = () => {
             className={cn('w-full items-center justify-center')}
             onPress={() => onShowDetail(index)}
           >
-            <Image className="aspect-square w-full" source={{ uri: getPhotoUri(item) }} />
+            <Image
+              className="aspect-square w-full"
+              source={{
+                uri: item?.includes('cache') ? getPhotoUri(item) : addImageCdnUrl(item),
+              }}
+            />
           </PressableStyled>
         )}
         numColumns={2}

@@ -10,10 +10,12 @@ import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
+import { useLocation } from '@/modules/map/hooks/useLocation'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addTextToImage } from '@/utils/addTextToImage'
+import { coordsToString } from '@/utils/coordsToString'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const AppRoute = () => {
@@ -27,6 +29,8 @@ const AppRoute = () => {
 
   const queryClient = useQueryClient()
 
+  const [currentLocation] = useLocation()
+
   const createPhotoMutation = useMutation({
     mutationFn: ({ file, tag }: { file: File; tag: string }) =>
       clientApi.scanControllerCreateFavouritePhoto(file, tag),
@@ -39,9 +43,14 @@ const AppRoute = () => {
 
   const takePicture = async (tag: string) => {
     setLoading(true)
-    const capturedPhoto = await ref.current?.takePhoto()
+
+    const { coords } = currentLocation ?? {}
+    const locationString = coords ? `${coordsToString(coords.latitude, coords.longitude)}; ` : ''
+
+    const capturedPhoto = await ref.current?.takeSnapshot({ quality: 20 })
+
     const imageWithTimestampUri = await addTextToImage(
-      new Date().toLocaleString(),
+      `${locationString}${new Date().toLocaleString()}`,
       capturedPhoto?.path,
     )
 

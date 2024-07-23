@@ -98,5 +98,5 @@ export const useScanLicencePlate = () => {
     return ''
   }, [])
 
-  return { checkEcv, scanLicencePlate }
+  return { checkEcv, scanLicencePlate, isLoading: createScanMutation.isPending }
 }
