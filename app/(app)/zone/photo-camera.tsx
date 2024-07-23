@@ -84,7 +84,8 @@ const AppRoute = () => {
       {zonePhoto ? (
         <Image
           source={{ uri: createUrlFromImageObject(zonePhoto) }}
-          style={{ flex: 1, objectFit: 'contain' }}
+          className="object-contain"
+          style={{ flex: 1 }}
         />
       ) : (
         <FullScreenCamera ref={ref} torch={torch} />

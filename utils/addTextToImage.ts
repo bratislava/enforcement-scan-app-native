@@ -17,7 +17,7 @@ type AddTextToImageOptions = {
  * @returns path to the new image with the given text in it
  */
 export const addTextToImage = async ({
-  position,
+  position = Position.bottomRight,
   orientation,
   imagePath,
   text,
@@ -38,7 +38,7 @@ export const addTextToImage = async ({
         {
           text,
           positionOptions: {
-            position: position ?? Position.bottomRight,
+            position,
           },
           style: {
             color: '#fff',

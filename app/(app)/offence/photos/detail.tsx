@@ -101,7 +101,8 @@ const AppRoute = () => {
               ? getPhotoUri(photo) || getPhotoUri(photos[photoIndex])
               : addImageCdnUrl(photo),
           }}
-          style={{ flex: 1, objectFit: 'contain' }}
+          className="object-contain"
+          style={{ flex: 1 }}
         />
       ) : (
         <FullScreenCamera ref={ref} torch={torch} />
