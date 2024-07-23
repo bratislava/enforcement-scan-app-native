@@ -16,7 +16,7 @@ export const CROPPED_AREA_HEIGHT = 150
 const removeSpecialCharacters = (text: string) =>
   text
     .toUpperCase()
-    .replace('|', 'I')
+    .replaceAll('|', 'I')
     .replaceAll(/[^\dA-Z]/g, '')
 
 export const useScanLicencePlate = () => {
