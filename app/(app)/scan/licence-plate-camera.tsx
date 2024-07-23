@@ -81,7 +81,7 @@ const LicencePlateCameraComp = () => {
 
       setOffenceState({ photos: [imageWithTimestampUri] })
     } catch {
-      // TODO: handle error
+      // TODO: Debug why this occurs twice... error happens when the camera is closed and picture is taken, needs further investigation
       console.log('error')
     }
   }, [ref, setOffenceState])
