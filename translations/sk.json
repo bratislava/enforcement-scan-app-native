@@ -112,5 +112,9 @@
   "zone.tag": "Popis: {{tag}}",
   "zone.tag.placeholder": "Vložte popis",
   "zone.zonePicture": "Fotka úseku",
-  "zone.zoomIn": "Priblížte"
+  "zone.zoomIn": "Priblížte",
+  "StoreVersionControl.primaryActionLabel": "Aktualizovať",
+  "StoreVersionControl.secondaryActionLabel": "Zavrieť",
+  "StoreVersionControl.text": "Aktualizujte aplikáciu na najnovšiu verziu.",
+  "StoreVersionControl.title": "Nová verzia aplikácie"
 }

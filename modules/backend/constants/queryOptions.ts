@@ -16,3 +16,10 @@ export const getVehiclePropertiesOptions = (ecv?: string) =>
     select: (res) => res.data,
     enabled: !!ecv,
   })
+
+export const mobileAppVersionOptions = () =>
+  queryOptions({
+    queryKey: ['MobileVersion'],
+    queryFn: () => clientApi.systemControllerGetMobileAppVersion(),
+    select: (res) => res.data,
+  })
