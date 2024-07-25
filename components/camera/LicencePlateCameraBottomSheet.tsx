@@ -63,6 +63,7 @@ const LicencePlateCameraBottomSheet = ({
               className="h-auto text-center font-source-500medium text-[62px]"
               accessibilityLabel={t('scanLicencePlate.licencePlate')}
               value={licencePlate}
+              autoCapitalize="characters"
               onChangeText={onChangeLicencePlate}
             />
           </Field>

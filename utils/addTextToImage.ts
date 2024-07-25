@@ -28,7 +28,6 @@ export const addTextToImage = async ({
     const newUri = await Marker.markText({
       backgroundImage: {
         src: imageUri,
-        rotate,
       },
       watermarkTexts: [
         {

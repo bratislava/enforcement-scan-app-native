@@ -140,7 +140,7 @@ const LicencePlateCameraComp = () => {
       plates = []
 
       setIsManual(!!ecv)
-      setOffenceState({ ecv: ecv.toUpperCase() })
+      setOffenceState({ ecv })
     },
     [scanResult, setOffenceState],
   )
