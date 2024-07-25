@@ -17,7 +17,7 @@ export const getVehiclePropertiesOptions = (ecv?: string) =>
     enabled: !!ecv,
   })
 
-export const mobileAppVersionOptions = () =>
+export const getMobileAppVersionOptions = () =>
   queryOptions({
     queryKey: ['MobileVersion'],
     queryFn: () => clientApi.systemControllerGetMobileAppVersion(),

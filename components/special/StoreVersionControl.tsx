@@ -8,7 +8,7 @@ import AvatarCircle from '@/components/info/AvatarCircle'
 import Modal from '@/components/screen-layout/Modal/Modal'
 import ModalContentWithActions from '@/components/screen-layout/Modal/ModalContentWithActions'
 import { environment } from '@/environment'
-import { mobileAppVersionOptions } from '@/modules/backend/constants/queryOptions'
+import { getMobileAppVersionOptions } from '@/modules/backend/constants/queryOptions'
 
 const goToStore = () => {
   // TODO: change when link changes to different one (this is for internal testing)
@@ -19,7 +19,7 @@ const StoreVersionControl = () => {
   const { t } = useTranslation()
   const [showModal, setShowModal] = useState(false)
 
-  const appVersionQuery = useQuery(mobileAppVersionOptions())
+  const appVersionQuery = useQuery(getMobileAppVersionOptions())
 
   useEffect(() => {
     if (
