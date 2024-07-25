@@ -18,7 +18,6 @@ import {
   useScanLicencePlate,
 } from '@/modules/camera/hooks/useScanLicencePlate'
 import { TextData } from '@/modules/camera/types'
-import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addTextToImage } from '@/utils/addTextToImage'
@@ -40,8 +39,6 @@ const LicencePlateCameraComp = () => {
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
 
   const { setOffenceState } = useSetOffenceState()
-
-  useCameraPermission({ autoAsk: true })
 
   const { scanLicencePlate, checkEcv, isLoading } = useScanLicencePlate()
 

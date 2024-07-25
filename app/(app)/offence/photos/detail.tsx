@@ -10,7 +10,6 @@ import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
-import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addImageCdnUrl } from '@/utils/addImageCdnUrl'
@@ -37,8 +36,6 @@ const AppRoute = () => {
   const [isRetaking, setIsRetaking] = useState(false)
   const [torch, setTorch] = useState<TorchState>('off')
   const [loading, setLoading] = useState(false)
-
-  useCameraPermission({ autoAsk: true })
 
   const takePicture = async () => {
     setLoading(true)
