@@ -1,6 +1,10 @@
 import { createContext, ReactNode, useRef } from 'react'
 
-import { OffenceTypeEnum, ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
+import {
+  OffenceTypeEnum,
+  ResolutionOffenceTypeEnum,
+  ScanResultEnum,
+} from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { defaultOffenceState } from '@/state/OffenceStore/constants'
 import { createStore, Store } from '@/utils/store'
@@ -20,6 +24,7 @@ export type OffenceState = {
   roleKey?: string
   ecv?: string
   scanUuid?: string
+  scanResult?: ScanResultEnum
 
   // offence data
   location?: PositionObject
