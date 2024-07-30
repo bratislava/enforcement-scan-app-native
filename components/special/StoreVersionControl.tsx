@@ -44,11 +44,11 @@ const StoreVersionControl = () => {
     <Modal visible={showModal}>
       <ModalContentWithActions
         customAvatarComponent={<AvatarCircle />}
-        title={t('StoreVersionControl.title')}
-        text={t('StoreVersionControl.text')}
-        primaryActionLabel={t('StoreVersionControl.primaryActionLabel')}
+        title={t('storeVersionControl.title')}
+        text={t('storeVersionControl.text')}
+        primaryActionLabel={t('storeVersionControl.primaryActionLabel')}
         primaryActionOnPress={goToStore}
-        secondaryActionLabel={t('StoreVersionControl.secondaryActionLabel')}
+        secondaryActionLabel={t('storeVersionControl.secondaryActionLabel')}
         secondaryActionOnPress={closeModal}
       />
     </Modal>
