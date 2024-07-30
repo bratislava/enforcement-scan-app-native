@@ -11,7 +11,6 @@ import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryOptions'
 import { useLocation } from '@/modules/map/hooks/useLocation'
-import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addGpsMetadataToImage } from '@/utils/addGpsMetadataToImage'
@@ -39,8 +38,6 @@ const AppRoute = () => {
       await queryClient.resetQueries({ queryKey: getFavouritePhotosOptions().queryKey })
     },
   })
-
-  useCameraPermission({ autoAsk: true })
 
   const takePicture = async (tag: string) => {
     setLoading(true)
@@ -94,7 +91,7 @@ const AppRoute = () => {
       {zonePhoto ? (
         <Image
           source={{ uri: createUrlFromImageObject(zonePhoto) }}
-          className="object-contain"
+          resizeMode="contain"
           style={{ flex: 1 }}
         />
       ) : (

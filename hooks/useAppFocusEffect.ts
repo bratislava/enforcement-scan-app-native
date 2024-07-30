@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import { AppState, AppStateStatus, Platform } from 'react-native'
+import { AppState, AppStateStatus } from 'react-native'
 
 /** Run on app focus, does not run initially, substitute for `useFocusEffect` from 'expo-router'
  * which does not handle focus as well.
@@ -24,10 +24,7 @@ export const useAppFocusEffect = (onFocus: () => void) => {
   }, [onFocus])
 
   useEffect(() => {
-    const subscription =
-      Platform.OS === 'ios'
-        ? AppState.addEventListener('change', appStateChangeHandler)
-        : AppState.addEventListener('focus', appFocusHandler)
+    const subscription = AppState.addEventListener('focus', appFocusHandler)
 
     return () => {
       subscription.remove()
