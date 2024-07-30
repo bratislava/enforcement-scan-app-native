@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+import { APP_VERSION } from '@/components/info/AppVersion'
 import { AUTHENTICATION_TOKENS_KEY } from '@/modules/auth/hooks/useAuthTokens'
 import { storage } from '@/utils/mmkv'
 
@@ -16,6 +17,7 @@ axiosInstance.interceptors.request.use(async (request) => {
 
   if (tokens?.accessToken) {
     request.headers.Authorization = `Bearer ${tokens.accessToken}`
+    request.headers.Version = APP_VERSION
   }
 
   console.log('fetching:', request.url)
