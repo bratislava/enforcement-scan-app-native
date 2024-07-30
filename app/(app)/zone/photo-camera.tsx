@@ -91,7 +91,7 @@ const AppRoute = () => {
       {zonePhoto ? (
         <Image
           source={{ uri: createUrlFromImageObject(zonePhoto) }}
-          className="object-contain"
+          resizeMode="contain"
           style={{ flex: 1 }}
         />
       ) : (

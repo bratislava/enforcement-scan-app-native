@@ -97,7 +97,7 @@ const AppRoute = () => {
               ? getPhotoUri(photo) || getPhotoUri(photos[photoIndex])
               : addImageCdnUrl(photo),
           }}
-          className="object-contain"
+          resizeMode="contain"
           style={{ flex: 1 }}
         />
       ) : (
