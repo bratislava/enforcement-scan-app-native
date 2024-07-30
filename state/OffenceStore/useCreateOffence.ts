@@ -3,6 +3,7 @@ import { router } from 'expo-router'
 import { Position } from 'react-native-image-marker'
 
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
+import { APP_VERSION } from '@/components/info/AppVersion'
 import { clientApi } from '@/modules/backend/client-api'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -71,6 +72,7 @@ export const useCreateOffence = () => {
         resolutionType: isObjectiveResponsibility ? undefined : resolutionType,
         udr: zone?.udrId,
         vehicleId,
+        mobileAppVersion: APP_VERSION,
       }
 
       return clientApi.scanControllerCreateOffence(

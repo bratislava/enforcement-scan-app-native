@@ -5,6 +5,8 @@ import { View } from 'react-native'
 
 import Typography from '@/components/shared/Typography'
 
+export const APP_VERSION = `${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})`
+
 const AppVersion = () => {
   const { t } = useTranslation()
 
@@ -12,7 +14,7 @@ const AppVersion = () => {
     <View>
       <Typography className="text-center">
         {t('appVersion', {
-          version: `${Application.nativeApplicationVersion} (${Application.nativeBuildVersion})`,
+          version: APP_VERSION,
         })}
       </Typography>
     </View>

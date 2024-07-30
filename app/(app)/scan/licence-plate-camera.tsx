@@ -11,14 +11,13 @@ import OcrCamera from '@/components/camera/OcrCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DissmissKeyboard'
 import IconButton from '@/components/shared/IconButton'
-import { ScanReasonEnum, ScanResultEnum } from '@/modules/backend/openapi-generated'
+import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 import {
   CROPPED_AREA_HEIGHT,
   HEADER_WITH_PADDING,
   useScanLicencePlate,
 } from '@/modules/camera/hooks/useScanLicencePlate'
 import { TextData } from '@/modules/camera/types'
-import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addTextToImage } from '@/utils/addTextToImage'
@@ -30,44 +29,18 @@ const LicencePlateCameraComp = () => {
   const { t } = useTranslation()
   const ref = useRef<Camera>(null)
   const [torch, setTorch] = useState<TorchState>('off')
-  const [scanResult, setScanResult] = useState<ScanResultEnum | null>(null)
   const [isManual, setIsManual] = useState(false)
 
   const { top } = useSafeAreaInsets()
 
   const pathname = usePathname()
 
+  const scanResult = useOffenceStoreContext((state) => state.scanResult)
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
 
   const { setOffenceState } = useSetOffenceState()
 
-  useCameraPermission({ autoAsk: true })
-
   const { scanLicencePlate, checkEcv, isLoading } = useScanLicencePlate()
-
-  const onCheckEcv = useCallback(
-    async (ecv: string) => {
-      try {
-        const newScanResult = await checkEcv(ecv, isManual)
-
-        if (newScanResult === ScanReasonEnum.Other) {
-          router.navigate('/offence')
-
-          return null
-        }
-        // if (newScanResult !== ScanResultEnum.NoViolation)
-        //   return router.navigate({
-        //     pathname: '/scan/scan-result',
-        //     params: { scanResult: newScanResult },
-        //   })
-
-        return newScanResult
-      } catch {
-        return null
-      }
-    },
-    [checkEcv, isManual],
-  )
 
   const takeLicencePlatePicture = useCallback(async () => {
     if (!ref.current) return
@@ -103,14 +76,10 @@ const LicencePlateCameraComp = () => {
         setOffenceState({ ecv })
         takeLicencePlatePicture()
 
-        const newScanResult = await onCheckEcv(ecv)
-
-        if (newScanResult) {
-          setScanResult(newScanResult)
-        }
+        await checkEcv(ecv, isManual)
       }
     },
-    [generatedEcv, onCheckEcv, scanLicencePlate, setOffenceState, takeLicencePlatePicture],
+    [generatedEcv, checkEcv, isManual, scanLicencePlate, setOffenceState, takeLicencePlatePicture],
   )
 
   const onContinue = async () => {
@@ -120,29 +89,21 @@ const LicencePlateCameraComp = () => {
       return
     }
 
-    setScanResult(null)
+    setOffenceState({ scanResult: undefined })
 
     if (generatedEcv) {
-      const result = await onCheckEcv(generatedEcv)
-
-      if (result) {
-        setScanResult(result)
-      }
+      await checkEcv(generatedEcv, isManual)
     }
   }
 
   const onChangeLicencePlate = useCallback(
     (ecv: string) => {
-      if (scanResult) {
-        setScanResult(null)
-      }
-
       plates = []
 
       setIsManual(!!ecv)
-      setOffenceState({ ecv })
+      setOffenceState({ scanResult: undefined, ecv })
     },
-    [scanResult, setOffenceState],
+    [setOffenceState],
   )
 
   useEffect(() => {

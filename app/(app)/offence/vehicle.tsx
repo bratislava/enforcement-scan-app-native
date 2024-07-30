@@ -12,7 +12,7 @@ import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import VehicleTile from '@/components/tiles/VehicleTile'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
-import { getVehiclePropertiesOptions } from '@/modules/backend/constants/queryParams'
+import { getVehiclePropertiesOptions } from '@/modules/backend/constants/queryOptions'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 

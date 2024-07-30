@@ -102,6 +102,19 @@ export interface DefaultResponseHealthcheck {
   appRunning: boolean
 }
 /**
+ *
+ * @export
+ * @interface MobileAppVersionUpdateDto
+ */
+export interface MobileAppVersionUpdateDto {
+  /**
+   * Version required from the user
+   * @type {string}
+   * @memberof MobileAppVersionUpdateDto
+   */
+  version: string
+}
+/**
  * State of offence
  * @export
  * @enum {string}
@@ -211,6 +224,12 @@ export interface RequestCreateOffenceDataDto {
    * @memberof RequestCreateOffenceDataDto
    */
   favouritePhotoId?: number
+  /**
+   * Current version of mobile app version
+   * @type {string}
+   * @memberof RequestCreateOffenceDataDto
+   */
+  mobileAppVersion?: string
 }
 
 /**
@@ -436,13 +455,13 @@ export interface ResponseCreateOrUpdateScanDto {
    */
   updatedAt: string
   /**
-   * Id of user from AD, who created this scan
+   * System where scan was created
    * @type {string}
    * @memberof ResponseCreateOrUpdateScanDto
    */
   createdBy: string
   /**
-   * Id of user from AD, who last updated this scan
+   * System where scan was updated
    * @type {string}
    * @memberof ResponseCreateOrUpdateScanDto
    */
@@ -625,7 +644,7 @@ export const ScanReasonEnum = {
 export type ScanReasonEnum = (typeof ScanReasonEnum)[keyof typeof ScanReasonEnum]
 
 /**
- * Result of scan, Is there paas parking authorization? This can be in the future used in other types automatic scans
+ * Used to flag duplicity and PAAS parking violation. By default returns NO_VIOLATION / OTHER when PAAS_PARKING_AUTHORIZATION / OTHER scan reason set
  * @export
  * @enum {string}
  */
@@ -952,21 +971,23 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
      * Search for offences by ecv, gps coordinates and optionally offence type
      * @summary Find offences
      * @param {string} ecv Vehicle ecv
-     * @param {string} udr Udr code
      * @param {Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>} [offenceTypes] Find offences filtered by offence type
+     * @param {string} [udr] Udr code
+     * @param {string} [lat] Used to check for duplicities at the same place
+     * @param {string} [_long] Used to check for duplicities at the same place
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerGetDuplicitOffence: async (
       ecv: string,
-      udr: string,
       offenceTypes?: Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>,
+      udr?: string,
+      lat?: string,
+      _long?: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'ecv' is not null or undefined
       assertParamExists('scanControllerGetDuplicitOffence', 'ecv', ecv)
-      // verify required parameter 'udr' is not null or undefined
-      assertParamExists('scanControllerGetDuplicitOffence', 'udr', udr)
       const localVarPath = `/scan/offences`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -989,6 +1010,14 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
 
       if (udr !== undefined) {
         localVarQueryParameter['udr'] = udr
+      }
+
+      if (lat !== undefined) {
+        localVarQueryParameter['lat'] = lat
+      }
+
+      if (_long !== undefined) {
+        localVarQueryParameter['long'] = _long
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -1196,23 +1225,29 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
      * Search for offences by ecv, gps coordinates and optionally offence type
      * @summary Find offences
      * @param {string} ecv Vehicle ecv
-     * @param {string} udr Udr code
      * @param {Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>} [offenceTypes] Find offences filtered by offence type
+     * @param {string} [udr] Udr code
+     * @param {string} [lat] Used to check for duplicities at the same place
+     * @param {string} [_long] Used to check for duplicities at the same place
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async scanControllerGetDuplicitOffence(
       ecv: string,
-      udr: string,
       offenceTypes?: Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>,
+      udr?: string,
+      lat?: string,
+      _long?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ResponseCreateOffenceDto>>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerGetDuplicitOffence(
         ecv,
-        udr,
         offenceTypes,
+        udr,
+        lat,
+        _long,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -1353,19 +1388,23 @@ export const ScannersAndOffencesApiFactory = function (
      * Search for offences by ecv, gps coordinates and optionally offence type
      * @summary Find offences
      * @param {string} ecv Vehicle ecv
-     * @param {string} udr Udr code
      * @param {Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>} [offenceTypes] Find offences filtered by offence type
+     * @param {string} [udr] Udr code
+     * @param {string} [lat] Used to check for duplicities at the same place
+     * @param {string} [_long] Used to check for duplicities at the same place
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerGetDuplicitOffence(
       ecv: string,
-      udr: string,
       offenceTypes?: Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>,
+      udr?: string,
+      lat?: string,
+      _long?: string,
       options?: AxiosRequestConfig,
     ): AxiosPromise<Array<ResponseCreateOffenceDto>> {
       return localVarFp
-        .scanControllerGetDuplicitOffence(ecv, udr, offenceTypes, options)
+        .scanControllerGetDuplicitOffence(ecv, offenceTypes, udr, lat, _long, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -1467,20 +1506,24 @@ export class ScannersAndOffencesApi extends BaseAPI {
    * Search for offences by ecv, gps coordinates and optionally offence type
    * @summary Find offences
    * @param {string} ecv Vehicle ecv
-   * @param {string} udr Udr code
    * @param {Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>} [offenceTypes] Find offences filtered by offence type
+   * @param {string} [udr] Udr code
+   * @param {string} [lat] Used to check for duplicities at the same place
+   * @param {string} [_long] Used to check for duplicities at the same place
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ScannersAndOffencesApi
    */
   public scanControllerGetDuplicitOffence(
     ecv: string,
-    udr: string,
     offenceTypes?: Array<ScanControllerGetDuplicitOffenceOffenceTypesEnum>,
+    udr?: string,
+    lat?: string,
+    _long?: string,
     options?: RawAxiosRequestConfig,
   ) {
     return ScannersAndOffencesApiFp(this.configuration)
-      .scanControllerGetDuplicitOffence(ecv, udr, offenceTypes, options)
+      .scanControllerGetDuplicitOffence(ecv, offenceTypes, udr, lat, _long, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -1542,3 +1585,240 @@ export const ScanControllerGetDuplicitOffenceOffenceTypesEnum = {
 } as const
 export type ScanControllerGetDuplicitOffenceOffenceTypesEnum =
   (typeof ScanControllerGetDuplicitOffenceOffenceTypesEnum)[keyof typeof ScanControllerGetDuplicitOffenceOffenceTypesEnum]
+
+/**
+ * SystemApi - axios parameter creator
+ * @export
+ */
+export const SystemApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Get latest mobile app version
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    systemControllerGetMobileAppVersion: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/system/version`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Update mobile app version
+     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    systemControllerUpdateMobileAppVersion: async (
+      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'mobileAppVersionUpdateDto' is not null or undefined
+      assertParamExists(
+        'systemControllerUpdateMobileAppVersion',
+        'mobileAppVersionUpdateDto',
+        mobileAppVersionUpdateDto,
+      )
+      const localVarPath = `/system/version`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        mobileAppVersionUpdateDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * SystemApi - functional programming interface
+ * @export
+ */
+export const SystemApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = SystemApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary Get latest mobile app version
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async systemControllerGetMobileAppVersion(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.systemControllerGetMobileAppVersion(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['SystemApi.systemControllerGetMobileAppVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Update mobile app version
+     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async systemControllerUpdateMobileAppVersion(
+      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.systemControllerUpdateMobileAppVersion(
+          mobileAppVersionUpdateDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['SystemApi.systemControllerUpdateMobileAppVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * SystemApi - factory interface
+ * @export
+ */
+export const SystemApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = SystemApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary Get latest mobile app version
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    systemControllerGetMobileAppVersion(options?: AxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp
+        .systemControllerGetMobileAppVersion(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Update mobile app version
+     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    systemControllerUpdateMobileAppVersion(
+      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<string> {
+      return localVarFp
+        .systemControllerUpdateMobileAppVersion(mobileAppVersionUpdateDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * SystemApi - object-oriented interface
+ * @export
+ * @class SystemApi
+ * @extends {BaseAPI}
+ */
+export class SystemApi extends BaseAPI {
+  /**
+   *
+   * @summary Get latest mobile app version
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SystemApi
+   */
+  public systemControllerGetMobileAppVersion(options?: RawAxiosRequestConfig) {
+    return SystemApiFp(this.configuration)
+      .systemControllerGetMobileAppVersion(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Update mobile app version
+   * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SystemApi
+   */
+  public systemControllerUpdateMobileAppVersion(
+    mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return SystemApiFp(this.configuration)
+      .systemControllerUpdateMobileAppVersion(mobileAppVersionUpdateDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}

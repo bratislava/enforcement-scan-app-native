@@ -9,7 +9,7 @@ import IconButton from '@/components/shared/IconButton'
 import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
-import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryParams'
+import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryOptions'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
