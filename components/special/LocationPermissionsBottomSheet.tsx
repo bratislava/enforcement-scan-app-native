@@ -2,7 +2,7 @@ import BottomSheet, { BottomSheetBackdrop, BottomSheetBackdropProps } from '@gor
 import * as Location from 'expo-location'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linking, Platform, View } from 'react-native'
+import { Linking, View } from 'react-native'
 
 import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
@@ -32,15 +32,7 @@ const LocationBottomSheet = () => {
     if (locationPermissionStatus !== Location.PermissionStatus.GRANTED) {
       Linking.openSettings()
     } else if (!isLocationOn) {
-      // https://copyprogramming.com/howto/react-native-open-settings-through-linking-openurl-in-ios
-      if (Platform.OS === 'android') {
-        Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS')
-      } else if (Platform.OS === 'ios') {
-        // TODO: test on iOS
-        Linking.openURL('App-Prefs:root=Privacy&path=LOCATION')
-        // Or this
-        // Linking.openURL('App-Prefs:Privacy&path=LOCATION')
-      }
+      Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS')
     }
   }, [locationPermissionStatus, isLocationOn])
 

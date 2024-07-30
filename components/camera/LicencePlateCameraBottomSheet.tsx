@@ -8,7 +8,6 @@ import FlashlightBottomSheetAttachment, {
 } from '@/components/camera/FlashlightBottomSheetAttachment'
 import TextInput from '@/components/inputs/TextInput'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
-import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/BottomSheetHandleWithShadow'
 import Button from '@/components/shared/Button'
 import Field from '@/components/shared/Field'
 import IconButton from '@/components/shared/IconButton'
@@ -50,7 +49,7 @@ const LicencePlateCameraBottomSheet = ({
       />
 
       <BottomSheet
-        handleComponent={BottomSheetHandleWithShadow}
+        handleComponent={null}
         keyboardBehavior="interactive"
         ref={modalRef}
         onClose={modalRef.current?.expand}
@@ -63,6 +62,7 @@ const LicencePlateCameraBottomSheet = ({
               className="h-auto text-center font-source-500medium text-[62px]"
               accessibilityLabel={t('scanLicencePlate.licencePlate')}
               value={licencePlate}
+              autoCapitalize="characters"
               onChangeText={onChangeLicencePlate}
             />
           </Field>

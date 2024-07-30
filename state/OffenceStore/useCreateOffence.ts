@@ -1,13 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import { router } from 'expo-router'
-import { useState } from 'react'
 import { Position } from 'react-native-image-marker'
 
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
+import { APP_VERSION } from '@/components/info/AppVersion'
 import { clientApi } from '@/modules/backend/client-api'
-import { RequestCreateOffenceDataDto } from '@/modules/backend/openapi-generated'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
+import { addGpsMetadataToImage } from '@/utils/addGpsMetadataToImage'
 import { addTextToImage } from '@/utils/addTextToImage'
 import { coordsToString } from '@/utils/coordsToString'
 
@@ -34,52 +34,52 @@ export const useCreateOffence = () => {
     resolutionType,
   } = useOffenceStoreContext((state) => state)
 
-  const [isLoading, setLoading] = useState(false)
-
   const createOffenceMutation = useMutation({
-    mutationFn: ({
-      lastScanUuid,
-      data,
-      files,
-    }: {
-      lastScanUuid: string
-      data: RequestCreateOffenceDataDto
-      files: Array<File>
-    }) => clientApi.scanControllerCreateOffence(lastScanUuid, data, files),
-  })
+    mutationFn: async () => {
+      if (!(ecv && location && offenceType && scanUuid && photos.length >= MAX_PHOTOS)) {
+        onRouteToResult('error')
 
-  const onCreateOffence = async () => {
-    setLoading(true)
+        throw new Error('Missing required data')
+      }
 
-    if (!(ecv && location && offenceType && scanUuid && photos.length >= MAX_PHOTOS)) {
-      onRouteToResult('error')
-      setLoading(false)
+      const photosWithLocation = await Promise.all(
+        photos.map(async (photo) =>
+          addTextToImage({
+            text: coordsToString(location.lat, location.long),
+            imagePath: photo,
+            position: Position.bottomLeft,
+          }),
+        ),
+      )
 
-      return
-    }
+      const photosWithLocationMetadata = await Promise.all(
+        photosWithLocation.map(async (photo) =>
+          addGpsMetadataToImage({
+            imagePath: photo,
+            lat: location.lat,
+            long: location.long,
+          }),
+        ),
+      )
 
-    const photosWithLocation = await Promise.all(
-      photos.map(async (photo) =>
-        addTextToImage(coordsToString(location.lat, location.long), photo, Position.bottomLeft),
-      ),
-    )
+      const data = {
+        offenceType,
+        objectiveResponsibility: isObjectiveResponsibility,
+        lat: location.lat.toString(),
+        long: location.long.toString(),
+        favouritePhotoId: zonePhoto?.id,
+        // offence with objective responsibility does not allow to set resolution type
+        resolutionType: isObjectiveResponsibility ? undefined : resolutionType,
+        udr: zone?.udrId,
+        vehicleId,
+        mobileAppVersion: APP_VERSION,
+      }
 
-    try {
-      const res = await createOffenceMutation.mutateAsync({
-        lastScanUuid: scanUuid,
-        data: {
-          offenceType,
-          objectiveResponsibility: isObjectiveResponsibility,
-          lat: location.lat.toString(),
-          long: location.long.toString(),
-          favouritePhotoId: zonePhoto?.id,
-          // offence with objective responsibility does not allow to set resolution type
-          resolutionType: isObjectiveResponsibility ? undefined : resolutionType,
-          udr: zone?.udrId,
-          vehicleId,
-        },
+      return clientApi.scanControllerCreateOffence(
+        scanUuid,
+        data,
         // Axios throws Network Error if the file is fetched and sent with `new File()`
-        files: photosWithLocation.map((photo) => {
+        photosWithLocationMetadata.map((photo) => {
           const photoUri = getPhotoUri(photo)
 
           return {
@@ -88,15 +88,19 @@ export const useCreateOffence = () => {
             name: photoUri,
           }
         }) as unknown as Array<File>,
-      })
+      )
+    },
+  })
+
+  const onCreateOffence = async () => {
+    try {
+      const res = await createOffenceMutation.mutateAsync()
 
       onRouteToResult(res.data.id ? 'success' : 'error')
     } catch (error) {
       onRouteToResult('error')
     }
-
-    setLoading(false)
   }
 
-  return { onCreateOffence, isLoading }
+  return { onCreateOffence, isLoading: createOffenceMutation.isPending }
 }

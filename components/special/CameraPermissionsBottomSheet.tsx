@@ -15,19 +15,19 @@ import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 const CameraPermissionsBottomSheet = () => {
   const { t } = useTranslation()
   const ref = useRef<BottomSheet>(null)
-  const [CameraPermissionStatus, getCameraPermission] = useCameraPermission()
+  const [cameraPermissionStatus, getCameraPermission] = useCameraPermission()
 
   const reloadCameraStatus = useCallback(async () => {
-    if (CameraPermissionStatus === PermissionStatuses.UNDETERMINED) {
+    if (cameraPermissionStatus === PermissionStatuses.UNDETERMINED) {
       await getCameraPermission()
     }
-  }, [getCameraPermission, CameraPermissionStatus])
+  }, [getCameraPermission, cameraPermissionStatus])
 
   const handleOpenSettingsPress = useCallback(async () => {
-    if (CameraPermissionStatus !== PermissionStatuses.GRANTED) {
+    if (cameraPermissionStatus !== PermissionStatuses.GRANTED) {
       Linking.openSettings()
     }
-  }, [CameraPermissionStatus])
+  }, [cameraPermissionStatus])
 
   // This is done so that when user changes the Camera settings and refocuses the app
   // the bottom sheet will be updated
@@ -49,7 +49,7 @@ const CameraPermissionsBottomSheet = () => {
     reloadCameraStatus()
   }, [reloadCameraStatus])
 
-  if (CameraPermissionStatus === PermissionStatuses.GRANTED) {
+  if (cameraPermissionStatus === PermissionStatuses.GRANTED) {
     return null
   }
 

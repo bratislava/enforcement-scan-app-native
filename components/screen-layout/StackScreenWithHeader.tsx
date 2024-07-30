@@ -1,6 +1,6 @@
 import { router, Stack } from 'expo-router'
 import { useCallback, useState } from 'react'
-import { LayoutChangeEvent, Platform, View } from 'react-native'
+import { LayoutChangeEvent, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import Typography from '@/components/shared/Typography'
@@ -73,24 +73,13 @@ const StackScreenWithHeader = ({ options, ...passingProps }: Props) => {
     ],
   )
 
-  const renderHeaderLeft = () => {
-    return (
-      <View className="h-[22px] justify-end">
-        <IconButton onPress={router.back} accessibilityLabel="Späť" name="close" />
-      </View>
-    )
-  }
-
-  const isModalOnIOS = options?.presentation === 'modal' && Platform.OS === 'ios'
-
   return (
     <Stack.Screen
       options={{
         headerShown: true,
         animation: options?.presentation === 'modal' ? 'slide_from_bottom' : undefined,
         ...options,
-        header: isModalOnIOS ? undefined : renderHeader,
-        headerLeft: isModalOnIOS ? renderHeaderLeft : undefined,
+        header: renderHeader,
       }}
       {...passingProps}
     />

@@ -1,10 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
 import * as Location from 'expo-location'
+import { router } from 'expo-router'
 import { useCallback } from 'react'
 
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { RequestCreateOrUpdateScanDto, ScanResultEnum } from '@/modules/backend/openapi-generated'
+import { RequestCreateOrUpdateScanDto, ScanReasonEnum } from '@/modules/backend/openapi-generated'
 import { BlockData, TextData } from '@/modules/camera/types'
 import { correctLicencePlate, ECV_FORMAT_REGEX } from '@/modules/camera/utils/correctLicencePlate'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -33,10 +34,10 @@ export const useScanLicencePlate = () => {
   /**
    * Checks the ECV with BE and returns the scan result
    */
-  const checkEcv = async (ecv: string, isManual?: boolean): Promise<ScanResultEnum | null> => {
+  const checkEcv = async (ecv: string, isManual?: boolean): Promise<void> => {
     const location = await Location.getLastKnownPositionAsync()
 
-    if (!(location && role)) return null
+    if (!(location && role)) return
 
     const res = await createScanMutation.mutateAsync({
       ecv,
@@ -53,14 +54,16 @@ export const useScanLicencePlate = () => {
     })
 
     if (res.data) {
-      setOffenceState({ scanUuid: res.data.uuid })
+      setOffenceState({ scanUuid: res.data.uuid, scanResult: res.data.scanResult })
 
-      return res.data.scanResult || null
+      if (res.data.scanResult === ScanReasonEnum.Other) {
+        router.navigate('/offence')
+      }
+
+      return
     }
 
-    setOffenceState({ scanUuid: undefined })
-
-    return null
+    setOffenceState({ scanUuid: undefined, scanResult: undefined })
   }
 
   /**

@@ -8,7 +8,6 @@ import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import PhotosBottomSheet from '@/components/camera/PhotosBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { useSnackbar } from '@/components/screen-layout/Snackbar/useSnackbar'
-import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addTextToImage } from '@/utils/addTextToImage'
@@ -18,7 +17,6 @@ export const MAX_PHOTOS = 5
 const AppRoute = () => {
   const { t } = useTranslation()
   const snackbar = useSnackbar()
-  useCameraPermission({ autoAsk: true })
 
   const { setOffenceState } = useSetOffenceState()
   const photos = useOffenceStoreContext((state) => state.photos)
@@ -29,11 +27,11 @@ const AppRoute = () => {
 
   const takePicture = async () => {
     setLoading(true)
-    const capturedPhoto = await ref.current?.takeSnapshot({ quality: 20 })
-    const imageWithTimestampUri = await addTextToImage(
-      new Date().toLocaleString(),
-      capturedPhoto?.path,
-    )
+    const capturedPhoto = await ref.current?.takePhoto()
+    const imageWithTimestampUri = await addTextToImage({
+      text: new Date().toLocaleString(),
+      imagePath: capturedPhoto?.path,
+    })
 
     if (!imageWithTimestampUri) {
       snackbar.show(t('offenceCamera.error'), {

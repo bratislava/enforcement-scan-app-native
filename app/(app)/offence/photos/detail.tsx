@@ -10,7 +10,6 @@ import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
-import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addImageCdnUrl } from '@/utils/addImageCdnUrl'
@@ -38,15 +37,13 @@ const AppRoute = () => {
   const [torch, setTorch] = useState<TorchState>('off')
   const [loading, setLoading] = useState(false)
 
-  useCameraPermission({ autoAsk: true })
-
   const takePicture = async () => {
     setLoading(true)
-    const capturedPhoto = await ref.current?.takeSnapshot({ quality: 20 })
-    const imageWithTimestampUri = await addTextToImage(
-      new Date().toLocaleString(),
-      capturedPhoto?.path,
-    )
+    const capturedPhoto = await ref.current?.takePhoto()
+    const imageWithTimestampUri = await addTextToImage({
+      text: new Date().toLocaleString(),
+      imagePath: capturedPhoto?.path,
+    })
 
     if (!imageWithTimestampUri) {
       setLoading(false)
@@ -100,6 +97,7 @@ const AppRoute = () => {
               ? getPhotoUri(photo) || getPhotoUri(photos[photoIndex])
               : addImageCdnUrl(photo),
           }}
+          resizeMode="contain"
           style={{ flex: 1 }}
         />
       ) : (

@@ -2,17 +2,24 @@ import Marker, { ImageFormat, Position, TextBackgroundType } from 'react-native-
 
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 
+type AddTextToImageOptions = {
+  text: string
+  imagePath?: string
+  position?: Position
+}
+
 /**
  * Add provided text to the image
  * @param imagePath path to image in the device
  * @param text
+ * @param position position of the text in the image
  * @returns path to the new image with the given text in it
  */
-export const addTextToImage = async (
-  text: string,
-  imagePath?: string,
-  position: Position | undefined = Position.bottomRight,
-) => {
+export const addTextToImage = async ({
+  position = Position.bottomRight,
+  imagePath,
+  text,
+}: AddTextToImageOptions) => {
   const imageUri = getPhotoUri(imagePath)
 
   if (!imageUri) return ''

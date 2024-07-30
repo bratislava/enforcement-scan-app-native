@@ -2061,6 +2061,11 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@lodev09/react-native-exify@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@lodev09/react-native-exify/-/react-native-exify-0.2.7.tgz#53475fac529eee1aedf7b532ded17caf0e2260d1"
+  integrity sha512-BEFYnzpiM93q6sd2kVwYH4uTwGeCrKNMURbtt50ycC31yVfEK+/GFqEC4aMiciNuocisjGvZGPlpF2Q4vaCEWw==
+
 "@lukeed/csprng@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
