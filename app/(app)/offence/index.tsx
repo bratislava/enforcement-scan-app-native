@@ -8,11 +8,14 @@ import TextInput from '@/components/inputs/TextInput'
 import SelectRow from '@/components/list-rows/SelectRow'
 import LocationMapPreview from '@/components/map/location-map/LocationMapPreview'
 import ContinueButton from '@/components/navigation/ContinueButton'
+import { useModal } from '@/components/screen-layout/Modal/useModal'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DissmissKeyboard'
 import Field from '@/components/shared/Field'
 import PressableStyled from '@/components/shared/PressableStyled'
+import { DuplicityModal } from '@/components/special/DuplicityModal'
+import { clientApi } from '@/modules/backend/client-api'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
@@ -30,6 +33,7 @@ const OffencePage = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
+  const { openModal, isModalVisible, closeModal } = useModal()
 
   const [currentLocation] = useLocation()
 
@@ -37,7 +41,22 @@ const OffencePage = () => {
     setIsSubmitting(true)
     setIsTouched(true)
 
-    if (!(offenceType && (isObjectiveResponsibility || resolutionType))) {
+    if (!(offenceType && (isObjectiveResponsibility || resolutionType) && ecv)) {
+      setIsSubmitting(false)
+
+      return
+    }
+
+    const response = await clientApi.scanControllerGetDuplicitOffence(
+      ecv,
+      undefined,
+      undefined,
+      location?.lat.toString(),
+      location?.long.toString(),
+    )
+
+    if (response.data.length > 0) {
+      openModal()
       setIsSubmitting(false)
 
       return
@@ -125,6 +144,8 @@ const OffencePage = () => {
             />
           </ScreenContent>
         </ScrollView>
+
+        <DuplicityModal visible={isModalVisible} onCloseModal={closeModal} />
       </ScreenView>
     </DismissKeyboard>
   )
