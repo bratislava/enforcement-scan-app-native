@@ -3,7 +3,7 @@ module.exports = {
     name: 'Skenovacia aplikácia',
     slug: 'enforcement-scan-app',
     scheme: 'enforcement-scan-app',
-    version: '1.0.0',
+    version: '1.0.1',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
@@ -19,9 +19,6 @@ module.exports = {
         foregroundImage: './assets/icon.png',
         backgroundColor: '#ffffff',
       },
-    },
-    ios: {
-      bundleIdentifier: 'com.bratislava.enforcement',
     },
     web: {
       favicon: './assets/favicon.png',

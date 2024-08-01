@@ -40,15 +40,6 @@ east build:list
 
 # Android emulator or device build
 eas build --profile development --platform android
-
-# iOs simulator build
-eas build --profile development-simulator --platform ios
-
-# iOs device build
-eas build --profile development --platform ios
-
-# register new iOs device
-eas device:create
 ```
 
 ## Deploy
@@ -73,14 +64,6 @@ https://docs.expo.dev/deploy/submit-to-app-stores/
 
 ```bash
 eas submit -p android
-```
-
-### Release - iOs
-
-https://docs.expo.dev/deploy/submit-to-app-stores/
-
-```bash
-eas submit -p ios
 ```
 
 ## Environment variables
