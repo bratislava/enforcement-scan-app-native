@@ -37,7 +37,7 @@ export const addTextToImage = async ({
           },
           style: {
             color: '#fff',
-            fontSize: 16,
+            fontSize: 30,
             fontName: 'Arial',
             textBackgroundStyle: {
               paddingX: 4,
