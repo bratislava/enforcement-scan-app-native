@@ -68,9 +68,11 @@ Release to InTune needs to be built like .apk file which requires different buil
 eas build --profile production-apk --platform android
 ```
 
-3. Go to expo build and download it.
+3. Change `expo.android.package` back to original string.
 
-4. Send the apk file to people responsible for distribution of InTune application
+4. Go to expo build and download it.
+
+5. Send the apk file to people responsible for distribution of InTune application
 
 ## Force update
 
