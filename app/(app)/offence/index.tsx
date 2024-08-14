@@ -1,5 +1,5 @@
 import { Link, router } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
 
@@ -19,7 +19,6 @@ import { clientApi } from '@/modules/backend/client-api'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { useLocation } from '@/modules/map/hooks/useLocation'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -34,8 +33,6 @@ const OffencePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
   const { openModal, isModalVisible, closeModal } = useModal()
-
-  const [currentLocation] = useLocation()
 
   const onSubmit = async () => {
     setIsSubmitting(true)
@@ -65,14 +62,6 @@ const OffencePage = () => {
     router.push('/offence/vehicle')
     setIsSubmitting(false)
   }
-
-  useEffect(() => {
-    if (currentLocation?.coords && !location) {
-      setOffenceState({
-        location: { lat: currentLocation.coords.latitude, long: currentLocation.coords.longitude },
-      })
-    }
-  }, [currentLocation, location, setOffenceState])
 
   return (
     <DismissKeyboard>
