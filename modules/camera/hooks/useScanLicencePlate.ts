@@ -54,7 +54,11 @@ export const useScanLicencePlate = () => {
     })
 
     if (res.data) {
-      setOffenceState({ scanUuid: res.data.uuid, scanResult: res.data.scanResult })
+      setOffenceState({
+        scanUuid: res.data.uuid,
+        scanResult: res.data.scanResult,
+        location: { lat: location.coords.latitude, long: location.coords.longitude },
+      })
 
       if (res.data.scanResult === ScanReasonEnum.Other) {
         router.navigate('/offence')
