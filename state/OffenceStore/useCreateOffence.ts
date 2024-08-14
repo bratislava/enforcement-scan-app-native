@@ -47,7 +47,7 @@ export const useCreateOffence = () => {
           addTextToImage({
             text: coordsToString(location.lat, location.long),
             imagePath: photo,
-            position: Position.bottomLeft,
+            position: Position.topLeft,
           }),
         ),
       )
