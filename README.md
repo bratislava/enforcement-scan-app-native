@@ -42,29 +42,44 @@ east build:list
 eas build --profile development --platform android
 ```
 
-## Deploy
+## Build and Release
 
-### Build
+### Play Store
 
-Follow https://docs.expo.dev/deploy/build-project/
+Release to play store needs the .aab file build, so the build needs to be done in this steps:
 
-Quick reference:
-
-```bash
-eas build --platform all
-
-# optionally, by platform
-eas build --platform android
-eas build --platform ios
-```
-
-### Release - Android
-
-https://docs.expo.dev/deploy/submit-to-app-stores/
+1. Build the app.
 
 ```bash
-eas submit -p android
+eas build --profile production --platform android --auto-submit
 ```
+
+2. Go to play store internal testing (for now internal later it's gonna be different) and release the app
+
+### InTune
+
+Release to InTune needs to be built like .apk file which requires different build profile and also some tweaks because of InTune and Play store cannot have the same package name. The steps are like this:
+
+1. Go to `app.config.js` and change `expo.android.package` field from "com.bratislava.enforcement" to "com.bratislava.enforcementscanapp"
+
+2. Build the app.
+
+```bash
+eas build --profile production-apk --platform android
+```
+
+3. Change `expo.android.package` back to original string.
+
+4. Go to expo build and download it.
+
+5. Send the apk file to people responsible for distribution of InTune application
+
+## Force update
+
+We can force users to update application by calling `/system/version` POST endpoint with newest version which will open "Update App" modal
+
+> [!WARNING]
+> Beware of wrong version posting to the endpoint, the app wont work if the version is newer than released version
 
 ## Environment variables
 
