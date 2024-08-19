@@ -28,7 +28,13 @@ export const getIntersectionOfFeatureFromFeatures = <G extends Geometry>(
 
   for (const availableFeature of availableFeatures) {
     if (feature.geometry.type === 'Polygon') {
-      const intersection = intersect(availableFeature.geometry, feature as Feature<Polygon>)
+      const intersection = intersect(
+        {
+          type: 'FeatureCollection',
+          features: [availableFeature],
+        },
+        feature as Feature<Polygon>,
+      )
 
       if (!intersection) {
         continue
@@ -63,7 +69,7 @@ export const addZonePropertyToLayer = <G extends Geometry, GJP extends GeoJsonPr
   }),
 })
 
-export const processData = ({ rawZonesData, rawUdrData, rawOdpData }: ArcgisData) => {
+export const processData = ({ rawZonesData, rawUdrData }: ArcgisData) => {
   let GLOBAL_ID = 0
   const isUsingAliasedData = rawUdrData.features.find((udr) =>
     Object.hasOwn(udr.properties, 'UDR ID'),
@@ -95,7 +101,6 @@ export const processData = ({ rawZonesData, rawUdrData, rawOdpData }: ArcgisData
       .filter((z) => z.properties?.zone && z.properties.Dátum_spustenia),
   }
 
-  // @ts-ignore
   const udrData = addZonePropertyToLayer(
     {
       type: 'FeatureCollection',
@@ -120,29 +125,8 @@ export const processData = ({ rawZonesData, rawUdrData, rawOdpData }: ArcgisData
     zonesData as FeatureCollection<Polygon, MapUdrZoneWithTranslationProps>,
   )
 
-  const odpData = {
-    type: 'FeatureCollection',
-    features: rawOdpData.features
-      .map((feature) => {
-        GLOBAL_ID++
-        const layer = MapLayerEnum.residents
-
-        return {
-          ...feature,
-          id: GLOBAL_ID,
-          properties: {
-            ...feature.properties,
-            layer,
-            zone: feature.properties?.Kod_parkovacej_zony,
-          },
-        } as Feature<Polygon, GeoJsonProperties>
-      })
-      .filter((f) => f.properties?.Status === 'active' || f.properties?.Status === 'planned'),
-  } as FeatureCollection<Polygon, GeoJsonProperties>
-
   return {
     udrData,
     zonesData,
-    odpData,
   }
 }

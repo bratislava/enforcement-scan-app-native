@@ -43,7 +43,6 @@ export namespace ArcgisAliased {
 
   export interface RawData {
     rawUdrData?: FeatureCollection<Polygon, UdrZone>
-    rawOdpData?: FeatureCollection<Polygon, GeoJsonProperties>
     rawZonesData?: FeatureCollection<Polygon, GeoJsonProperties>
   }
 }

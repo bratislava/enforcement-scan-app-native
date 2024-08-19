@@ -67,16 +67,8 @@ export const useStaticArcgisData = (): Partial<ArcgisData> => {
     select: (data) => data.data,
   })
 
-  const { data: rawOdpData } = useQuery({
-    queryKey: ['RawOdpData'],
-    queryFn: () =>
-      fetchFileOrGetFromCache<FeatureCollection<Polygon, GeoJsonProperties>>('odp.geojson'),
-    select: (data) => data.data,
-  })
-
   return {
     rawUdrData,
-    rawOdpData,
     rawZonesData,
   }
 }

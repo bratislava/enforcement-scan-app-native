@@ -12,29 +12,26 @@ export const useProcessedArcgisData = () => {
   const [isLoading, setLoading] = useState(true)
   const [zonesData, setZonesData] = useState<ProcessDataReturn['zonesData'] | null>(null)
   const [udrData, setUdrData] = useState<ProcessDataReturn['udrData'] | null>(null)
-  const [odpData, setOdpData] = useState<ProcessDataReturn['odpData'] | null>(null)
   const [isProcessingFinished, setIsProcessingFinished] = useState(false)
 
-  const { rawZonesData, rawUdrData, rawOdpData }: Partial<ArcgisData> = useStaticArcgisData()
+  const { rawZonesData, rawUdrData }: Partial<ArcgisData> = useStaticArcgisData()
 
   useEffect(() => {
-    if (rawUdrData && rawOdpData && rawZonesData) {
+    if (rawUdrData && rawZonesData) {
       if (isProcessingFinished) return
       // eslint-disable-next-line @typescript-eslint/no-shadow
-      const { udrData, odpData, zonesData } = processData({
+      const { udrData, zonesData } = processData({
         rawZonesData,
         rawUdrData,
-        rawOdpData,
       })
 
       setZonesData(zonesData)
       setUdrData(udrData)
-      setOdpData(odpData)
       setLoading(false)
 
       setIsProcessingFinished(true)
     }
-  }, [rawUdrData, rawOdpData, rawZonesData, isProcessingFinished])
+  }, [rawUdrData, rawZonesData, isProcessingFinished])
 
-  return { isLoading, zonesData, udrData, odpData }
+  return { isLoading, zonesData, udrData }
 }
