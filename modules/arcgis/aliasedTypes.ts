@@ -1,6 +1,6 @@
 /* eslint-disable babel/camelcase */
 
-import { FeatureCollection, GeoJsonProperties, MultiPolygon, Polygon } from 'geojson'
+import { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 
 import { MapZoneStatusEnum } from '@/modules/map/constants'
 
@@ -43,6 +43,5 @@ export namespace ArcgisAliased {
 
   export interface RawData {
     rawUdrData?: FeatureCollection<Polygon, UdrZone>
-    rawZonesData?: FeatureCollection<Polygon, GeoJsonProperties>
   }
 }

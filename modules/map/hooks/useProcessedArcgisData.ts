@@ -10,28 +10,23 @@ export type ProcessedMapData = Omit<ReturnType<typeof useProcessedArcgisData>, '
 
 export const useProcessedArcgisData = () => {
   const [isLoading, setLoading] = useState(true)
-  const [zonesData, setZonesData] = useState<ProcessDataReturn['zonesData'] | null>(null)
   const [udrData, setUdrData] = useState<ProcessDataReturn['udrData'] | null>(null)
   const [isProcessingFinished, setIsProcessingFinished] = useState(false)
 
-  const { rawZonesData, rawUdrData }: Partial<ArcgisData> = useStaticArcgisData()
+  const { rawUdrData }: Partial<ArcgisData> = useStaticArcgisData()
 
   useEffect(() => {
-    if (rawUdrData && rawZonesData) {
+    if (rawUdrData) {
       if (isProcessingFinished) return
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      const { udrData, zonesData } = processData({
-        rawZonesData,
-        rawUdrData,
-      })
 
-      setZonesData(zonesData)
-      setUdrData(udrData)
+      const { udrData: processedUdrData } = processData({ rawUdrData })
+
+      setUdrData(processedUdrData)
       setLoading(false)
 
       setIsProcessingFinished(true)
     }
-  }, [rawUdrData, rawZonesData, isProcessingFinished])
+  }, [rawUdrData, isProcessingFinished])
 
-  return { isLoading, zonesData, udrData }
+  return { isLoading, udrData }
 }

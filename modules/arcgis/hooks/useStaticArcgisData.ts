@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import axios, { AxiosResponse } from 'axios'
-import { FeatureCollection, GeoJsonProperties, Polygon } from 'geojson'
+import { FeatureCollection, Polygon } from 'geojson'
 
 import { ArcgisAliased } from '@/modules/arcgis/aliasedTypes'
 import { STATIC_ARCGIS_URL } from '@/modules/arcgis/constants'
@@ -51,13 +51,6 @@ async function fetchFileOrGetFromCache<T>(fileName: string): Promise<AxiosRespon
 }
 
 export const useStaticArcgisData = (): Partial<ArcgisData> => {
-  const { data: rawZonesData } = useQuery({
-    queryKey: ['RawZonesData'],
-    queryFn: () =>
-      fetchFileOrGetFromCache<FeatureCollection<Polygon, GeoJsonProperties>>('okp.geojson'),
-    select: (data) => data.data,
-  })
-
   const { data: rawUdrData } = useQuery({
     queryKey: ['RawUdrData'],
     queryFn: () =>
@@ -69,6 +62,5 @@ export const useStaticArcgisData = (): Partial<ArcgisData> => {
 
   return {
     rawUdrData,
-    rawZonesData,
   }
 }
