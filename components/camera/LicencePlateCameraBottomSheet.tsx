@@ -6,10 +6,10 @@ import { useSharedValue } from 'react-native-reanimated'
 import FlashlightBottomSheetAttachment, {
   FlashLightProps,
 } from '@/components/camera/FlashlightBottomSheetAttachment'
+import Field from '@/components/inputs/Field'
 import TextInput from '@/components/inputs/TextInput'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import Button from '@/components/shared/Button'
-import Field from '@/components/shared/Field'
 import IconButton from '@/components/shared/IconButton'
 
 type Props = FlashLightProps & {

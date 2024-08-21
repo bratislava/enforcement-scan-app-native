@@ -1,6 +1,6 @@
 import { cloneElement, ReactElement, useId } from 'react'
 
-import Field, { FieldProps } from '@/components/shared/Field'
+import Field, { FieldProps } from '@/components/inputs/Field'
 
 /**
  * Field component that passes accessibilityLabelledBy prop to children and connects it with nativeID inside Field component

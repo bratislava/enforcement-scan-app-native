@@ -20,9 +20,6 @@ module.exports = {
         backgroundColor: '#ffffff',
       },
     },
-    web: {
-      favicon: './assets/favicon.png',
-    },
     experiments: {
       tsconfigPaths: true,
     },

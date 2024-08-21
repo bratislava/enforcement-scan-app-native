@@ -54,6 +54,7 @@ export const addTextToImage = async ({
 
     return getPhotoUri(newUri)
   } catch (error) {
+    // No need to throw an error here, the image will be returned without the text
     console.error('Error adding text:', error)
   }
 
