@@ -4,11 +4,10 @@ import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import ContinueButton from '@/components/navigation/ContinueButton'
+import { HomeButton } from '@/components/navigation/HomeButton'
 import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
 import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import ScreenViewCentered from '@/components/screen-layout/ScreenViewCentered'
-import IconButton from '@/components/shared/IconButton'
-import { useClearHistory } from '@/hooks/useClearHistory'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { getDefaultOffenceStateByRole } from '@/state/OffenceStore/getDefaultOffenceStateByRole'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -26,19 +25,7 @@ const OffenceResultPage = () => {
   const { roleKey, zonePhoto, zone, location } = useOffenceStoreContext((state) => state)
   const role = getRoleByKey(roleKey)
 
-  const clearHistory = useClearHistory()
   const navigation = useNavigation()
-
-  const headerRight = () => (
-    <IconButton
-      name="home"
-      accessibilityLabel={t('offenceResult.home')}
-      onPress={() => {
-        router.replace('/')
-        clearHistory()
-      }}
-    />
-  )
 
   const showErrorScreen = !offenceResult || offenceResult === 'error' || !role
 
@@ -60,7 +47,7 @@ const OffenceResultPage = () => {
   if (showErrorScreen) {
     return (
       <ErrorScreen
-        options={{ headerTransparent: true, headerRight }}
+        options={{ headerTransparent: true, headerRight: () => <HomeButton /> }}
         text={t('offenceResult.resultError')}
       />
     )
@@ -75,7 +62,7 @@ const OffenceResultPage = () => {
     <ScreenViewCentered
       options={{
         headerTransparent: true,
-        headerRight,
+        headerRight: () => <HomeButton />,
       }}
       actionButton={
         <View className="g-2">
