@@ -14,12 +14,7 @@ type OcrCameraProps = Omit<CameraProps, 'device' | 'isActive' | 'frameProcessor'
 const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props }, ref) => {
   const { scanText } = useTextRecognition()
 
-  const runWorklet = useRunOnJS(
-    (data: TextData): void => {
-      onFrameCapture(data)
-    },
-    [onFrameCapture],
-  )
+  const runWorklet = useRunOnJS((data: TextData): void => onFrameCapture(data), [onFrameCapture])
 
   const frameProcessor = useFrameProcessor(
     (frame: Frame): void => {
