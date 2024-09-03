@@ -67,7 +67,7 @@ const ZonePhotoPage = () => {
               source={{ uri: createUrlFromImageObject(item) }}
             />
 
-            <View className="absolute h-full w-full items-center justify-center bg-black/10 ">
+            <View className="absolute h-full w-full items-center justify-center bg-black/10">
               <Icon name="image" size={40} className="text-white" />
 
               {item.tag ? (
