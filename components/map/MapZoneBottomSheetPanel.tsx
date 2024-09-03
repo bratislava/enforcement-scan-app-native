@@ -1,4 +1,7 @@
+import * as FileSystem from 'expo-file-system'
 import { Link } from 'expo-router'
+import * as Sharing from 'expo-sharing'
+import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import ZoneBadge from '@/components/info/ZoneBadge'
@@ -14,8 +17,27 @@ type Props = {
   selectedZone: MapUdrZoneWithTranslationProps | null
 }
 
+const shareFileContent = async (fileName: string) => {
+  try {
+    const fileUri = `${FileSystem.documentDirectory}${fileName}`
+    console.log('Sharing file:', fileUri)
+
+    const result = await Sharing.isAvailableAsync()
+
+    if (result) {
+      await Sharing.shareAsync(fileUri, {
+        mimeType: 'text/plain',
+        dialogTitle: 'Share File Contents',
+      })
+    }
+  } catch (error) {
+    console.error('Error sharing file:', error)
+  }
+}
+
 const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
   const { setOffenceState } = useSetOffenceState()
+  const { t } = useTranslation()
 
   const onZonePick = () => {
     if (selectedZone) {
@@ -44,6 +66,12 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
         <Link asChild href="/zone/photo" onPress={onZonePick}>
           <ContinueButton />
         </Link>
+        <ContinueButton onPress={() => shareFileContent('locations-current.txt')}>
+          {t('map.saveCurrentFile')}
+        </ContinueButton>
+        <ContinueButton onPress={() => shareFileContent('locations-last-known.txt')}>
+          {t('map.saveLastFile')}
+        </ContinueButton>
       </>
     )
   }

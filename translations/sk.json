@@ -6,6 +6,8 @@
   "home.empty.title": "Nemáte žiadne práva",
   "home.profile": "Profil",
   "home.title": "Enforcement",
+  "map.saveCurrentFile": "Save current",
+  "map.saveLastFile": "Save last",
   "offence.duplicity.button": "Vytvoriť hlásenie",
   "offence.duplicity.close": "Zavieť",
   "offence.duplicity.text": "Vytvorené hlásenie na vozidlo už existuje.",
