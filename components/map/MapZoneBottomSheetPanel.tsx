@@ -1,4 +1,5 @@
 import { Link } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import ZoneBadge from '@/components/info/ZoneBadge'
@@ -15,6 +16,8 @@ type Props = {
 }
 
 const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
+  const { t } = useTranslation()
+
   const { setOffenceState } = useSetOffenceState()
 
   const onZonePick = () => {
@@ -51,7 +54,7 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
   return (
     // height needs to be fixed because the dynamic bottom sheet height is shrunk
     <Panel className="min-h-[56px] bg-warning-light g-2">
-      <Typography>Nie je zvolená zóna</Typography>
+      <Typography>{t('zone.notSelected')}</Typography>
     </Panel>
   )
 }

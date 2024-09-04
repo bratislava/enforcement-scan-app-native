@@ -1,7 +1,10 @@
 import { FlashList } from '@shopify/flash-list'
 import { Redirect, router } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 import { Image, View } from 'react-native'
 
+import ContinueButton from '@/components/navigation/ContinueButton'
+import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import Icon from '@/components/shared/Icon'
@@ -10,21 +13,34 @@ import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryOptions'
+import { ResponseGetFavouritePhotoDto } from '@/modules/backend/openapi-generated'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const ZONE_PHOTO_CAMERA_ROUTE = '/zone/photo-camera'
 
 const ZonePhotoPage = () => {
+  const { t } = useTranslation()
+
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavouritePhotosOptions())
   const { setOffenceState } = useSetOffenceState()
 
+  const redirectToCamera = (zonePhoto?: ResponseGetFavouritePhotoDto) => {
+    setOffenceState({ zonePhoto })
+    router.push(ZONE_PHOTO_CAMERA_ROUTE)
+  }
+
   if (isPending) {
-    return <LoadingScreen title="Vyberte zónovú značku" asScreenView />
+    return <LoadingScreen title={t('zone.photo.title')} asScreenView />
   }
 
   if (isError) {
-    return <Typography>Error: {error.message}</Typography>
+    return (
+      <ErrorScreen
+        text={error?.message}
+        actionButton={<ContinueButton onPress={() => redirectToCamera()} />}
+      />
+    )
   }
 
   if (data.photos.length === 0) {
@@ -33,16 +49,13 @@ const ZonePhotoPage = () => {
 
   return (
     <ScreenView
-      title="Vyberte zónovú fotku"
+      title={t('zone.photo.title')}
       options={{
         headerRight: () => (
           <IconButton
             name="add"
-            accessibilityLabel="Nastavenia"
-            onPress={() => {
-              setOffenceState({ zonePhoto: undefined })
-              router.push(ZONE_PHOTO_CAMERA_ROUTE)
-            }}
+            accessibilityLabel={t('zone.photo.new')}
+            onPress={() => redirectToCamera()}
           />
         ),
       }}
@@ -56,11 +69,7 @@ const ZonePhotoPage = () => {
           <PressableStyled
             key={item.id}
             className="relative w-full items-center justify-center overflow-hidden rounded px-6 py-3"
-            onPress={() => {
-              setOffenceState({ zonePhoto: item })
-
-              router.push(ZONE_PHOTO_CAMERA_ROUTE)
-            }}
+            onPress={() => redirectToCamera(item)}
           >
             <Image
               className="aspect-square w-full rounded border"

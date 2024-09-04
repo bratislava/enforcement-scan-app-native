@@ -1,4 +1,5 @@
 import { forwardRef, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Pressable, View } from 'react-native'
 
 import { CompassIcon } from '@/assets/map'
@@ -10,6 +11,8 @@ type Props = {
 }
 
 const CompassButton = forwardRef<View, Props>(({ heading }, ref) => {
+  const { t } = useTranslation()
+
   const { rotateToNorth } = useMapStoreContext()
 
   const handlePress = useCallback(() => {
@@ -24,7 +27,7 @@ const CompassButton = forwardRef<View, Props>(({ heading }, ref) => {
     <Pressable
       ref={ref}
       hitSlop={12}
-      accessibilityLabel="Kompas"
+      accessibilityLabel={t('map.compass')}
       className={cn('self-start rounded-full bg-white shadow')}
       onPress={handlePress}
     >

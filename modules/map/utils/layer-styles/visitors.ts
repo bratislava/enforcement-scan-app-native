@@ -14,12 +14,6 @@ export const udrStyles = {
     lineWidth: ['interpolate', ['linear'], ['zoom'], 11, 1, 20, 3],
     lineOpacity: 0.8,
   },
-  linePlanned: {
-    lineColor: ['case', ['>=', ['get', 'price'], 2], colors.green2, colors.lawnGreen],
-    lineDasharray: [2, 2],
-    lineWidth: ['interpolate', ['linear'], ['zoom'], 11, 1, 20, 3],
-    lineOpacity: 0.4,
-  },
   lineSelected: {
     lineColor: colors.orange,
     lineDasharray: [1, 0],

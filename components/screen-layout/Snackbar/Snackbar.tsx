@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { Shadow } from 'react-native-shadow-2'
 import { ToastProps } from 'react-native-toast-notifications/lib/typescript/toast'
@@ -31,6 +32,8 @@ const Snackbar = ({
   actionLabel,
   onActionPress,
 }: SnackbarProps) => {
+  const { t } = useTranslation()
+
   const handlePress = useCallback(() => {
     onActionPress?.()
     onHide()
@@ -53,7 +56,7 @@ const Snackbar = ({
           </Typography>
           <PressableStyled className="px-2 py-4" onPress={handlePress}>
             <Typography className="uppercase" variant="default-bold">
-              {actionLabel ?? 'Skryť'}
+              {actionLabel ?? t('snackbar.hide')}
             </Typography>
           </PressableStyled>
         </FlexRow>
