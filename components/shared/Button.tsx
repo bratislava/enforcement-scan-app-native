@@ -1,4 +1,5 @@
 import { forwardRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Pressable, PressableProps, View } from 'react-native'
 
 import Icon, { IconName } from '@/components/shared/Icon'
@@ -65,6 +66,7 @@ const Button = forwardRef<View, ButtonProps>(
     },
     ref,
   ) => {
+    const { t } = useTranslation()
     const rest = { ...restProps, disabled: loading || disabled }
     const { buttonContainerClassNames, buttonTextClassNames } = buttonClassNames(variant, rest)
 
@@ -74,7 +76,7 @@ const Button = forwardRef<View, ButtonProps>(
           <>
             <Icon name="hourglass-top" className={buttonTextClassNames} />
             <Typography variant="button" className={buttonTextClassNames}>
-              {`${loadingText || 'Načítava sa'}${loadingTextEllipsis ? '…' : ''}`}
+              {`${loadingText || t('button.loading')}${loadingTextEllipsis ? '…' : ''}`}
             </Typography>
           </>
         ) : (

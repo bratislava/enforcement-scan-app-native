@@ -29,7 +29,6 @@ import { useCameraChangeHandler } from '@/modules/map/hooks/useCameraChangeHandl
 import { useMapStoreUpdateContext } from '@/modules/map/state/MapStoreProvider/useMapStoreUpdateContext'
 import { MapUdrZoneWithTranslationProps, UdrZoneFeature } from '@/modules/map/types'
 import { udrStyles } from '@/modules/map/utils/layer-styles/visitors'
-import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 
 type Props = {
   onZoneChange?: (feature: MapUdrZoneWithTranslationProps | null) => void
@@ -49,8 +48,6 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
   const [selectedPolygon, setSelectedPolygon] = useState<UdrZoneFeature | null>(null)
   const [isMapPinShown, setIsMapPinShown] = useState(false)
   const [mapHeading, setMapHeading] = useState<number>(0)
-
-  const { udrData } = useArcgisStoreContext()
 
   const onStateChange = async (mapState: MapState) => {
     setMapHeading(mapState.properties.heading)
@@ -122,7 +119,7 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
           setFlyToCenter={setFlyToCenter}
         />
 
-        {udrData && <MapZones udrData={udrData} />}
+        <MapZones />
 
         <ShapeSource
           id="highlight"
