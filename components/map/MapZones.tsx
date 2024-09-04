@@ -6,24 +6,19 @@ import { useMemo } from 'react'
 import { MapZoneStatusEnum } from '@/modules/map/constants'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { udrStyles } from '@/modules/map/utils/layer-styles/visitors'
+import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 
 type Props = {
   udrData: FeatureCollection<Polygon | MultiPolygon, MapUdrZoneWithTranslationProps>
 }
 
-const MapZones = ({ udrData }: Props) => {
+const MapZoneShapes = ({ udrData }: Props) => {
   const udrDataByStatus = useMemo(
     () => ({
       active: {
         ...udrData,
         features: udrData?.features.filter(
           (udr) => udr.properties?.status === MapZoneStatusEnum.active,
-        ),
-      },
-      planned: {
-        ...udrData,
-        features: udrData?.features.filter(
-          (udr) => udr.properties?.status === MapZoneStatusEnum.planned,
         ),
       },
       residents: {
@@ -52,13 +47,14 @@ const MapZones = ({ udrData }: Props) => {
           <LineLayer id="udrLineActive" style={udrStyles.lineActive} />
         </ShapeSource>
       )}
-      {udrDataByStatus.planned.features?.length > 0 && (
-        <ShapeSource id="udrSourcePlanned" shape={udrDataByStatus.planned}>
-          <LineLayer id="udrLinePlanned" style={udrStyles.linePlanned} />
-        </ShapeSource>
-      )}
     </>
   )
+}
+
+const MapZones = () => {
+  const { udrData } = useArcgisStoreContext()
+
+  return udrData ? <MapZoneShapes udrData={udrData} /> : null
 }
 
 export default MapZones

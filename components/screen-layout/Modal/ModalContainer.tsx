@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ModalProps, View, ViewProps } from 'react-native'
 
 import IconButton from '@/components/shared/IconButton'
@@ -8,6 +9,8 @@ type ModalContainerProps = {
 } & ViewProps
 
 const ModalContainer = ({ className, onRequestClose, children, ...rest }: ModalContainerProps) => {
+  const { t } = useTranslation()
+
   return (
     <View {...rest} className={cn('w-full overflow-hidden rounded bg-white', className)}>
       {children}
@@ -15,7 +18,7 @@ const ModalContainer = ({ className, onRequestClose, children, ...rest }: ModalC
         name="close"
         // TODO translation
         // TODO add option to hide this button
-        accessibilityLabel="Close dialog"
+        accessibilityLabel={t('modal.close')}
         className="absolute right-4 top-4"
         onPress={onRequestClose}
       />

@@ -20,14 +20,12 @@ module.exports = {
         backgroundColor: '#ffffff',
       },
     },
-    web: {
-      favicon: './assets/favicon.png',
-    },
     experiments: {
       tsconfigPaths: true,
     },
     plugins: [
       'expo-router',
+      'expo-font',
       'react-native-vision-camera',
       [
         '@rnmapbox/maps',

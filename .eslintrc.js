@@ -27,7 +27,7 @@ module.exports = {
     /** To remove optional parameter warning e.g. { page?: number } */
     'react/require-default-props': 'off',
     /** Include Typography as allowed text component */
-    'react-native/no-raw-text': ['error', { skip: ['Typography', 'Button', 'FloatingButton'] }],
+    'react-native/no-raw-text': ['error', { skip: ['Typography', 'Button'] }],
     'eslint-comments/disable-enable-pair': ['error', { allowWholeFile: true }],
     'switch-case/newline-between-switch-case': 'off',
     // Solve warning "Promise-returning function provided to attribute where a void return was expected."

@@ -1,5 +1,5 @@
 import { useNavigation } from 'expo-router'
-import { ScreenProps } from 'expo-router/build/useScreens'
+import { ScreenProps } from 'expo-router/build/views/Screen'
 import { ReactNode, useEffect } from 'react'
 import { View, ViewProps } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -18,7 +18,7 @@ export type ScreenViewProps = {
    * @default true
    */
   hasBackButton?: boolean
-  options?: ScreenProps['options']
+  options?: Exclude<ScreenProps['options'], Function>
 } & ViewProps
 
 const ScreenView = ({

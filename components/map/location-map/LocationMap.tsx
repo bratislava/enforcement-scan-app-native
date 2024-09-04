@@ -2,9 +2,9 @@ import { Camera, FillLayer, LineLayer, MapView, ShapeSource, UserLocation } from
 import { Position } from 'geojson'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
-import LocationMapZones from '@/components/map/location-map/LocationMapZones'
 import MapCamera from '@/components/map/MapCamera'
 import MapPin from '@/components/map/MapPin'
+import MapZones from '@/components/map/MapZones'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { LOCATION_PREVIEW_DEFAULT_ZOOM, MAP_STYLE_URL } from '@/modules/map/constants'
 import { useCameraChangeHandler } from '@/modules/map/hooks/useCameraChangeHandler'
@@ -82,7 +82,7 @@ const LocationMap = forwardRef(
             setFlyToCenter={setFlyToCenter}
           />
 
-          {role?.actions.zone ? <LocationMapZones /> : null}
+          {role?.actions.zone ? <MapZones /> : null}
 
           <ShapeSource
             id="highlight"

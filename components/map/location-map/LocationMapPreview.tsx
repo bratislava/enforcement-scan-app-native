@@ -2,7 +2,7 @@ import { Camera, MapView, MarkerView, UserLocation } from '@rnmapbox/maps'
 import { View } from 'react-native'
 
 import { MapPinIcon } from '@/assets/map'
-import LocationMapZones from '@/components/map/location-map/LocationMapZones'
+import MapZones from '@/components/map/MapZones'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { LOCATION_PREVIEW_DEFAULT_ZOOM, MAP_STYLE_URL } from '@/modules/map/constants'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -29,7 +29,7 @@ const LocationMapPreview = () => {
             centerCoordinate={[location.long, location.lat]}
           />
 
-          {role?.actions.zone ? <LocationMapZones /> : null}
+          {role?.actions.zone ? <MapZones /> : null}
 
           <UserLocation androidRenderMode="gps" visible minDisplacement={3} animated />
 

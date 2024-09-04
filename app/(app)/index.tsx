@@ -62,7 +62,9 @@ const AppRoute = () => {
         <FlashList
           ItemSeparatorComponent={() => <View className="h-2" />}
           data={allowedRoles}
-          renderItem={({ item }) => <RoleTile onPress={handlePressRole(item)} {...item} />}
+          renderItem={({ item }) => (
+            <RoleTile {...item} key={item.key} onPress={handlePressRole(item)} />
+          )}
           estimatedItemSize={111}
         />
       </ScreenContent>
