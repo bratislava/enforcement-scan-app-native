@@ -32,7 +32,6 @@ const FlashlightBottomSheetAttachment = ({ setTorch, iconLeft, torch, ...restPro
           name={torch === 'off' ? 'flashlight-on' : 'flashlight-off'}
           accessibilityLabel="Flashlight"
           variant="white-raised"
-          // flash doesn't get triggered when value of FlashMode is "on"... the "torch" value works fine
           onPress={() => setTorch((prev) => (prev === 'off' ? 'on' : 'off'))}
           disabled={permissionStatus === Location.PermissionStatus.DENIED}
         />
