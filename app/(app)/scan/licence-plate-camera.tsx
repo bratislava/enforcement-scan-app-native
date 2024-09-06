@@ -150,7 +150,7 @@ const LicencePlateCameraComp = () => {
               className={cn('justify-start', backgroundClassName)}
             />
             <View style={{ height: CROPPED_AREA_HEIGHT }} className="items-center" />
-            <View className={cn('flex-1 ', backgroundClassName)} />
+            <View className={cn('flex-1', backgroundClassName)} />
           </View>
         </View>
 

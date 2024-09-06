@@ -47,10 +47,18 @@ const logLocationToFile = async (fileUri: string, isLast: boolean) => {
     const timestamp = new Date()
     const location = (await getLocation(isLast)) || {
       timestamp: '',
-      coords: { latitude: '', longitude: '' },
+      coords: {
+        latitude: '',
+        longitude: '',
+        accuracy: '',
+        speed: '',
+        heading: '',
+        altitude: '',
+        altitudeAccuracy: '',
+      },
     }
 
-    const locationData = `${location.coords.latitude},${location.coords.longitude},${
+    const locationData = `${location.coords.latitude},${location.coords.longitude},${location.coords.accuracy},${location.coords.speed},${location.coords.heading},${location.coords.altitude},${location.coords.altitudeAccuracy},${
       Date.now() - timestamp.getTime()
     },${new Date(location.timestamp).toISOString()}\n`
 
