@@ -1,7 +1,8 @@
-import { Camera, MapView, MarkerView, UserLocation } from '@rnmapbox/maps'
+import { Camera, MapView, MarkerView } from '@rnmapbox/maps'
 import { View } from 'react-native'
 
 import { MapPinIcon } from '@/assets/map'
+import { UserMapIndicator } from '@/components/map/location-map/UserMapIndicator'
 import MapZones from '@/components/map/MapZones'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { LOCATION_PREVIEW_DEFAULT_ZOOM, MAP_STYLE_URL } from '@/modules/map/constants'
@@ -31,7 +32,7 @@ const LocationMapPreview = () => {
 
           {role?.actions.zone ? <MapZones /> : null}
 
-          <UserLocation androidRenderMode="gps" visible minDisplacement={3} animated />
+          <UserMapIndicator />
 
           <MarkerView
             // anchored to the bottom of the pin

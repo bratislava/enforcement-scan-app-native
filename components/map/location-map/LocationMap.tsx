@@ -1,7 +1,8 @@
-import { Camera, FillLayer, LineLayer, MapView, ShapeSource, UserLocation } from '@rnmapbox/maps'
+import { Camera, FillLayer, LineLayer, MapView, ShapeSource } from '@rnmapbox/maps'
 import { Position } from 'geojson'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
+import { UserMapIndicator } from '@/components/map/location-map/UserMapIndicator'
 import MapCamera from '@/components/map/MapCamera'
 import MapPin from '@/components/map/MapPin'
 import MapZones from '@/components/map/MapZones'
@@ -93,7 +94,7 @@ const LocationMap = forwardRef(
             <LineLayer id="highlight-lines" style={udrStyles.lineSelected} />
           </ShapeSource>
 
-          <UserLocation androidRenderMode="gps" visible minDisplacement={3} animated />
+          <UserMapIndicator />
         </MapView>
 
         <MapPin showFullPin={role?.actions.zone ? !!selectedZone : true} />
