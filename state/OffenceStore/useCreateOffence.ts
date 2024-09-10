@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { router } from 'expo-router'
+import { useCallback } from 'react'
 import { Position } from 'react-native-image-marker'
 
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
@@ -12,7 +13,7 @@ import { addTextToImage } from '@/utils/addTextToImage'
 import { coordsToString } from '@/utils/coordsToString'
 
 const onRouteToResult = (offenceResult: 'success' | 'error') => {
-  router.push({
+  router.navigate({
     pathname: 'offence/result',
     params: {
       offenceResult,
@@ -92,7 +93,11 @@ export const useCreateOffence = () => {
     },
   })
 
-  const onCreateOffence = async () => {
+  const onCreateOffence = useCallback(async () => {
+    if (createOffenceMutation.isPending) {
+      return
+    }
+
     try {
       const res = await createOffenceMutation.mutateAsync()
 
@@ -100,7 +105,7 @@ export const useCreateOffence = () => {
     } catch (error) {
       onRouteToResult('error')
     }
-  }
+  }, [createOffenceMutation])
 
   return { onCreateOffence, isLoading: createOffenceMutation.isPending }
 }

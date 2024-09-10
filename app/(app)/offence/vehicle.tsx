@@ -61,7 +61,7 @@ const Page = () => {
     return (
       <ErrorScreen
         text={error?.message}
-        actionButton={<ContinueButton onPress={() => router.push(redirectPath)} />}
+        actionButton={<ContinueButton onPress={() => router.navigate(redirectPath)} />}
       />
     )
   }

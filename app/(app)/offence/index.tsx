@@ -35,6 +35,10 @@ const OffencePage = () => {
   const { openModal, isModalVisible, closeModal } = useModal()
 
   const onSubmit = async () => {
+    if (isSubmitting) {
+      return
+    }
+
     setIsSubmitting(true)
     setIsTouched(true)
 
@@ -59,7 +63,7 @@ const OffencePage = () => {
       return
     }
 
-    router.push('/offence/vehicle')
+    router.navigate('/offence/vehicle')
     setIsSubmitting(false)
   }
 
@@ -68,9 +72,7 @@ const OffencePage = () => {
       <ScreenView
         title={t('offence.title')}
         className="flex-1 justify-start"
-        actionButton={
-          <ContinueButton loading={isSubmitting} disabled={isSubmitting} onPress={onSubmit} />
-        }
+        actionButton={<ContinueButton loading={isSubmitting} onPress={onSubmit} />}
       >
         <ScrollView alwaysBounceHorizontal={false}>
           <ScreenContent>
@@ -86,7 +88,7 @@ const OffencePage = () => {
             <Field label={t('offence.location')}>
               <PressableStyled
                 onPress={() => {
-                  router.push('/offence/location')
+                  router.navigate('/offence/location')
                 }}
               >
                 <LocationMapPreview />

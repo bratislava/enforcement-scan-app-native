@@ -20,7 +20,7 @@ const AppRoute = () => {
 
   const handlePressRole = (role: RoleItem) => () => {
     resetOffenceState(getDefaultOffenceStateByRole(role.key))
-    router.push(role.actions.zone ? '/zone' : '/scan/licence-plate-camera')
+    router.navigate(role.actions.zone ? '/zone' : '/scan/licence-plate-camera')
   }
 
   const allowedRoles = ROLES.filter((role) => user?.roles.includes(role.key))
@@ -34,7 +34,7 @@ const AppRoute = () => {
             <IconButton
               name="person"
               accessibilityLabel={t('home.profile')}
-              onPress={() => router.push('profile')}
+              onPress={() => router.navigate('profile')}
             />
           ),
         }}
@@ -53,7 +53,7 @@ const AppRoute = () => {
           <IconButton
             name="person"
             accessibilityLabel={t('home.profile')}
-            onPress={() => router.push('profile')}
+            onPress={() => router.navigate('profile')}
           />
         ),
       }}
