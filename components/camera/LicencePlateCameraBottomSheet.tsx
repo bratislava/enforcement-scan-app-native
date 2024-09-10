@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
+import { accuracyArray } from '@/app/(app)/zone'
 import FlashlightBottomSheetAttachment, {
   FlashLightProps,
 } from '@/components/camera/FlashlightBottomSheetAttachment'
@@ -17,11 +18,15 @@ type Props = FlashLightProps & {
   isLoading: boolean
   onContinue: () => Promise<void>
   onChangeLicencePlate: (plate: string) => void
+  accuracy: (typeof accuracyArray)[number]
+  setAccuracy: (accuracy: (typeof accuracyArray)[number]) => void
 }
 
 const LicencePlateCameraBottomSheet = ({
   licencePlate,
   isLoading,
+  accuracy,
+  setAccuracy,
   onContinue,
   onChangeLicencePlate,
   ...rest
@@ -69,6 +74,16 @@ const LicencePlateCameraBottomSheet = ({
 
           <Button loading={isLoading} disabled={!licencePlate} onPress={onContinue}>
             {t('scanLicencePlate.next')}
+          </Button>
+          <Button
+            onPress={() => {
+              // set next accuracy
+              const currentIndex = accuracyArray.findIndex((acc) => acc.value === accuracy.value)
+              const nextIndex = (currentIndex + 1) % accuracyArray.length
+              setAccuracy(accuracyArray[nextIndex])
+            }}
+          >
+            {accuracy.name}
           </Button>
         </BottomSheetContent>
       </BottomSheet>

@@ -1,14 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-await-in-loop */
 import { PortalHost } from '@gorhom/portal'
 import * as FileSystem from 'expo-file-system'
 import * as Location from 'expo-location'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import MapScreen from '@/components/map/MapScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import Button from '@/components/shared/Button'
 import MapStoreProvider from '@/modules/map/state/MapStoreProvider/MapStoreProvider'
 
 const initializeFile = async (fileName: string) => {
@@ -25,7 +27,7 @@ const initializeFile = async (fileName: string) => {
   }
 }
 
-const getLocation = async (isLast: boolean) => {
+const getLocation = async (isLast: boolean, accuracy: Location.LocationAccuracy) => {
   try {
     if (isLast) {
       // console.log('last known')
@@ -35,17 +37,17 @@ const getLocation = async (isLast: boolean) => {
 
     // console.log('current')
 
-    return await Location.getCurrentPositionAsync()
+    return await Location.getCurrentPositionAsync({ accuracy })
   } catch (error) {
     console.error('Error getting location:', error)
     throw error
   }
 }
 
-const logLocationToFile = async (fileUri: string, isLast: boolean) => {
+const logLocationToFile = async (fileUri: string, isLast: boolean, accuracy: Location.Accuracy) => {
   try {
     const timestamp = new Date()
-    const location = (await getLocation(isLast)) || {
+    const location = (await getLocation(isLast, accuracy)) || {
       timestamp: '',
       coords: {
         latitude: '',
@@ -87,18 +89,30 @@ const logLocationToFile = async (fileUri: string, isLast: boolean) => {
   }) // Wait for 5 seconds
 }
 
+export const accuracyArray = [
+  { name: 'Lowest', value: Location.Accuracy.Lowest },
+  { name: 'Low', value: Location.Accuracy.Balanced },
+  { name: 'Balanced', value: Location.Accuracy.Low },
+  { name: 'High', value: Location.Accuracy.High },
+  { name: 'Highest', value: Location.Accuracy.Highest },
+  { name: 'BestForNavigation', value: Location.Accuracy.BestForNavigation },
+]
+
 const ZoneScreen = () => {
   const { t } = useTranslation()
   const { top } = useSafeAreaInsets()
 
+  const [accuracy, setAccuracy] = useState(accuracyArray[2])
+
   useEffect(() => {
+    let interval: NodeJS.Timeout
     const startLogging = async () => {
       try {
         const fileUri = await initializeFile('locations-current.txt')
 
-        while (true) {
-          await logLocationToFile(fileUri, false)
-        }
+        interval = setInterval(() => {
+          logLocationToFile(fileUri, false, accuracy.value).catch(() => {})
+        }, 2000)
       } catch (error) {
         console.error('Error during location logging:', error)
       }
@@ -109,18 +123,20 @@ const ZoneScreen = () => {
     startLogging()
 
     return () => {
+      if (interval) clearInterval(interval)
       console.log('Cleaning up...')
     }
-  }, [])
+  }, [accuracy.value])
 
   useEffect(() => {
+    let interval: NodeJS.Timeout
     const startLogging = async () => {
       try {
         const fileUri = await initializeFile('locations-last-known.txt')
 
-        while (true) {
-          await logLocationToFile(fileUri, true)
-        }
+        interval = setInterval(() => {
+          logLocationToFile(fileUri, true, accuracy.value).catch(() => {})
+        }, 2000)
       } catch (error) {
         console.error('Error during location logging:', error)
       }
@@ -131,13 +147,25 @@ const ZoneScreen = () => {
     startLogging()
 
     return () => {
+      if (interval) clearInterval(interval)
       console.log('Cleaning up...')
     }
-  }, [])
+  }, [accuracy.value])
 
   return (
     <MapStoreProvider>
       <ScreenView title={t('zone.title')} className="h-full flex-1 flex-col">
+        <Button
+          onPress={() => {
+            // set next accuracy
+            const currentIndex = accuracyArray.findIndex((acc) => acc.value === accuracy.value)
+            const nextIndex = (currentIndex + 1) % accuracyArray.length
+            setAccuracy(accuracyArray[nextIndex])
+          }}
+        >
+          {accuracy.name}
+        </Button>
+
         <MapScreen />
 
         <View className="absolute right-0 px-2.5 g-3" style={{ top }}>

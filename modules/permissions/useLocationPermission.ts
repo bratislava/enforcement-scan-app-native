@@ -26,7 +26,7 @@ export const useLocationPermission = () => {
       setDoNotAskAgain(true)
 
       const { status: currentStatus, canAskAgain } = await Location.getForegroundPermissionsAsync()
-
+      Location.enableNetworkProviderAsync()
       if (
         currentStatus === Location.PermissionStatus.UNDETERMINED ||
         (currentStatus === Location.PermissionStatus.DENIED && canAskAgain)

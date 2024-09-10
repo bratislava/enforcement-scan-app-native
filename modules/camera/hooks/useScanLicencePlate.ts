@@ -34,8 +34,18 @@ export const useScanLicencePlate = () => {
   /**
    * Checks the ECV with BE and returns the scan result
    */
-  const checkEcv = async (ecv: string, isManual?: boolean): Promise<void> => {
-    const location = await Location.getLastKnownPositionAsync()
+  const checkEcv = async (
+    ecv: string,
+    isManual?: boolean,
+    accuracy?: Location.Accuracy,
+  ): Promise<void> => {
+    const time = Date.now()
+    await Location.enableNetworkProviderAsync()
+    const location = await Location.getCurrentPositionAsync({
+      accuracy,
+    })
+
+    console.log('Location took:', Date.now() - time)
 
     if (!(location && role)) return
 

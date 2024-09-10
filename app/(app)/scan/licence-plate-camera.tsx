@@ -5,6 +5,7 @@ import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Camera } from 'react-native-vision-camera'
 
+import { accuracyArray } from '@/app/(app)/zone'
 import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import OcrCamera from '@/components/camera/OcrCamera'
@@ -30,6 +31,7 @@ const LicencePlateCameraComp = () => {
   const ref = useRef<Camera>(null)
   const [torch, setTorch] = useState<TorchState>('off')
   const [isManual, setIsManual] = useState(false)
+  const [accuracy, setAccuracy] = useState(accuracyArray[2])
 
   const { top } = useSafeAreaInsets()
 
@@ -76,10 +78,18 @@ const LicencePlateCameraComp = () => {
         setOffenceState({ ecv })
         takeLicencePlatePicture()
 
-        await checkEcv(ecv, isManual)
+        await checkEcv(ecv, isManual, accuracy.value)
       }
     },
-    [generatedEcv, checkEcv, isManual, scanLicencePlate, setOffenceState, takeLicencePlatePicture],
+    [
+      generatedEcv,
+      checkEcv,
+      accuracy.value,
+      isManual,
+      scanLicencePlate,
+      setOffenceState,
+      takeLicencePlatePicture,
+    ],
   )
 
   const onContinue = async () => {
@@ -92,7 +102,7 @@ const LicencePlateCameraComp = () => {
     setOffenceState({ scanResult: undefined })
 
     if (generatedEcv) {
-      await checkEcv(generatedEcv, isManual)
+      await checkEcv(generatedEcv, isManual, accuracy.value)
     }
   }
 
@@ -158,6 +168,8 @@ const LicencePlateCameraComp = () => {
           isLoading={isLoading}
           torch={torch}
           setTorch={setTorch}
+          accuracy={accuracy}
+          setAccuracy={setAccuracy}
           licencePlate={generatedEcv}
           onContinue={onContinue}
           onChangeLicencePlate={onChangeLicencePlate}
