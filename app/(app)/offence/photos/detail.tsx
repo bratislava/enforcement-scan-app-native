@@ -63,7 +63,7 @@ const AppRoute = () => {
     newPhotos.splice(photoIndex, 1, photo)
 
     setOffenceState({ photos: newPhotos })
-    router.back()
+    router.navigate('/offence/photos/library')
   }
 
   const retakePicture = () => {

@@ -22,7 +22,7 @@ const PhotosPage = () => {
   const router = useRouter()
 
   const onShowDetail = (index: number) => {
-    router.push({
+    router.navigate({
       pathname: '/offence/photos/detail',
       params: {
         index: zonePhotoUrl ? (index === 0 ? undefined : String(index - 1)) : String(index),
