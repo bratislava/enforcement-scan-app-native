@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import * as Location from 'expo-location'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image } from 'react-native'
@@ -10,7 +11,6 @@ import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryOptions'
-import { useLocation } from '@/modules/map/hooks/useLocation'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addGpsMetadataToImage } from '@/utils/addGpsMetadataToImage'
@@ -29,8 +29,6 @@ const AppRoute = () => {
 
   const queryClient = useQueryClient()
 
-  const [currentLocation] = useLocation()
-
   const createPhotoMutation = useMutation({
     mutationFn: ({ file, tag }: { file: File; tag: string }) =>
       clientApi.scanControllerCreateFavouritePhoto(file, tag),
@@ -42,7 +40,10 @@ const AppRoute = () => {
   const takePicture = async (tag: string) => {
     setLoading(true)
 
-    const { coords } = currentLocation ?? {}
+    const { coords } = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Highest,
+    })
+
     const locationString = coords ? `${coordsToString(coords.latitude, coords.longitude)}; ` : ''
 
     const capturedPhoto = await ref.current?.takePhoto()
