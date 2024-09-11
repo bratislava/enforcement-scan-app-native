@@ -1,13 +1,5 @@
 import { Portal } from '@gorhom/portal'
-import {
-  Camera,
-  FillLayer,
-  LineLayer,
-  MapState,
-  MapView,
-  ShapeSource,
-  UserLocation,
-} from '@rnmapbox/maps'
+import { Camera, FillLayer, LineLayer, MapState, MapView, ShapeSource } from '@rnmapbox/maps'
 import { Position } from 'geojson'
 import {
   forwardRef,
@@ -21,6 +13,7 @@ import {
 import { View } from 'react-native'
 
 import CompassButton from '@/components/map/CompassButton'
+import { UserMapIndicator } from '@/components/map/location-map/UserMapIndicator'
 import MapCamera from '@/components/map/MapCamera'
 import MapPin from '@/components/map/MapPin'
 import MapZones from '@/components/map/MapZones'
@@ -130,7 +123,7 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
           <LineLayer id="higlight-lines" style={udrStyles.lineSelected} />
         </ShapeSource>
 
-        <UserLocation androidRenderMode="gps" visible minDisplacement={3} animated />
+        <UserMapIndicator />
       </MapView>
 
       {isMapPinShown && <MapPin showFullPin={!!selectedZone} />}
