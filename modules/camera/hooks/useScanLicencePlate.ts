@@ -35,7 +35,7 @@ export const useScanLicencePlate = () => {
    * Checks the ECV with BE and returns the scan result
    */
   const checkEcv = async (ecv: string, isManual?: boolean): Promise<void> => {
-    const location = await Location.getLastKnownPositionAsync()
+    const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest })
 
     if (!(location && role)) return
 
