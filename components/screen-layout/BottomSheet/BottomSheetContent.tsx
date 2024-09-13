@@ -1,20 +1,17 @@
-import { BottomSheetView } from '@gorhom/bottom-sheet'
+import { BottomSheetView, useBottomSheet } from '@gorhom/bottom-sheet'
 import { ComponentProps } from 'react'
 import { SafeAreaView } from 'react-native'
 
 import { cn } from '@/utils/cn'
 
-type Props = ComponentProps<typeof BottomSheetView> & {
-  isDynamic?: boolean
-}
+const BottomSheetContent = ({ children, className }: ComponentProps<typeof BottomSheetView>) => {
+  const { expand } = useBottomSheet()
 
-const BottomSheetContent = ({ children, className, isDynamic }: Props) => {
   return (
     <SafeAreaView>
-      <BottomSheetView className={cn('px-5 py-3', { 'min-h-[80px]': !isDynamic }, className)}>
+      {/* Everytime bottom sheet renders a content it should automatically open the bottom sheet, we use it only as static bottom sheet without the need to close */}
+      <BottomSheetView onLayout={() => expand()} className={cn('px-5 py-3', className)}>
         {children}
-        {/* TODO this should be handled by SafeAreaProvider */}
-        {/* spacer */}
       </BottomSheetView>
     </SafeAreaView>
   )

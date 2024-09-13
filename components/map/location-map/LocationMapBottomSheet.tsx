@@ -1,5 +1,5 @@
 import BottomSheet from '@gorhom/bottom-sheet'
-import { forwardRef, useRef } from 'react'
+import { forwardRef } from 'react'
 import { useSharedValue } from 'react-native-reanimated'
 
 import { MapRef } from '@/components/map/Map'
@@ -7,7 +7,6 @@ import MapZoneBottomSheetAttachment from '@/components/map/MapZoneBottomSheetAtt
 import ContinueButton from '@/components/navigation/ContinueButton'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/BottomSheetHandleWithShadow'
-import { useMultipleRefsSetter } from '@/hooks/useMultipleRefsSetter'
 
 type Props = {
   isDisabled?: boolean
@@ -17,9 +16,6 @@ type Props = {
 
 const LocationMapBottomSheet = forwardRef<BottomSheet, Props>(
   ({ setFlyToCenter, isDisabled, onPress }, ref) => {
-    const localRef = useRef<BottomSheet>(null)
-    const refSetter = useMultipleRefsSetter(ref, localRef)
-
     const animatedPosition = useSharedValue(0)
 
     return (
@@ -28,14 +24,13 @@ const LocationMapBottomSheet = forwardRef<BottomSheet, Props>(
 
         <BottomSheet
           key="mapZoneBottomSheet"
-          ref={refSetter}
-          onClose={localRef.current?.expand}
+          ref={ref}
           keyboardBehavior="interactive"
           handleComponent={BottomSheetHandleWithShadow}
           animatedPosition={animatedPosition}
           enableDynamicSizing
         >
-          <BottomSheetContent>
+          <BottomSheetContent className="min-h-[80px]">
             <ContinueButton disabled={isDisabled} onPress={onPress} />
           </BottomSheetContent>
         </BottomSheet>

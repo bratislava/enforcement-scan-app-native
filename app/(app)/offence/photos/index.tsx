@@ -3,11 +3,11 @@ import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Camera } from 'react-native-vision-camera'
 
-import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import PhotosBottomSheet from '@/components/camera/PhotosBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { useSnackbar } from '@/components/screen-layout/Snackbar/useSnackbar'
+import FlashlightContextProvider from '@/modules/camera/state/FlashlightContextProvider'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addTextToImage } from '@/utils/addTextToImage'
@@ -22,7 +22,6 @@ const AppRoute = () => {
   const photos = useOffenceStoreContext((state) => state.photos)
 
   const ref = useRef<Camera>(null)
-  const [torch, setTorch] = useState<TorchState>('off')
   const [loading, setLoading] = useState(false)
 
   const takePicture = async () => {
@@ -56,23 +55,20 @@ const AppRoute = () => {
   }
 
   return (
-    <ScreenView
-      hasBackButton
-      title={t('offenceCamera.titleWithCount', {
-        currentCount: photos.length + 1,
-        maxCount: MAX_PHOTOS,
-      })}
-      className="h-full"
-    >
-      <FullScreenCamera ref={ref} torch={torch} />
+    <FlashlightContextProvider>
+      <ScreenView
+        hasBackButton
+        title={t('offenceCamera.titleWithCount', {
+          currentCount: photos.length + 1,
+          maxCount: MAX_PHOTOS,
+        })}
+        className="h-full"
+      >
+        <FullScreenCamera ref={ref} />
 
-      <PhotosBottomSheet
-        torch={torch}
-        isLoading={loading}
-        takePicture={takePicture}
-        setTorch={setTorch}
-      />
-    </ScreenView>
+        <PhotosBottomSheet isLoading={loading} takePicture={takePicture} />
+      </ScreenView>
+    </FlashlightContextProvider>
   )
 }
 

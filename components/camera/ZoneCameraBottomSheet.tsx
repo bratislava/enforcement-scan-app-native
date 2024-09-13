@@ -1,12 +1,10 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useRouter } from 'expo-router'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
-import FlashlightBottomSheetAttachment, {
-  FlashLightProps,
-} from '@/components/camera/FlashlightBottomSheetAttachment'
+import FlashlightBottomSheetAttachment from '@/components/camera/FlashlightBottomSheetAttachment'
 import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAttachment'
 import TextInput from '@/components/inputs/TextInput'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
@@ -15,16 +13,15 @@ import Typography from '@/components/shared/Typography'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
-type Props = FlashLightProps & {
+type Props = {
   isLoading: boolean
   hasPhoto: boolean
   takePicture: (tag: string) => Promise<void>
 }
 
-const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture, ...rest }: Props) => {
+const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
   const { setOffenceState } = useSetOffenceState()
   const { t } = useTranslation()
-  const modalRef = useRef<BottomSheet>(null)
   const router = useRouter()
 
   const zonePhotoTag = useOffenceStoreContext((state) => state.zonePhoto?.tag)
@@ -44,14 +41,12 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture, ...rest }: Pr
       {hasPhoto ? (
         <PhotoBottomSheetAttachment animatedPosition={animatedPosition} onRetake={retakePicture} />
       ) : (
-        <FlashlightBottomSheetAttachment {...rest} animatedPosition={animatedPosition} />
+        <FlashlightBottomSheetAttachment animatedPosition={animatedPosition} />
       )}
 
       <BottomSheet
         handleComponent={null}
         keyboardBehavior="interactive"
-        ref={modalRef}
-        onClose={modalRef.current?.expand}
         enableDynamicSizing
         animatedPosition={animatedPosition}
       >

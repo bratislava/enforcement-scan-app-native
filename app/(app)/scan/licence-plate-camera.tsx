@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { Camera } from 'react-native-vision-camera'
 
-import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
 import { LicencePlateCameraBackground } from '@/components/camera/LicencePlateCameraBackground'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import OcrCamera from '@/components/camera/OcrCamera'
@@ -13,6 +12,7 @@ import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DissmissKeyboard'
 import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 import { useScanLicencePlate } from '@/modules/camera/hooks/useScanLicencePlate'
+import FlashlightContextProvider from '@/modules/camera/state/FlashlightContextProvider'
 import { TextData } from '@/modules/camera/types'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
@@ -24,7 +24,6 @@ const REQUIRED_SCANS = 2
 const LicencePlateCameraComp = () => {
   const { t } = useTranslation()
   const ref = useRef<Camera>(null)
-  const [torch, setTorch] = useState<TorchState>('off')
   const [isManual, setIsManual] = useState(false)
 
   const plateHistoryRef = useRef<string[]>([])
@@ -120,30 +119,30 @@ const LicencePlateCameraComp = () => {
   }, [scanResult, onChangeLicencePlate, pathname])
 
   return (
-    <DismissKeyboard>
-      <ScreenView
-        title={t('scanLicencePlate.title')}
-        options={{
-          headerRight: () => <HomeButton />,
-        }}
-        className="h-full"
-      >
-        <View className="relative">
-          <OcrCamera ref={ref} torch={torch} onFrameCapture={onFrameCapture} />
+    <FlashlightContextProvider>
+      <DismissKeyboard>
+        <ScreenView
+          title={t('scanLicencePlate.title')}
+          options={{
+            headerRight: () => <HomeButton />,
+          }}
+          className="h-full"
+        >
+          <View className="relative">
+            <OcrCamera ref={ref} onFrameCapture={onFrameCapture} />
 
-          <LicencePlateCameraBackground />
-        </View>
+            <LicencePlateCameraBackground />
+          </View>
 
-        <LicencePlateCameraBottomSheet
-          isLoading={isLoading}
-          torch={torch}
-          setTorch={setTorch}
-          licencePlate={generatedEcv}
-          onContinue={onContinue}
-          onChangeLicencePlate={onChangeLicencePlate}
-        />
-      </ScreenView>
-    </DismissKeyboard>
+          <LicencePlateCameraBottomSheet
+            isLoading={isLoading}
+            licencePlate={generatedEcv}
+            onContinue={onContinue}
+            onChangeLicencePlate={onChangeLicencePlate}
+          />
+        </ScreenView>
+      </DismissKeyboard>
+    </FlashlightContextProvider>
   )
 }
 

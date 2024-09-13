@@ -1,5 +1,5 @@
 import * as Location from 'expo-location'
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { ReactNode } from 'react'
 import { View } from 'react-native'
 
 import BottomSheetTopAttachment, {
@@ -7,21 +7,19 @@ import BottomSheetTopAttachment, {
 } from '@/components/screen-layout/BottomSheet/BottomSheetTopAttachment'
 import FlexRow from '@/components/shared/FlexRow'
 import IconButton from '@/components/shared/IconButton'
+import { useFlashlightContext } from '@/modules/camera/state/useFlashlightContext'
 import { useCameraPermission } from '@/modules/permissions/useCameraPermission'
 
 export type TorchState = 'on' | 'off'
 
-export type FlashLightProps = {
-  torch: TorchState
-  setTorch: Dispatch<SetStateAction<TorchState>>
-}
-
 type Props = Omit<BottomSheetTopAttachmentProps, 'children'> & {
   iconLeft?: ReactNode
-} & FlashLightProps
+}
 
-const FlashlightBottomSheetAttachment = ({ setTorch, iconLeft, torch, ...restProps }: Props) => {
+const FlashlightBottomSheetAttachment = ({ iconLeft, ...restProps }: Props) => {
   const [permissionStatus] = useCameraPermission()
+
+  const { torch, setTorch } = useFlashlightContext()
 
   return (
     <BottomSheetTopAttachment {...restProps}>

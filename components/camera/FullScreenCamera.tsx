@@ -5,6 +5,7 @@ import { Camera, CameraProps, useCameraDevice, useCameraFormat } from 'react-nat
 import { NoDeviceError } from '@/components/camera/NoDeviceError'
 import { useAppState } from '@/hooks/useAppState'
 import { useIsFocused } from '@/hooks/useIsFocused'
+import { useFlashlightContext } from '@/modules/camera/state/useFlashlightContext'
 
 const ASPECT_RATIO = 16 / 9
 const photoWidth = 720
@@ -14,10 +15,10 @@ const FullScreenCamera = forwardRef<Camera, Omit<Partial<CameraProps>, 'device'>
   const appState = useAppState()
   const { width } = useWindowDimensions()
 
+  const { torch } = useFlashlightContext()
   const device = useCameraDevice('back')
 
   const resolution = { width: photoWidth, height: photoWidth * ASPECT_RATIO }
-
   const format = useCameraFormat(device, [
     {
       photoAspectRatio: ASPECT_RATIO,
@@ -33,6 +34,7 @@ const FullScreenCamera = forwardRef<Camera, Omit<Partial<CameraProps>, 'device'>
       ref={ref}
       photo
       format={format}
+      torch={torch}
       onError={(error) => console.error('Camera error', error)}
       device={device}
       style={{ height: width * ASPECT_RATIO }}
