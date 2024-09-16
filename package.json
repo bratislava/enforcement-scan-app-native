@@ -17,7 +17,7 @@
   "dependencies": {
     "@expo-google-fonts/inter": "~0.2.3",
     "@expo/vector-icons": "~14.0.0",
-    "@gorhom/bottom-sheet": "~4.5.1",
+    "@gorhom/bottom-sheet": "~4.6.4",
     "@gorhom/portal": "~1.0.14",
     "@lodev09/react-native-exify": "~0.2.7",
     "@rnmapbox/maps": "10.1.28",

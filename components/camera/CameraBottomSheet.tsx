@@ -1,17 +1,14 @@
 import BottomSheet from '@gorhom/bottom-sheet'
-import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
-import FlashlightBottomSheetAttachment, {
-  FlashLightProps,
-} from '@/components/camera/FlashlightBottomSheetAttachment'
+import FlashlightBottomSheetAttachment from '@/components/camera/FlashlightBottomSheetAttachment'
 import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAttachment'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import Button from '@/components/shared/Button'
 import Typography from '@/components/shared/Typography'
 
-type Props = FlashLightProps & {
+type Props = {
   isLoading: boolean
   hasPhoto: boolean
   takePicture: () => Promise<void>
@@ -25,10 +22,8 @@ const CameraBottomSheet = ({
   takePicture,
   selectPicture,
   retakePicture,
-  ...rest
 }: Props) => {
   const { t } = useTranslation()
-  const modalRef = useRef<BottomSheet>(null)
 
   const animatedPosition = useSharedValue(0)
 
@@ -42,14 +37,12 @@ const CameraBottomSheet = ({
           />
         ) : null
       ) : (
-        <FlashlightBottomSheetAttachment {...rest} animatedPosition={animatedPosition} />
+        <FlashlightBottomSheetAttachment animatedPosition={animatedPosition} />
       )}
 
       <BottomSheet
         handleComponent={null}
         keyboardBehavior="interactive"
-        ref={modalRef}
-        onClose={modalRef.current?.expand}
         enableDynamicSizing
         animatedPosition={animatedPosition}
       >
