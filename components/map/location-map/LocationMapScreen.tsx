@@ -17,6 +17,10 @@ type Props = {
   role: RoleItem
 }
 
+const OFFENSES_ALLOWED_OUTSIDE_ZONE: Set<OffenceTypeEnum | undefined> = new Set([
+  OffenceTypeEnum.Dz,
+])
+
 const LocationMapScreen = ({ role }: Props) => {
   const zoneBottomSheetRef = useRef<BottomSheet>(null)
   const mapRef = useRef<MapRef>(null)
@@ -39,10 +43,10 @@ const LocationMapScreen = ({ role }: Props) => {
 
   const [centerCoordinate, setCenterCoordinate] = useState(location)
 
-  const isDZ = offenceType === OffenceTypeEnum.Dz
+  const isAllowedOutsideZone = OFFENSES_ALLOWED_OUTSIDE_ZONE.has(offenceType)
 
   const onLocationSelect = useCallback(() => {
-    if (!isDZ && role.actions.zone && zoneUdrId !== selectedZone?.udrId) {
+    if (!isAllowedOutsideZone && role.actions.zone && zoneUdrId !== selectedZone?.udrId) {
       setIsModalShown(true)
 
       return
@@ -51,7 +55,14 @@ const LocationMapScreen = ({ role }: Props) => {
     if (centerCoordinate) setOffenceState({ location: centerCoordinate })
 
     router.back()
-  }, [isDZ, role.actions.zone, zoneUdrId, selectedZone?.udrId, centerCoordinate, setOffenceState])
+  }, [
+    isAllowedOutsideZone,
+    role.actions.zone,
+    zoneUdrId,
+    selectedZone?.udrId,
+    centerCoordinate,
+    setOffenceState,
+  ])
 
   return (
     <View className="flex-1 items-stretch">
@@ -66,7 +77,7 @@ const LocationMapScreen = ({ role }: Props) => {
       ) : null}
 
       <LocationMapBottomSheet
-        isDisabled={role?.actions.zone ? !(selectedZone || isDZ) : false}
+        isDisabled={role?.actions.zone && !isAllowedOutsideZone ? !selectedZone : false}
         onPress={onLocationSelect}
         ref={zoneBottomSheetRef}
         setFlyToCenter={mapRef.current?.setFlyToCenter}

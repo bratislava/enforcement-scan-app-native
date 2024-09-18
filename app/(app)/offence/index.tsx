@@ -24,6 +24,7 @@ import { findContainingFeature } from '@/modules/map/utils/findContainingFeature
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { sanitizeLicencePlate } from '@/utils/sanitizeLicencePlate'
 
 const OffencePage = () => {
   const { t } = useTranslation()
@@ -82,6 +83,10 @@ const OffencePage = () => {
     setIsTouched(false)
   }
 
+  const handleLicencePlateChange = (newLicencePlate: string) => {
+    setOffenceState({ ecv: sanitizeLicencePlate(newLicencePlate) })
+  }
+
   return (
     <DismissKeyboard>
       <ScreenView
@@ -95,9 +100,9 @@ const OffencePage = () => {
               <TextInput
                 value={ecv}
                 autoCapitalize="characters"
-                className="font-belfast-700bold text-[18px] color-black"
+                className="font-belfast-700bold text-[18px] text-black"
                 isDisabled={!!role?.actions.scanCheck}
-                onChangeText={(value) => setOffenceState({ ecv: value })}
+                onChangeText={handleLicencePlateChange}
               />
             </Field>
 
