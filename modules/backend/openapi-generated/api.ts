@@ -82,7 +82,6 @@ export const CustomErrorsDependencyEnum = {
   NUMBER_4: 4,
   NUMBER_5: 5,
   NUMBER_6: 6,
-  NUMBER_7: 7,
 } as const
 
 export type CustomErrorsDependencyEnum =
@@ -126,6 +125,8 @@ export const OffenceStateEnum = {
   Registered: 'REGISTERED',
   NotOffence: 'NOT_OFFENCE',
   BackofficeError: 'BACKOFFICE_ERROR',
+  ConsumerError: 'CONSUMER_ERROR',
+  PreparedToSend: 'PREPARED_TO_SEND',
 } as const
 
 export type OffenceStateEnum = (typeof OffenceStateEnum)[keyof typeof OffenceStateEnum]
@@ -183,13 +184,13 @@ export interface RequestCreateOffenceDataDto {
    */
   objectiveResponsibility: boolean
   /**
-   * Longitude of scan place if is changed in map
+   * Longitude of offence place. If different from originalAutomaticLong, it means it was edited manually before the offence was created - the lon in scanVehicle record will be updated with this value
    * @type {string}
    * @memberof RequestCreateOffenceDataDto
    */
   long?: string
   /**
-   * Latitude of scan place if is changed in map
+   * Latitude of offence place. If different from originalAutomaticLat, it means it was edited manually before the offence was created - the lat in scanVehicle record will be updated with this value
    * @type {string}
    * @memberof RequestCreateOffenceDataDto
    */
@@ -1000,6 +1001,10 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
 
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
       if (offenceTypes) {
         localVarQueryParameter['offenceTypes'] = offenceTypes
       }
@@ -1098,6 +1103,10 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
       let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
