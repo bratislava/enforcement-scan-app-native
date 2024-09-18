@@ -1,5 +1,5 @@
 import { Link, router } from 'expo-router'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
 
@@ -19,11 +19,16 @@ import { clientApi } from '@/modules/backend/client-api'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
+import { OffenceTypeEnum } from '@/modules/backend/openapi-generated'
+import { findContainingFeature } from '@/modules/map/utils/findContainingFeature'
+import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
+import { sanitizeLicencePlate } from '@/utils/sanitizeLicencePlate'
 
 const OffencePage = () => {
   const { t } = useTranslation()
+  const { udrData } = useArcgisStoreContext()
 
   const { ecv, offenceType, roleKey, resolutionType, isObjectiveResponsibility, location } =
     useOffenceStoreContext((state) => state)
@@ -34,6 +39,16 @@ const OffencePage = () => {
   const [isTouched, setIsTouched] = useState(false)
   const { openModal, isModalVisible, closeModal } = useModal()
 
+  const isLocationError = useMemo(
+    () =>
+      role?.actions.zone &&
+      offenceType !== OffenceTypeEnum.Dz &&
+      location &&
+      udrData &&
+      !findContainingFeature(udrData.features, [location.long, location.lat]),
+    [role?.actions.zone, offenceType, location, udrData],
+  )
+
   const onSubmit = async () => {
     if (isSubmitting) {
       return
@@ -42,7 +57,7 @@ const OffencePage = () => {
     setIsSubmitting(true)
     setIsTouched(true)
 
-    if (!(offenceType && (isObjectiveResponsibility || resolutionType) && ecv)) {
+    if (!(offenceType && (isObjectiveResponsibility || resolutionType) && ecv) || isLocationError) {
       setIsSubmitting(false)
 
       return
@@ -65,6 +80,11 @@ const OffencePage = () => {
 
     router.navigate('/offence/vehicle')
     setIsSubmitting(false)
+    setIsTouched(false)
+  }
+
+  const handleLicencePlateChange = (newLicencePlate: string) => {
+    setOffenceState({ ecv: sanitizeLicencePlate(newLicencePlate) })
   }
 
   return (
@@ -79,13 +99,17 @@ const OffencePage = () => {
             <Field label={t('offence.vehicle')}>
               <TextInput
                 value={ecv}
-                className="font-source-500medium"
+                autoCapitalize="characters"
+                className="font-belfast-700bold text-[18px] text-black"
                 isDisabled={!!role?.actions.scanCheck}
-                onChangeText={(value) => setOffenceState({ ecv: value })}
+                onChangeText={handleLicencePlateChange}
               />
             </Field>
 
-            <Field label={t('offence.location')}>
+            <Field
+              label={t('offence.location')}
+              errorMessage={isTouched && isLocationError ? t('offence.outOfZone') : undefined}
+            >
               <PressableStyled
                 onPress={() => {
                   router.navigate('/offence/location')

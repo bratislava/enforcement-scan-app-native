@@ -3,7 +3,7 @@ import { colors } from './colors'
 
 export const udrStyles = {
   lineActive: {
-    lineColor: ['case', ['>=', ['get', 'price'], 2], colors.green2, colors.lawnGreen],
+    lineColor: ['case', ['>=', ['get', 'price'], 2], colors.green, colors.lawnGreen],
     lineDasharray: [1, 0],
     lineWidth: ['interpolate', ['linear'], ['zoom'], 11, 1, 20, 3],
     lineOpacity: 0.4,
@@ -21,7 +21,7 @@ export const udrStyles = {
     lineOpacity: 0.4,
   },
   zoneFill: {
-    fillColor: ['case', ['>=', ['get', 'price'], 2], colors.green2, colors.lawnGreen],
+    fillColor: ['case', ['>=', ['get', 'price'], 2], colors.green, colors.lawnGreen],
     fillOpacity: ['case', ['boolean', ['feature-state', 'hover'], false], 0.4, 0.2],
   },
   zoneFillResidents: {

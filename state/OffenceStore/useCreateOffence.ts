@@ -80,15 +80,15 @@ export const useCreateOffence = () => {
         scanUuid,
         data,
         // Axios throws Network Error if the file is fetched and sent with `new File()`
-        photosWithLocationMetadata.map((photo) => {
-          const photoUri = getPhotoUri(photo)
+        photosWithLocationMetadata.map((photoPath) => {
+          const photoUri = getPhotoUri(photoPath)
 
           return {
             uri: photoUri,
+            name: photoPath.split('/').pop() || '',
             type: 'image/jpeg',
-            name: photoUri,
-          }
-        }) as unknown as Array<File>,
+          } as unknown as File
+        }),
       )
     },
   })
