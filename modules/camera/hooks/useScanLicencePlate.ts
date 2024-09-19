@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { RequestCreateOrUpdateScanDto, ScanReasonEnum } from '@/modules/backend/openapi-generated'
+import { ScanReasonEnum } from '@/modules/backend/openapi-generated'
 import { BlockData, TextData } from '@/modules/camera/types'
 import { correctLicencePlate, ECV_FORMAT_REGEX } from '@/modules/camera/utils/correctLicencePlate'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -26,49 +26,48 @@ export const useScanLicencePlate = () => {
   const { setOffenceState } = useSetOffenceState()
   const zone = useOffenceStoreContext((state) => state.zone)
 
-  const createScanMutation = useMutation({
-    mutationFn: (bodyInner: RequestCreateOrUpdateScanDto) =>
-      clientApi.scanControllerCreateOrUpdateScanEcv(bodyInner),
-  })
-
   /**
    * Checks the ECV with BE and returns the scan result
    */
-  const checkEcv = async (ecv: string, isManual?: boolean): Promise<void> => {
-    const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest })
-
-    if (!(location && role)) return
-
-    const res = await createScanMutation.mutateAsync({
-      ecv,
-      scanReason: role.scanReason,
-      udr: zone?.udrId,
-      lat: location.coords.latitude.toString(),
-      long: location.coords.longitude.toString(),
-      ecvUpdatedManually: !!isManual,
-      streetName: 'auto',
-      areaCodes: zone?.odpRpk ? zone?.odpRpk.replaceAll(' ', '').split(',') : undefined,
-      udrGlobalId: zone?.udrUuid,
-      district: zone?.cityDistrict,
-      areaName: zone?.name,
-    })
-
-    if (res.data) {
-      setOffenceState({
-        scanUuid: res.data.uuid,
-        scanResult: res.data.scanResult,
-        location: { lat: location.coords.latitude, long: location.coords.longitude },
+  const createScanMutation = useMutation({
+    mutationFn: async ({ ecv, isManual }: { ecv: string; isManual?: boolean }) => {
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Highest,
       })
 
-      if (res.data.scanResult === ScanReasonEnum.Other) {
-        router.navigate('/offence')
+      if (!(location && role)) return
+
+      const res = await clientApi.scanControllerCreateOrUpdateScanEcv({
+        ecv,
+        scanReason: role.scanReason,
+        udr: zone?.udrId,
+        lat: location.coords.latitude.toString(),
+        long: location.coords.longitude.toString(),
+        ecvUpdatedManually: !!isManual,
+        streetName: 'auto',
+        areaCodes: zone?.odpRpk ? zone?.odpRpk.replaceAll(' ', '').split(',') : undefined,
+        udrGlobalId: zone?.udrUuid,
+        district: zone?.cityDistrict,
+        areaName: zone?.name,
+      })
+
+      if (res.data) {
+        setOffenceState({
+          scanUuid: res.data.uuid,
+          scanResult: res.data.scanResult,
+          location: { lat: location.coords.latitude, long: location.coords.longitude },
+        })
+
+        if (res.data.scanResult === ScanReasonEnum.Other) {
+          router.navigate('/offence')
+        }
+
+        return
       }
 
-      return
-    }
-
-    setOffenceState({ scanUuid: undefined, scanResult: undefined })
-  }
+      setOffenceState({ scanUuid: undefined, scanResult: undefined })
+    },
+  })
 
   /**
    * Finds the biggest block of text in the frame and checks whether it meets the criteria for ECV
@@ -105,5 +104,9 @@ export const useScanLicencePlate = () => {
     return ''
   }, [])
 
-  return { checkEcv, scanLicencePlate, isLoading: createScanMutation.isPending }
+  return {
+    checkEcv: createScanMutation.mutateAsync,
+    scanLicencePlate,
+    isLoading: createScanMutation.isPending,
+  }
 }

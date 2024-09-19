@@ -73,7 +73,7 @@ const LicencePlateCameraComp = () => {
           setOffenceState({ ecv })
           takeLicencePlatePicture()
 
-          await checkEcv(ecv, isManual)
+          await checkEcv({ ecv, isManual })
         }
       }
     },
@@ -90,7 +90,7 @@ const LicencePlateCameraComp = () => {
     setOffenceState({ scanResult: undefined })
 
     if (generatedEcv) {
-      await checkEcv(generatedEcv, isManual)
+      await checkEcv({ ecv: generatedEcv, isManual })
     }
   }
 
