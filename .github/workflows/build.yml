@@ -30,6 +30,4 @@ jobs:
       #   run: eas build --profile production --platform android --auto-submit --non-interactive
 
       - name: 🚀 Build app msp
-        run: |
-          echo "ANDROID_PACKAGE_NAME=com.bratislava.enforcementscanapp" >> $GITHUB_ENV
-          eas build --profile production-apk --platform android --auto-submit --non-interactive
+        run: eas build --profile production-apk --platform android --non-interactive
