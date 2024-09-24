@@ -26,5 +26,8 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn install
 
-      - name: 🚀 Build app
+      - name: 🚀 Build app paas
         run: eas build --profile production --platform android --auto-submit --non-interactive
+
+      - name: 🚀 Build app msp
+        run: ANDROID_PACKAGE_NAME='com.bratislava.enforcementscanapp'; eas build --profile production-apk --platform android --auto-submit --non-interactive
