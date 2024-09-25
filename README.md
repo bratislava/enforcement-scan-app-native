@@ -44,35 +44,26 @@ eas build --profile development --platform android
 
 ## Build and Release
 
+1. Go to github and create new release. For production the tag should start with `prod` (`prod1.2.1`) and for staging `staging` (`staging1.2.1`).
+
 ### Play Store
 
-Release to play store needs the .aab file build, so the build needs to be done in this steps:
+Release to play store needs the .aab file build, the github release above submits app version to the play store so only thing that needs to be done is:
 
-1. Build the app.
-
-```bash
-eas build --profile production --platform android --auto-submit
-```
-
-2. Go to play store internal testing (for now internal later it's gonna be different) and release the app
+2. Go to the play store console and submit the release.
 
 ### InTune
 
-Release to InTune needs to be built like .apk file which requires different build profile and also some tweaks because of InTune and Play store cannot have the same package name. The steps are like this:
+Release to InTune needs to be built like .apk file which requires different build profile and also some tweaks because of InTune and Play store cannot have the same package name. All of this is done by environment variable and github actions in release.
 
-1. Go to `app.config.js` and change `expo.android.package` field from "com.bratislava.enforcement" to "com.bratislava.enforcementscanapp"
+3. Go to expo build and download it.
 
-2. Build the app.
+4. Send the apk file to people responsible for distribution of InTune application
 
-```bash
-eas build --profile production-apk --platform android
-```
+## OTA Update
 
-3. Change `expo.android.package` back to original string.
-
-4. Go to expo build and download it.
-
-5. Send the apk file to people responsible for distribution of InTune application
+Whenever there is occurrence of changes that needs to be delivered ASAP the OTA update is best choice for that.
+In Github Releases create and start the tag with `ota` (`ota-prod1.2.1` or `ota-staging1.2.1`).
 
 ## Force update
 

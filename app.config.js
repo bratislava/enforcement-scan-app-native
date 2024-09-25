@@ -14,7 +14,7 @@ module.exports = {
     },
     assetBundlePatterns: ['**/*'],
     android: {
-      package: 'com.bratislava.enforcement',
+      package: process.env.EXPO_PUBLIC_ANDROID_PACKAGE_NAME || 'com.bratislava.enforcement',
       adaptiveIcon: {
         foregroundImage: './assets/icon.png',
         backgroundColor: '#ffffff',
