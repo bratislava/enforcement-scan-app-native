@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    eas:
+      EXPO_UPDATE_MESSAGE: '${{ github.event.ref }} ${{ github.event.head_commit.message }}'
     steps:
       - name: 🚂 Setup repo
         uses: actions/checkout@v4
@@ -33,7 +35,7 @@ jobs:
 
       - name: 🚀 Update production
         if: contains(github.event.ref, 'prod') && contains(github.event.ref, 'ota')
-        run: eas update --message "${{ github.event.ref }} ${{ github.event.head_commit.message }}" --branch preview --platform android --non-interactive
+        run: eas update --message "$EXPO_UPDATE_MESSAGE" --branch preview --platform android --non-interactive
 
       - name: 🚀 Build staging
         if: contains(github.event.ref, 'staging')
