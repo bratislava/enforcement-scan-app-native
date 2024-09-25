@@ -26,11 +26,14 @@ jobs:
         run: yarn install
 
       - name: 🚀 Build app
-        if: github.ref =~ ^refs/tags/prod[0-9]+\.[0-9]+\.[0-9]+$
         run: |
-          eas build --profile prod --platform android --auto-submit --non-interactive
-          eas build --profile prod-apk --platform android --non-interactive
+          if [[${{ github.event.ref }} =~^refs/tags/prod[0-9]+\.[0-9]+\.[0-9]+$]] then
+            eas build --profile prod --platform android --auto-submit --non-interactive
+            eas build --profile prod-apk --platform android --non-interactive
+          fi
 
       - name: 🚀 Build app
-        if: github.ref =~ ^refs/tags/staging[0-9]+\.[0-9]+\.[0-9]+$
-        run: eas build --profile staging --platform android --auto-submit --non-interactive
+        run: |
+          if [[${{ github.event.ref }} =~^refs/tags/staging[0-9]+\.[0-9]+\.[0-9]+$]] then
+            eas build --profile staging --platform android --auto-submit --non-interactive
+          fi
