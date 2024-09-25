@@ -1,9 +1,8 @@
 on:
   push:
-    branches:
-      - '*'
-  # tags:
-  #   - 'v[0-9]+.[0-9]+.[0-9]+'
+    tags:
+      - 'prod[0-9]+.[0-9]+.[0-9]+'
+      - 'staging[0-9]+.[0-9]+.[0-9]+'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,8 +25,12 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn install
 
-      # - name: 🚀 Build app paas
-      #   run: eas build --profile production --platform android --auto-submit --non-interactive
+      - name: 🚀 Build app
+        if: ${{ startsWith(github.ref, 'refs/tags/prod') }}
+        run: |
+          eas build --profile prod --platform android --auto-submit --non-interactive
+          eas build --profile prod-apk --platform android --non-interactive
 
-      - name: 🚀 Build app msp
-        run: eas build --profile production-apk --platform android --non-interactive
+      - name: 🚀 Build app
+        if: ${{ startsWith(github.ref, 'refs/tags/staging') }}
+        run: eas build --profile staging --platform android --auto-submit --non-interactive

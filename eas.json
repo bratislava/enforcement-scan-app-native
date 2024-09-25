@@ -40,7 +40,7 @@
       },
       "channel": "staging"
     },
-    "production": {
+    "prod": {
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_MAPBOX_KEY": "pk.eyJ1IjoiaW5vdmFjaWVicmF0aXNsYXZhIiwiYSI6ImNrd25icnBvZTJpZDAyb252N2NlcjZvYTEifQ.RYAkWitxV2HyomaXVe4VnA",
@@ -50,9 +50,9 @@
         "EXPO_PUBLIC_IMAGE_CDN": "https://cdn-api.bratislava.sk/enforcement/",
         "EXPO_PUBLIC_DEPLOYMENT": "production"
       },
-      "channel": "production"
+      "channel": "prod"
     },
-    "production-apk": {
+    "prod-apk": {
       "autoIncrement": true,
       "android": {
         "buildType": "apk"
@@ -66,7 +66,7 @@
         "EXPO_PUBLIC_DEPLOYMENT": "production",
         "EXPO_PUBLIC_ANDROID_PACKAGE_NAME": "com.bratislava.enforcementscanapp"
       },
-      "channel": "production"
+      "channel": "prod"
     }
   },
   "submit": {
