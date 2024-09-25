@@ -27,13 +27,13 @@ jobs:
 
       - name: 🚀 Build app
         run: |
-          if [[${{ github.event.ref }} =~^refs/tags/prod[0-9]+\.[0-9]+\.[0-9]+$]] then
+          if [[${{ github.event.ref }} =~ ^refs/tags/prod[0-9]+\.[0-9]+\.[0-9]+$]] then
             eas build --profile prod --platform android --auto-submit --non-interactive
             eas build --profile prod-apk --platform android --non-interactive
           fi
 
       - name: 🚀 Build app
         run: |
-          if [[${{ github.event.ref }} =~^refs/tags/staging[0-9]+\.[0-9]+\.[0-9]+$]] then
+          if [[${{ github.event.ref }} =~ ^refs/tags/staging[0-9]+\.[0-9]+\.[0-9]+$]] then
             eas build --profile staging --platform android --auto-submit --non-interactive
           fi
