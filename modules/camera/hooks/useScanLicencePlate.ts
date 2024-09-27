@@ -25,12 +25,13 @@ export const useScanLicencePlate = () => {
   const role = getRoleByKey(roleKey)
   const { setOffenceState } = useSetOffenceState()
   const zone = useOffenceStoreContext((state) => state.zone)
+  const ecvUpdatedManually = useOffenceStoreContext((state) => state.ecvUpdatedManually)
 
   /**
    * Checks the ECV with BE and returns the scan result
    */
   const createScanMutation = useMutation({
-    mutationFn: async ({ ecv, isManual }: { ecv: string; isManual?: boolean }) => {
+    mutationFn: async ({ ecv }: { ecv: string }) => {
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Highest,
       })
@@ -43,7 +44,7 @@ export const useScanLicencePlate = () => {
         udr: zone?.udrId,
         lat: location.coords.latitude.toString(),
         long: location.coords.longitude.toString(),
-        ecvUpdatedManually: !!isManual,
+        ecvUpdatedManually: !!ecvUpdatedManually,
         streetName: 'auto',
         areaCodes: zone?.odpRpk ? zone?.odpRpk.replaceAll(' ', '').split(',') : undefined,
         udrGlobalId: zone?.udrUuid,
