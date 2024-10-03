@@ -46,6 +46,14 @@ module.exports = {
           locationWhenInUsePermission: 'Show current location on map.',
         },
       ],
+      [
+        '@sentry/react-native/expo',
+        {
+          organization: 'bratislava-city-hall',
+          project: 'enforcement-scan-app',
+          url: 'https://sentry.io/',
+        },
+      ],
     ],
     extra: {
       eas: {

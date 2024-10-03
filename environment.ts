@@ -20,4 +20,5 @@ export const environment = {
   tenantId: assertEnv('EXPO_PUBLIC_TENANT_ID', process.env.EXPO_PUBLIC_TENANT_ID),
   imageCdn: assertEnv('EXPO_PUBLIC_IMAGE_CDN', process.env.EXPO_PUBLIC_IMAGE_CDN),
   deployment: assertEnv('EXPO_PUBLIC_DEPLOYMENT', process.env.EXPO_PUBLIC_DEPLOYMENT),
+  sentryDns: assertEnv('EXPO_PUBLIC_SENTRY_DNS', process.env.EXPO_PUBLIC_SENTRY_DNS),
 }

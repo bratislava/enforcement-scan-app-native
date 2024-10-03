@@ -10,9 +10,10 @@ import {
 } from '@expo-google-fonts/inter'
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { PortalProvider } from '@gorhom/portal'
+import * as Sentry from '@sentry/react-native'
 /* eslint-enable babel/camelcase */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Stack } from 'expo-router'
+import { Stack, useNavigationContainerRef } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import * as Updates from 'expo-updates'
 import { Suspense, useEffect } from 'react'
@@ -26,6 +27,23 @@ import OmnipresentComponent from '@/components/special/OmnipresentComponent'
 import { environment } from '@/environment'
 import AuthStoreProvider from '@/modules/auth/state/AuthStoreProvider'
 import colors from '@/tailwind.config.colors'
+
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation()
+
+Sentry.init({
+  dsn: environment.sentryDns,
+  // Debug mode sends logs to console even when enabled is false
+  debug: environment.deployment !== 'production',
+  // Disabled in development to avoid unnecessary events in Sentry
+  enabled: environment.deployment === 'production',
+  environment: environment.deployment,
+  integrations: [
+    new Sentry.ReactNativeTracing({
+      routingInstrumentation,
+      enableNativeFramesTracking: true,
+    }),
+  ],
+})
 
 const onFetchUpdateAsync = async () => {
   try {
@@ -41,6 +59,14 @@ const onFetchUpdateAsync = async () => {
 }
 
 const RootLayout = () => {
+  // Capture the NavigationContainer ref and register it with the instrumentation.
+  const ref = useNavigationContainerRef()
+  useEffect(() => {
+    if (ref) {
+      routingInstrumentation.registerNavigationContainer(ref)
+    }
+  }, [ref])
+
   const [fontsLoaded] = useFonts({
     /* eslint-disable unicorn/prefer-module,global-require */
     BelfastGrotesk_700Bold: require('@/assets/fonts/Belfast-Grotesk-Bold.otf'),
@@ -106,4 +132,4 @@ const RootLayout = () => {
   )
 }
 
-export default RootLayout
+export default Sentry.wrap(RootLayout)
