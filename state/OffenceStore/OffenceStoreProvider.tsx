@@ -25,6 +25,7 @@ export type OffenceState = {
   ecv?: string
   scanUuid?: string
   scanResult?: ScanResultEnum
+  ecvUpdatedManually?: boolean
 
   // offence data
   location?: PositionObject

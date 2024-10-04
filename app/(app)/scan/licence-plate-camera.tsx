@@ -1,5 +1,5 @@
 import { router, usePathname } from 'expo-router'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { Camera } from 'react-native-vision-camera'
@@ -24,7 +24,6 @@ const REQUIRED_SCANS = 2
 const LicencePlateCameraComp = () => {
   const { t } = useTranslation()
   const ref = useRef<Camera>(null)
-  const [isManual, setIsManual] = useState(false)
 
   const plateHistoryRef = useRef<string[]>([])
 
@@ -73,11 +72,11 @@ const LicencePlateCameraComp = () => {
           setOffenceState({ ecv })
           takeLicencePlatePicture()
 
-          await checkEcv({ ecv, isManual })
+          await checkEcv({ ecv })
         }
       }
     },
-    [generatedEcv, checkEcv, isManual, scanLicencePlate, setOffenceState, takeLicencePlatePicture],
+    [generatedEcv, checkEcv, scanLicencePlate, setOffenceState, takeLicencePlatePicture],
   )
 
   const onContinue = async () => {
@@ -90,7 +89,7 @@ const LicencePlateCameraComp = () => {
     setOffenceState({ scanResult: undefined })
 
     if (generatedEcv) {
-      await checkEcv({ ecv: generatedEcv, isManual })
+      await checkEcv({ ecv: generatedEcv })
     }
   }
 
@@ -98,8 +97,7 @@ const LicencePlateCameraComp = () => {
     (ecv: string) => {
       plateHistoryRef.current = []
 
-      setIsManual(!!ecv)
-      setOffenceState({ scanResult: undefined, ecv })
+      setOffenceState({ scanResult: undefined, ecv, ecvUpdatedManually: !!ecv })
     },
     [setOffenceState],
   )
