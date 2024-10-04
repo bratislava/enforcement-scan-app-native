@@ -35,7 +35,7 @@ jobs:
 
       - name: 🚀 Update production
         if: contains(github.event.ref, 'prod') && contains(github.event.ref, 'ota')
-        run: eas update --message "$EXPO_UPDATE_MESSAGE" --branch preview --platform android --non-interactive
+        run: eas update --message "$EXPO_UPDATE_MESSAGE" --branch prod --platform android --non-interactive --clear-cache
 
       - name: 🚀 Build staging
         if: contains(github.event.ref, 'staging')
