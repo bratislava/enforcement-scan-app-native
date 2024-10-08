@@ -21,4 +21,5 @@ export const environment = {
   imageCdn: assertEnv('EXPO_PUBLIC_IMAGE_CDN', process.env.EXPO_PUBLIC_IMAGE_CDN),
   deployment: assertEnv('EXPO_PUBLIC_DEPLOYMENT', process.env.EXPO_PUBLIC_DEPLOYMENT),
   sentryDns: assertEnv('EXPO_PUBLIC_SENTRY_DNS', process.env.EXPO_PUBLIC_SENTRY_DNS),
+  minioBucket: assertEnv('EXPO_PUBLIC_MINIO_BUCKET', process.env.EXPO_PUBLIC_MINIO_BUCKET),
 }
