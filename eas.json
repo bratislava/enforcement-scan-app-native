@@ -79,7 +79,7 @@
         "track": "internal"
       }
     },
-    "production": {
+    "prod": {
       "android": {
         "releaseStatus": "draft",
         "track": "internal"
