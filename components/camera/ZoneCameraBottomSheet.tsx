@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
-import FlashlightBottomSheetAttachment from '@/components/camera/FlashlightBottomSheetAttachment'
 import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAttachment'
 import TextInput from '@/components/inputs/TextInput'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
@@ -40,9 +39,7 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
     <>
       {hasPhoto ? (
         <PhotoBottomSheetAttachment animatedPosition={animatedPosition} onRetake={retakePicture} />
-      ) : (
-        <FlashlightBottomSheetAttachment animatedPosition={animatedPosition} />
-      )}
+      ) : null}
 
       <BottomSheet
         handleComponent={null}

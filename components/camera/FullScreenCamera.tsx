@@ -1,7 +1,8 @@
 import { forwardRef } from 'react'
-import { useWindowDimensions } from 'react-native'
+import { useWindowDimensions, View } from 'react-native'
 import { Camera, CameraProps, useCameraDevice, useCameraFormat } from 'react-native-vision-camera'
 
+import FlashlightToggleButton from '@/components/camera/FlashlightToggleButton'
 import { NoDeviceError } from '@/components/camera/NoDeviceError'
 import { useAppState } from '@/hooks/useAppState'
 import { useIsFocused } from '@/hooks/useIsFocused'
@@ -30,17 +31,24 @@ const FullScreenCamera = forwardRef<Camera, Omit<Partial<CameraProps>, 'device'>
   if (!device) return <NoDeviceError />
 
   return (
-    <Camera
-      ref={ref}
-      photo
-      format={format}
-      torch={torch}
-      onError={(error) => console.error('Camera error', error)}
-      device={device}
-      style={{ height: width * ASPECT_RATIO }}
-      isActive={focused && appState === 'active'}
-      {...props}
-    />
+    <View className="relative">
+      {/* This is equivalent to isActive={focused && appState === 'active'} but this approach kills camera when phone is locked, so it uses less resources */}
+      {focused && appState === 'active' ? (
+        <Camera
+          ref={ref}
+          isActive
+          photo
+          format={format}
+          torch={torch}
+          onError={(error) => console.error('Camera error', error)}
+          device={device}
+          style={{ height: width * ASPECT_RATIO }}
+          {...props}
+        />
+      ) : null}
+
+      <FlashlightToggleButton />
+    </View>
   )
 })
 
