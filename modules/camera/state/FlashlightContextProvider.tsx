@@ -2,7 +2,7 @@ import 'core-js/stable/atob'
 
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useState } from 'react'
 
-import { TorchState } from '@/components/camera/FlashlightBottomSheetAttachment'
+import { TorchState } from '@/components/camera/FlashlightToggleButton'
 
 export const FlashlightContext = createContext<{
   torch: TorchState

@@ -2,7 +2,6 @@ import BottomSheet from '@gorhom/bottom-sheet'
 import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
-import FlashlightBottomSheetAttachment from '@/components/camera/FlashlightBottomSheetAttachment'
 import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAttachment'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import Button from '@/components/shared/Button'
@@ -29,16 +28,9 @@ const CameraBottomSheet = ({
 
   return (
     <>
-      {hasPhoto ? (
-        retakePicture ? (
-          <PhotoBottomSheetAttachment
-            animatedPosition={animatedPosition}
-            onRetake={retakePicture}
-          />
-        ) : null
-      ) : (
-        <FlashlightBottomSheetAttachment animatedPosition={animatedPosition} />
-      )}
+      {hasPhoto && retakePicture ? (
+        <PhotoBottomSheetAttachment animatedPosition={animatedPosition} onRetake={retakePicture} />
+      ) : null}
 
       <BottomSheet
         handleComponent={null}

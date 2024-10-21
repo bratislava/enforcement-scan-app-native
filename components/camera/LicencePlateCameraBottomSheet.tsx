@@ -2,12 +2,11 @@ import BottomSheet from '@gorhom/bottom-sheet'
 import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
-import FlashlightBottomSheetAttachment from '@/components/camera/FlashlightBottomSheetAttachment'
+import LicencePlateCameraBottomSheetAttachment from '@/components/camera/LicencePlateCameraBottomSheetAttachment'
 import Field from '@/components/inputs/Field'
 import TextInput from '@/components/inputs/TextInput'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
 import Button from '@/components/shared/Button'
-import IconButton from '@/components/shared/IconButton'
 
 type Props = {
   licencePlate?: string
@@ -28,18 +27,10 @@ const LicencePlateCameraBottomSheet = ({
 
   return (
     <>
-      <FlashlightBottomSheetAttachment
+      <LicencePlateCameraBottomSheetAttachment
         animatedPosition={animatedPosition}
-        iconLeft={
-          licencePlate ? (
-            <IconButton
-              accessibilityLabel={t('scanLicencePlate.retryScan')}
-              variant="white-raised"
-              name="autorenew"
-              onPress={() => onChangeLicencePlate('')}
-            />
-          ) : undefined
-        }
+        licencePlate={licencePlate}
+        onChangeLicencePlate={onChangeLicencePlate}
       />
 
       <BottomSheet
