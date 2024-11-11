@@ -8,3 +8,6 @@ build:
             .maestro/login.yaml
             .maestro/create-paas-offence.yaml
             .maestro/create-offence.yaml
+          env:
+            MAESTRO_USERNAME: $(MAESTRO_USERNAME)
+            MAESTRO_PASSWORD: $(MAESTRO_PASSWORD)
