@@ -29,7 +29,7 @@ async function fetchFileOrGetFromCache<T>(fileName: string): Promise<AxiosRespon
         return cachedParsedResponse
       }
     } catch (error) {
-      console.log(error)
+      console.log('Arcgis fetching error:', error)
 
       return cachedParsedResponse
     }

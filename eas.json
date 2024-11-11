@@ -37,7 +37,7 @@
         "EXPO_PUBLIC_MAPBOX_KEY": "pk.eyJ1IjoiaW5vdmFjaWVicmF0aXNsYXZhIiwiYSI6ImNrd25icnBvZTJpZDAyb252N2NlcjZvYTEifQ.RYAkWitxV2HyomaXVe4VnA",
         "EXPO_PUBLIC_CLIENT_ID": "f66c44fa-85cc-417d-9de6-be350847a240",
         "EXPO_PUBLIC_TENANT_ID": "fe69e74e-1e66-4fcb-99c5-58e4a2d2a063",
-        "EXPO_PUBLIC_API_URL": "https://enforcement-scan-app-backend.dev.bratislava.sk",
+        "EXPO_PUBLIC_API_URL": "https://enforcement-scan-app-backend.staging.bratislava.sk",
         "EXPO_PUBLIC_IMAGE_CDN": "https://cdn-api.bratislava.sk/enforcement-dev/",
         "EXPO_PUBLIC_MINIO_BUCKET": "paas-mpa-staging",
         "EXPO_PUBLIC_DEPLOYMENT": "staging",
@@ -66,6 +66,20 @@
       },
       "env": {
         "EXPO_PUBLIC_ANDROID_PACKAGE_NAME": "com.bratislava.enforcementscanapp"
+      }
+    },
+    "build-and-maestro-test": {
+      "extends": "staging",
+      "autoIncrement": false,
+      "withoutCredentials": true,
+      "config": "build-and-maestro-test.yml",
+      "env": {
+        "MAESTRO_USERNAME": "$(MAESTRO_USERNAME)",
+        "MAESTRO_PASSWORD": "$(MAESTRO_PASSWORD)"
+      },
+      "android": {
+        "buildType": "apk",
+        "image": "latest"
       }
     }
   },

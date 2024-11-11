@@ -1,0 +1,19 @@
+appId: com.bratislava.enforcement
+---
+- launchApp
+- waitForAnimationToEnd
+- assertVisible: Prihlásiť sa
+- tapOn: Prihlásiť sa
+- inputText: ${MAESTRO_USERNAME}
+- hideKeyboard
+- tapOn:
+    id: 'idSIButton9'
+- waitForAnimationToEnd
+- assertVisible: Zadajte heslo
+- inputText: ${MAESTRO_PASSWORD}
+- hideKeyboard
+- tapOn:
+    id: 'idSIButton9'
+- waitForAnimationToEnd
+- assertVisible:
+    id: 'profile'

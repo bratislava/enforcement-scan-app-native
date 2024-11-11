@@ -66,7 +66,9 @@ const OffenceResultPage = () => {
       }}
       actionButton={
         <View className="g-2">
-          <ContinueButton onPress={router.back}>{t('offenceResult.newScan')}</ContinueButton>
+          <ContinueButton testID="new-scan" onPress={router.back}>
+            {t('offenceResult.newScan')}
+          </ContinueButton>
 
           {role?.actions.zone ? (
             <ContinueButton variant="secondary" onPress={onNewZonePress}>

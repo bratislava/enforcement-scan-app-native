@@ -5,16 +5,18 @@ import Icon, { IconName } from '@/components/shared/Icon'
 import Panel from '@/components/shared/Panel'
 import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
+import { RoleKeyType } from '@/modules/backend/constants/roles'
 
 type Props = {
+  id: RoleKeyType
   title: string
   // description: string
   icon: IconName
   onPress: () => void
 }
 
-const RoleTile = ({ title, icon, onPress }: Props) => (
-  <PressableStyled onPress={onPress}>
+const RoleTile = ({ id, title, icon, onPress }: Props) => (
+  <PressableStyled testID={id} onPress={onPress}>
     <Panel>
       <FlexRow className="items-center g-4">
         <Icon name={icon} />

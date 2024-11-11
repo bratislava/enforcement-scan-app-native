@@ -9,6 +9,7 @@ export const HomeButton = () => {
   return (
     <IconButton
       name="home"
+      testID="home-button"
       accessibilityLabel={t('offenceResult.home')}
       onPress={() => router.navigate('/')}
     />
