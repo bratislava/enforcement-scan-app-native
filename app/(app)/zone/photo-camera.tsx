@@ -11,6 +11,7 @@ import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
 import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryOptions'
 import FlashlightContextProvider from '@/modules/camera/state/FlashlightContextProvider'
+import { getCurrentPositionAsync } from '@/modules/map/utils/getCurrentPositionAsync'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { addGpsMetadataToImage } from '@/utils/addGpsMetadataToImage'
@@ -39,10 +40,9 @@ const AppRoute = () => {
   const takePicture = async (tag: string) => {
     setLoading(true)
 
-    const { coords } = await Location.getCurrentPositionAsync({
+    const { coords } = await getCurrentPositionAsync({
       accuracy: Location.Accuracy.Highest,
     })
-
     const locationString = coords ? `${coordsToString(coords.latitude, coords.longitude)}; ` : ''
 
     const capturedPhoto = await ref.current?.takePhoto()

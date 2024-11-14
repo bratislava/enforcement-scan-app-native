@@ -50,7 +50,12 @@ const LicencePlateCameraBottomSheet = ({
             />
           </Field>
 
-          <Button loading={isLoading} disabled={!licencePlate} onPress={onContinue}>
+          <Button
+            testID="licencePlateContinue"
+            loading={isLoading}
+            disabled={!licencePlate}
+            onPress={onContinue}
+          >
             {t('scanLicencePlate.next')}
           </Button>
         </BottomSheetContent>

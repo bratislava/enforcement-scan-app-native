@@ -74,6 +74,7 @@ const MapZoneBottomSheetAttachment = ({ setFlyToCenter, ...restProps }: Props) =
         <View>
           <IconButton
             name="gps-fixed"
+            testID="userLocationButton"
             accessibilityLabel="goToUserLocation"
             variant="white-raised"
             onPress={onLocationPress}

@@ -17,7 +17,7 @@ const PhotosBottomSheet = ({ isLoading, takePicture }: Props) => {
     <BottomSheet handleComponent={null} keyboardBehavior="interactive" enableDynamicSizing>
       <BottomSheetContent className="g-2">
         <Typography variant="h2">{t('offenceCamera.addPictureTitle')}</Typography>
-        <Button testID="take-picture" loading={isLoading} onPress={takePicture}>
+        <Button testID="takePicture" loading={isLoading} onPress={takePicture}>
           {t('offenceCamera.addPicture')}
         </Button>
       </BottomSheetContent>

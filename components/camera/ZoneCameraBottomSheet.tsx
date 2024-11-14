@@ -56,7 +56,7 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
                 <Typography>{t('zone.tag', { tag: zonePhotoTag })}</Typography>
               ) : null}
 
-              <Button loading={isLoading} onPress={selectPicture}>
+              <Button testID="confirmPicture" loading={isLoading} onPress={selectPicture}>
                 {t('zone.confirm')}
               </Button>
             </>
@@ -70,7 +70,7 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
                 onChangeText={(newTag) => setTag(newTag)}
               />
 
-              <Button loading={isLoading} onPress={() => takePicture(tag)}>
+              <Button testID="takePicture" loading={isLoading} onPress={() => takePicture(tag)}>
                 {t('zone.takePicture')}
               </Button>
             </>

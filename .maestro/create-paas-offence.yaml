@@ -4,26 +4,43 @@ appId: com.bratislava.enforcement
 - waitForAnimationToEnd
 # Set location to Dunajska street
 - setLocation:
-    latitude: 48.144426
-    longitude: 17.113238
+    latitude: 48.150636
+    longitude: 17.111754
 - assertVisible:
     id: paas
 - tapOn:
     id: paas
-
-- assertVisible: Pokračovať
+- assertVisible: Vyberte úsek
+- swipe:
+    direction: RIGHT
+- waitForAnimationToEnd
+- swipe:
+    direction: LEFT
+- waitForAnimationToEnd
+- assertVisible:
+    id: userLocationButton
+- tapOn:
+    id: userLocationButton
+- extendedWaitUntil:
+    visible: Pokračovať
+    timeout: 10000
 - tapOn: Pokračovať
 - runFlow:
     when:
       visible:
-        id: 'add-photo'
+        id: 'addPhoto'
     commands:
       - tapOn:
-          id: 'add-photo'
+          id: 'addPhoto'
 # Will add zone photo
-- tapOn: Odfotiť
-- assertVisible: Potvrdiť
-- tapOn: Potvrdiť
+- tapOn:
+    id: 'takePicture'
+- extendedWaitUntil:
+    visible:
+      id: 'confirmPicture'
+    timeout: 10000
+- tapOn:
+    id: 'confirmPicture'
 - tapOn: 'Evidenčné číslo vozidla'
 - inputText: SM01RK1
 - tapOn: Ďalej
@@ -49,20 +66,20 @@ appId: com.bratislava.enforcement
     commands:
       - extendedWaitUntil:
           visible:
-            id: 'take-picture'
+            id: 'takePicture'
             enabled: true
-          timeout: 5000
+          timeout: 10000
       - tapOn:
-          id: 'take-picture'
+          id: 'takePicture'
 # Will create offence
 - tapOn:
-    id: 'create-offence'
+    id: 'createOffence'
 - extendedWaitUntil:
     visible:
-      id: 'new-scan'
+      id: 'newScan'
     timeout: 10000
 - tapOn:
-    id: 'new-scan'
+    id: 'newScan'
 - tapOn: 'Evidenčné číslo vozidla'
 - inputText: AAAAAAA
 - tapOn: Ďalej

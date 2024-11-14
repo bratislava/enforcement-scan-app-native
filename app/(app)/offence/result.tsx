@@ -66,7 +66,7 @@ const OffenceResultPage = () => {
       }}
       actionButton={
         <View className="g-2">
-          <ContinueButton testID="new-scan" onPress={router.back}>
+          <ContinueButton testID="newScan" onPress={router.back}>
             {t('offenceResult.newScan')}
           </ContinueButton>
 

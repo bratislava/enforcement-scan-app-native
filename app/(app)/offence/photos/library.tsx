@@ -35,7 +35,7 @@ const PhotosPage = () => {
   return (
     <ScreenView
       actionButton={
-        <ContinueButton testID="create-offence" loading={isLoading} onPress={onCreateOffence}>
+        <ContinueButton testID="createOffence" loading={isLoading} onPress={onCreateOffence}>
           {t('offence.pictures.createOffence')}
         </ContinueButton>
       }

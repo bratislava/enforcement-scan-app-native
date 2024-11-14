@@ -1,6 +1,7 @@
 import * as Location from 'expo-location'
 import { useCallback, useEffect, useState } from 'react'
 
+import { getCurrentPositionAsync } from '@/modules/map/utils/getCurrentPositionAsync'
 import { useLocationPermission } from '@/modules/permissions/useLocationPermission'
 
 export const useLocation = () => {
@@ -8,7 +9,7 @@ export const useLocation = () => {
   const [permissionStatus] = useLocationPermission()
 
   const getCurrentPosition = useCallback(async () => {
-    const currentPosition = await Location.getCurrentPositionAsync()
+    const currentPosition = await getCurrentPositionAsync()
     setLocation(currentPosition)
   }, [])
 

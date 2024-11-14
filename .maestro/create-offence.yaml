@@ -4,17 +4,27 @@ appId: com.bratislava.enforcement
 - waitForAnimationToEnd
 # Set location to Dunajska street
 - setLocation:
-    latitude: 48.144426
-    longitude: 17.113238
+    latitude: 48.150636
+    longitude: 17.111754
 - assertVisible:
     id: municipal-police
 - tapOn:
     id: municipal-police
-
 - tapOn: 'Evidenčné číslo vozidla'
 - inputText: BT163CG
-- tapOn: Ďalej
-- assertVisible: 'Vyberte druh priestupku'
+- hideKeyboard
+- tapOn:
+    id: licencePlateContinue
+- runFlow:
+    when:
+      visible:
+        id: PAAS_PARKING_VIOLATION_DUPLICITY
+    commands:
+      - tapOn:
+          id: licencePlateContinue
+- extendedWaitUntil:
+    visible: 'Vyberte druh priestupku'
+    timeout: 10000
 - tapOn: 'Vyberte druh priestupku'
 - tapOn: 'Nerešpektovanie DZ'
 - tapOn: Pokračovať
@@ -30,20 +40,20 @@ appId: com.bratislava.enforcement
     commands:
       - extendedWaitUntil:
           visible:
-            id: 'take-picture'
+            id: 'takePicture'
             enabled: true
           timeout: 5000
       - tapOn:
-          id: 'take-picture'
+          id: 'takePicture'
 # Will create offence
 - tapOn:
-    id: 'create-offence'
+    id: 'createOffence'
 - extendedWaitUntil:
     visible:
-      id: 'new-scan'
+      id: 'newScan'
     timeout: 10000
 - tapOn:
-    id: 'new-scan'
+    id: 'newScan'
 - tapOn: 'Evidenčné číslo vozidla'
 - inputText: BT163CG
 - tapOn: Ďalej
