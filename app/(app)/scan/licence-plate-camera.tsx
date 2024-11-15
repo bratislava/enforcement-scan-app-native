@@ -97,6 +97,11 @@ const LicencePlateCameraComp = () => {
     (ecv: string) => {
       plateHistoryRef.current = []
 
+      if (!ecv) {
+        setOffenceState({ ecv: '', scanResult: undefined, ecvUpdatedManually: false, photos: [] })
+
+        return
+      }
       setOffenceState({ scanResult: undefined, ecv, ecvUpdatedManually: !!ecv })
     },
     [setOffenceState],
