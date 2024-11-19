@@ -8,13 +8,13 @@ import { TextData } from '@/modules/camera/types'
 import { runAsync } from '@/utils/runAsync'
 
 type OcrCameraProps = Omit<CameraProps, 'device' | 'isActive' | 'frameProcessor'> & {
-  onFrameCapture: (data: TextData) => void
+  onFrameCapture: (data?: TextData) => void
 }
 
 const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props }, ref) => {
   const { scanText } = useTextRecognition()
 
-  const runWorklet = useRunOnJS((data: TextData): void => onFrameCapture(data), [onFrameCapture])
+  const runWorklet = useRunOnJS((data?: TextData): void => onFrameCapture(data), [onFrameCapture])
 
   const frameProcessor = useFrameProcessor(
     (frame: Frame): void => {
@@ -25,7 +25,7 @@ const OcrCamera = forwardRef<Camera, OcrCameraProps>(({ onFrameCapture, ...props
 
         try {
           // the scanText has wrong types from library so we need to cast it
-          const data = scanText(frame) as unknown as TextData
+          const data = scanText(frame) as unknown as TextData | undefined
 
           runWorklet(data)
         } catch (error) {

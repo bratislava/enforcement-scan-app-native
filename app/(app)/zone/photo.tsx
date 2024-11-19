@@ -54,6 +54,7 @@ const ZonePhotoPage = () => {
         headerRight: () => (
           <IconButton
             name="add"
+            testID="addPhoto"
             accessibilityLabel={t('zone.photo.new')}
             onPress={() => redirectToCamera()}
           />

@@ -20,7 +20,7 @@ export const LicencePlateCameraBackground = () => {
   })
 
   return (
-    <View className="absolute h-full w-full">
+    <View className="absolute h-full w-full" testID={scanResult}>
       <View
         style={{ paddingTop: top, height: HEADER_WITH_PADDING }}
         className={cn('justify-start', backgroundClassName)}

@@ -32,7 +32,7 @@ export type MapRef = {
   setFlyToCenter: (center: Position) => void
 }
 
-const ZOOM_ON_PLACE_SELECT = 15
+const ZOOM_ON_PLACE_SELECT = 16
 
 const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange }, ref) => {
   const camera = useRef<Camera>(null)

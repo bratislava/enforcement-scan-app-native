@@ -75,3 +75,25 @@ We can force users to update application by calling `/system/version` POST endpo
 ## Environment variables
 
 Public ones available in the final frontend package go to `.env` prefixed with `EXPO_PUBLIC_`. Access them using `environment.ts`. Secrets go to Expo secrets (and are afterwards available in app.config.js - and probably elsewhere - as environment variables) - see Expo secrets docs.
+
+## Run Tests
+
+Tests are made with Maestro testing library and to execute them you need to have maestro installed
+
+Install maestro [macOS](https://maestro.mobile.dev/getting-started/installing-maestro/macos)
+
+```bash
+brew install maestro
+```
+
+Install maestro [windows](https://maestro.mobile.dev/getting-started/installing-maestro/windows)
+
+```bash
+curl -fsSL "https://get.maestro.mobile.dev" | bash
+```
+
+Run test (login)
+
+```bash
+maestro test .maestro/login.yaml
+```

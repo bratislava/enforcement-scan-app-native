@@ -52,6 +52,7 @@ const AppRoute = () => {
         headerRight: () => (
           <IconButton
             name="person"
+            testID="profile"
             accessibilityLabel={t('home.profile')}
             onPress={() => router.navigate('profile')}
           />
@@ -63,7 +64,7 @@ const AppRoute = () => {
           ItemSeparatorComponent={() => <View className="h-2" />}
           data={allowedRoles}
           renderItem={({ item }) => (
-            <RoleTile {...item} key={item.key} onPress={handlePressRole(item)} />
+            <RoleTile {...item} id={item.key} key={item.key} onPress={handlePressRole(item)} />
           )}
           estimatedItemSize={111}
         />

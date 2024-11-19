@@ -8,6 +8,7 @@ import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { ScanReasonEnum } from '@/modules/backend/openapi-generated'
 import { BlockData, TextData } from '@/modules/camera/types'
 import { correctLicencePlate, ECV_FORMAT_REGEX } from '@/modules/camera/utils/correctLicencePlate'
+import { getCurrentPositionAsync } from '@/modules/map/utils/getCurrentPositionAsync'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -32,7 +33,7 @@ export const useScanLicencePlate = () => {
    */
   const createScanMutation = useMutation({
     mutationFn: async ({ ecv }: { ecv: string }) => {
-      const location = await Location.getCurrentPositionAsync({
+      const location = await getCurrentPositionAsync({
         accuracy: Location.Accuracy.Highest,
       })
 
@@ -73,8 +74,8 @@ export const useScanLicencePlate = () => {
   /**
    * Finds the biggest block of text in the frame and checks whether it meets the criteria for ECV
    */
-  const scanLicencePlate = useCallback((frameObject: TextData) => {
-    if (!frameObject.blocks) return ''
+  const scanLicencePlate = useCallback((frameObject?: TextData) => {
+    if (!frameObject?.blocks) return ''
 
     const extractTextAndArea = (block: BlockData) => {
       const blockText =
