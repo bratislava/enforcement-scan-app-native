@@ -10,7 +10,7 @@ appId: com.bratislava.enforcement
     id: municipal-police
 - tapOn:
     id: municipal-police
-- tapOn: 'Evidenčné číslo vozidla'
+- tapOn: Evidenčné číslo vozidla
 - inputText: BT163CG
 - hideKeyboard
 - tapOn:
@@ -23,10 +23,10 @@ appId: com.bratislava.enforcement
       - tapOn:
           id: licencePlateContinue
 - extendedWaitUntil:
-    visible: 'Vyberte druh priestupku'
+    visible: Vyberte druh priestupku
     timeout: 10000
-- tapOn: 'Vyberte druh priestupku'
-- tapOn: 'Nerešpektovanie DZ'
+- tapOn: Vyberte druh priestupku
+- tapOn: Nerešpektovanie DZ
 - tapOn: Pokračovať
 - runFlow:
     when:
@@ -40,30 +40,30 @@ appId: com.bratislava.enforcement
     commands:
       - extendedWaitUntil:
           visible:
-            id: 'takePicture'
+            id: takePicture
             enabled: true
           timeout: 5000
       - tapOn:
-          id: 'takePicture'
+          id: takePicture
 # Will create offence
 - tapOn:
-    id: 'createOffence'
+    id: createOffence
 - extendedWaitUntil:
     visible:
-      id: 'newScan'
+      id: newScan
     timeout: 10000
 - tapOn:
-    id: 'newScan'
-- tapOn: 'Evidenčné číslo vozidla'
+    id: newScan
+- tapOn: Evidenčné číslo vozidla
 - inputText: BT163CG
 - tapOn: Ďalej
 # Will consider as duplicity
 - assertVisible:
     id: PAAS_PARKING_VIOLATION_DUPLICITY
 - tapOn: Ďalej
-- assertVisible: 'Vyberte druh priestupku'
-- tapOn: 'Vyberte druh priestupku'
-- tapOn: 'Nerešpektovanie DZ'
+- assertVisible: Vyberte druh priestupku
+- tapOn: Vyberte druh priestupku
+- tapOn: Nerešpektovanie DZ
 - tapOn: Pokračovať
 # Will show duplicity modal
-- assertVisible: 'Duplicita'
+- assertVisible: Duplicita

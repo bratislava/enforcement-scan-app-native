@@ -17,4 +17,4 @@ appId: com.bratislava.enforcement
 - tapOn: Sign in
 - waitForAnimationToEnd
 - assertVisible:
-    id: 'profile'
+    id: profile

@@ -74,7 +74,7 @@ export const useScanLicencePlate = () => {
   /**
    * Finds the biggest block of text in the frame and checks whether it meets the criteria for ECV
    */
-  const scanLicencePlate = useCallback((frameObject: TextData) => {
+  const scanLicencePlate = useCallback((frameObject?: TextData) => {
     if (!frameObject?.blocks) return ''
 
     const extractTextAndArea = (block: BlockData) => {

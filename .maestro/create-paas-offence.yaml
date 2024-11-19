@@ -28,20 +28,20 @@ appId: com.bratislava.enforcement
 - runFlow:
     when:
       visible:
-        id: 'addPhoto'
+        id: addPhoto
     commands:
       - tapOn:
-          id: 'addPhoto'
+          id: addPhoto
 # Will add zone photo
 - tapOn:
-    id: 'takePicture'
+    id: takePicture
 - extendedWaitUntil:
     visible:
-      id: 'confirmPicture'
+      id: confirmPicture
     timeout: 10000
 - tapOn:
-    id: 'confirmPicture'
-- tapOn: 'Evidenčné číslo vozidla'
+    id: confirmPicture
+- tapOn: Evidenčné číslo vozidla
 - inputText: SM01RK1
 - tapOn: Ďalej
 # Will consider resident as no violation
@@ -59,28 +59,28 @@ appId: com.bratislava.enforcement
       visible: Duplicita
     commands:
       - tapOn: Vytvoriť hlásenie
-- assertVisible: 'Detail vozidla'
+- assertVisible: Detail vozidla
 - tapOn: Pokračovať
 - repeat:
     times: 5
     commands:
       - extendedWaitUntil:
           visible:
-            id: 'takePicture'
+            id: takePicture
             enabled: true
           timeout: 10000
       - tapOn:
-          id: 'takePicture'
+          id: takePicture
 # Will create offence
 - tapOn:
-    id: 'createOffence'
+    id: createOffence
 - extendedWaitUntil:
     visible:
-      id: 'newScan'
+      id: newScan
     timeout: 10000
 - tapOn:
-    id: 'newScan'
-- tapOn: 'Evidenčné číslo vozidla'
+    id: newScan
+- tapOn: Evidenčné číslo vozidla
 - inputText: AAAAAAA
 - tapOn: Ďalej
 # Will consider as duplicity
@@ -89,4 +89,4 @@ appId: com.bratislava.enforcement
 - tapOn: Ďalej
 - tapOn: Pokračovať
 # Will show duplicity modal
-- assertVisible: 'Duplicita'
+- assertVisible: Duplicita
