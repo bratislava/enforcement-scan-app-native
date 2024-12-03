@@ -9,7 +9,7 @@ import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCamer
 import OcrCamera from '@/components/camera/OcrCamera'
 import { HomeButton } from '@/components/navigation/HomeButton'
 import ScreenView from '@/components/screen-layout/ScreenView'
-import DismissKeyboard from '@/components/shared/DissmissKeyboard'
+import DismissKeyboard from '@/components/shared/DismissKeyboard'
 import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 import { useScanLicencePlate } from '@/modules/camera/hooks/useScanLicencePlate'
 import FlashlightContextProvider from '@/modules/camera/state/FlashlightContextProvider'
