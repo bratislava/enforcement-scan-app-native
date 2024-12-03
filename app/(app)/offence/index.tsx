@@ -30,8 +30,15 @@ const OffencePage = () => {
   const { t } = useTranslation()
   const { udrData } = useArcgisStoreContext()
 
-  const { ecv, offenceType, roleKey, resolutionType, isObjectiveResponsibility, location } =
-    useOffenceStoreContext((state) => state)
+  const {
+    ecv,
+    offenceType,
+    roleKey,
+    resolutionType,
+    isObjectiveResponsibility,
+    location,
+    scanData,
+  } = useOffenceStoreContext((state) => state)
   const { setOffenceState } = useSetOffenceState()
   const role = getRoleByKey(roleKey)
 
@@ -57,10 +64,30 @@ const OffencePage = () => {
     setIsSubmitting(true)
     setIsTouched(true)
 
-    if (!(offenceType && (isObjectiveResponsibility || resolutionType) && ecv) || isLocationError) {
+    if (
+      !(offenceType && (isObjectiveResponsibility || resolutionType) && ecv && scanData) ||
+      isLocationError
+    ) {
       setIsSubmitting(false)
 
       return
+    }
+
+    // Update scan if ECV was updated manually
+    if (scanData.ecv !== ecv) {
+      const scanResponse = await clientApi.scanControllerCreateOrUpdateScanEcv({
+        ...scanData,
+        ecv,
+        ecvUpdatedManually: true,
+        udr: scanData.udr ?? undefined,
+        streetName: scanData.streetName ?? undefined,
+      })
+
+      if (scanResponse.data) {
+        setOffenceState({
+          scanData: scanResponse.data,
+        })
+      }
     }
 
     const response = await clientApi.scanControllerGetDuplicitOffence(

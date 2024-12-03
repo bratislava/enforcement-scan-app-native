@@ -10,7 +10,7 @@ import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreCont
 import { cn } from '@/utils/cn'
 
 export const LicencePlateCameraBackground = () => {
-  const scanResult = useOffenceStoreContext((state) => state.scanResult)
+  const scanResult = useOffenceStoreContext((state) => state.scanData?.scanResult)
   const { top } = useSafeAreaInsets()
 
   const backgroundClassName = cn('items-center bg-dark/75', {

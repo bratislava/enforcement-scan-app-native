@@ -25,7 +25,7 @@ export const useCreateOffence = () => {
   const {
     offenceType,
     isObjectiveResponsibility,
-    scanUuid,
+    scanData,
     location,
     ecv,
     zonePhoto,
@@ -37,7 +37,7 @@ export const useCreateOffence = () => {
 
   const createOffenceMutation = useMutation({
     mutationFn: async () => {
-      if (!(ecv && location && offenceType && scanUuid && photos.length >= MAX_PHOTOS)) {
+      if (!(ecv && location && offenceType && scanData?.uuid && photos.length >= MAX_PHOTOS)) {
         onRouteToResult('error')
 
         throw new Error('Missing required data')
@@ -77,7 +77,7 @@ export const useCreateOffence = () => {
       }
 
       return clientApi.scanControllerCreateOffence(
-        scanUuid,
+        scanData.uuid,
         data,
         // Axios throws Network Error if the file is fetched and sent with `new File()`
         photosWithLocationMetadata.map((photoPath) => {
