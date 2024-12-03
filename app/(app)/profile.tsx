@@ -1,3 +1,4 @@
+import { Link } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
@@ -28,6 +29,12 @@ const ProfilePage = () => {
             title={user.name}
             text={user.email}
           />
+
+          <Link asChild href="/my-offences">
+            <PressableStyled>
+              <ActionRow startIcon="list" label={t('profile.myOffences')} />
+            </PressableStyled>
+          </Link>
 
           <PressableStyled onPress={signOut}>
             <ActionRow startIcon="logout" label={t('profile.logout')} variant="negative" />

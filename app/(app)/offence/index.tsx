@@ -77,12 +77,12 @@ const OffencePage = () => {
         })
       }
 
-      const duplicityResponse = await clientApi.scanControllerGetDuplicitOffence(
+      const duplicityResponse = await clientApi.scanControllerGetOffenceList(
         ecv,
         undefined,
         undefined,
-        location?.lat.toString(),
-        location?.long.toString(),
+        location?.lat,
+        location?.long,
       )
 
       return { scanResponseData: scanResponse?.data, duplicityResponseData: duplicityResponse.data }

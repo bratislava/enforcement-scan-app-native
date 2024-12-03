@@ -1,4 +1,3 @@
-import { FlashList } from '@shopify/flash-list'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
@@ -7,6 +6,7 @@ import EmptyStateScreen from '@/components/screen-layout/EmptyStateScreen'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import IconButton from '@/components/shared/IconButton'
+import { List } from '@/components/shared/List'
 import RoleTile from '@/components/tiles/RoleTile'
 import { useAuthStoreContext } from '@/modules/auth/state/useAuthStoreContext'
 import { RoleItem, ROLES } from '@/modules/backend/constants/roles'
@@ -60,7 +60,7 @@ const AppRoute = () => {
       }}
     >
       <ScreenContent>
-        <FlashList
+        <List
           ItemSeparatorComponent={() => <View className="h-2" />}
           data={allowedRoles}
           renderItem={({ item }) => (
