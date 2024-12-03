@@ -51,6 +51,7 @@ const PhotosPage = () => {
         ),
       }}
     >
+      {/* We are not using the custom List component, because this usage is lot different than other lists. We have multiple columns here and not using ScreenContent component */}
       <FlashList
         className="h-full w-full flex-1"
         data={[zonePhotoUrl, ...photos].filter(isDefined)}
