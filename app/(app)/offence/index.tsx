@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { Link, router } from 'expo-router'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
 
@@ -43,7 +43,6 @@ const OffencePage = () => {
   const { setOffenceState } = useSetOffenceState()
   const role = getRoleByKey(roleKey)
 
-  const [isTouched, setIsTouched] = useState(false)
   const { openModal, isModalVisible, closeModal } = useModal()
 
   const isLocationError = useMemo(
@@ -56,7 +55,7 @@ const OffencePage = () => {
     [role?.actions.zone, offenceType, location, udrData],
   )
 
-  const updateScanAndCheckDuplicityMutation = useMutation({
+  const { mutate, isPending, isError } = useMutation({
     mutationFn: async () => {
       if (
         !(offenceType && (isObjectiveResponsibility || resolutionType) && ecv && scanData) ||
@@ -99,7 +98,6 @@ const OffencePage = () => {
         })
       }
 
-      setIsTouched(false)
       router.navigate('/offence/vehicle')
     },
   })
@@ -108,23 +106,12 @@ const OffencePage = () => {
     setOffenceState({ ecv: sanitizeLicencePlate(newLicencePlate) })
   }
 
-  const onSubmit = () => {
-    setIsTouched(true)
-
-    updateScanAndCheckDuplicityMutation.mutate()
-  }
-
   return (
     <DismissKeyboard>
       <ScreenView
         title={t('offence.title')}
         className="flex-1 justify-start"
-        actionButton={
-          <ContinueButton
-            loading={updateScanAndCheckDuplicityMutation.isPending}
-            onPress={onSubmit}
-          />
-        }
+        actionButton={<ContinueButton loading={isPending} onPress={() => mutate()} />}
       >
         <ScrollView alwaysBounceHorizontal={false}>
           <ScreenContent>
@@ -140,7 +127,7 @@ const OffencePage = () => {
 
             <Field
               label={t('offence.location')}
-              errorMessage={isTouched && isLocationError ? t('offence.outOfZone') : undefined}
+              errorMessage={isError && isLocationError ? t('offence.outOfZone') : undefined}
             >
               <PressableStyled
                 onPress={() => {
@@ -153,11 +140,11 @@ const OffencePage = () => {
 
             <Field
               label={t('offence.offenceType')}
-              errorMessage={isTouched && !offenceType ? t('offence.required') : undefined}
+              errorMessage={isError && !offenceType ? t('offence.required') : undefined}
             >
               <Link asChild href="/offence/offence-type">
                 <SelectButton
-                  hasError={isTouched && !offenceType}
+                  hasError={isError && !offenceType}
                   value={offenceType ? getOffenceTypeLabel(offenceType) : undefined}
                   placeholder={t('offence.offenceTypePlaceholder')}
                 />
@@ -167,11 +154,11 @@ const OffencePage = () => {
             {isObjectiveResponsibility ? null : (
               <Field
                 label={t('offence.offenceResolution')}
-                errorMessage={isTouched && !resolutionType ? t('offence.required') : undefined}
+                errorMessage={isError && !resolutionType ? t('offence.required') : undefined}
               >
                 <Link asChild href="/offence/resolution-type">
                   <SelectButton
-                    hasError={isTouched && !resolutionType}
+                    hasError={isError && !resolutionType}
                     value={resolutionType ? getResolutionTypeLabel(resolutionType) : undefined}
                     placeholder={t('offence.offenceResolutionPlaceholder')}
                   />
