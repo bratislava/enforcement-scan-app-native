@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query'
 import { Link, router } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -42,7 +43,6 @@ const OffencePage = () => {
   const { setOffenceState } = useSetOffenceState()
   const role = getRoleByKey(roleKey)
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
   const { openModal, isModalVisible, closeModal } = useModal()
 
@@ -56,62 +56,62 @@ const OffencePage = () => {
     [role?.actions.zone, offenceType, location, udrData],
   )
 
-  const onSubmit = async () => {
-    if (isSubmitting) {
-      return
-    }
+  const updateScanAndCheckDuplicityMutation = useMutation({
+    mutationFn: async () => {
+      if (
+        !(offenceType && (isObjectiveResponsibility || resolutionType) && ecv && scanData) ||
+        isLocationError
+      ) {
+        throw new Error('Missing required data')
+      }
 
-    setIsSubmitting(true)
-    setIsTouched(true)
+      let scanResponse
 
-    if (
-      !(offenceType && (isObjectiveResponsibility || resolutionType) && ecv && scanData) ||
-      isLocationError
-    ) {
-      setIsSubmitting(false)
-
-      return
-    }
-
-    // Update scan if ECV was updated manually
-    if (scanData.ecv !== ecv) {
-      const scanResponse = await clientApi.scanControllerCreateOrUpdateScanEcv({
-        ...scanData,
-        ecv,
-        ecvUpdatedManually: true,
-        udr: scanData.udr ?? undefined,
-        streetName: scanData.streetName ?? undefined,
-      })
-
-      if (scanResponse.data) {
-        setOffenceState({
-          scanData: scanResponse.data,
+      // Update scan if ECV was updated manually
+      if (scanData.ecv !== ecv) {
+        scanResponse = await clientApi.scanControllerCreateOrUpdateScanEcv({
+          ...scanData,
+          ecv,
+          ecvUpdatedManually: true,
+          udr: scanData.udr ?? undefined,
+          streetName: scanData.streetName ?? undefined,
         })
       }
-    }
 
-    const response = await clientApi.scanControllerGetDuplicitOffence(
-      ecv,
-      undefined,
-      undefined,
-      location?.lat.toString(),
-      location?.long.toString(),
-    )
+      const duplicityResponse = await clientApi.scanControllerGetDuplicitOffence(
+        ecv,
+        undefined,
+        undefined,
+        location?.lat.toString(),
+        location?.long.toString(),
+      )
 
-    if (response.data.length > 0) {
-      openModal()
-      setIsSubmitting(false)
+      return { scanResponseData: scanResponse?.data, duplicityResponseData: duplicityResponse.data }
+    },
+    onSuccess: ({ duplicityResponseData, scanResponseData }) => {
+      if (duplicityResponseData?.length > 0) {
+        openModal()
+      }
 
-      return
-    }
+      if (scanData) {
+        setOffenceState({
+          scanData: scanResponseData,
+        })
+      }
 
-    router.navigate('/offence/vehicle')
-    setIsSubmitting(false)
-    setIsTouched(false)
-  }
+      setIsTouched(false)
+      router.navigate('/offence/vehicle')
+    },
+  })
 
   const handleLicencePlateChange = (newLicencePlate: string) => {
     setOffenceState({ ecv: sanitizeLicencePlate(newLicencePlate) })
+  }
+
+  const onSubmit = () => {
+    setIsTouched(true)
+
+    updateScanAndCheckDuplicityMutation.mutate()
   }
 
   return (
@@ -119,7 +119,12 @@ const OffencePage = () => {
       <ScreenView
         title={t('offence.title')}
         className="flex-1 justify-start"
-        actionButton={<ContinueButton loading={isSubmitting} onPress={onSubmit} />}
+        actionButton={
+          <ContinueButton
+            loading={updateScanAndCheckDuplicityMutation.isPending}
+            onPress={onSubmit}
+          />
+        }
       >
         <ScrollView alwaysBounceHorizontal={false}>
           <ScreenContent>
