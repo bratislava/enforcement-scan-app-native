@@ -6,6 +6,7 @@ import { Position } from 'react-native-image-marker'
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
 import { APP_VERSION } from '@/components/info/AppVersion'
 import { clientApi } from '@/modules/backend/client-api'
+import { RequestCreateOffenceDataDto } from '@/modules/backend/openapi-generated'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { addGpsMetadataToImage } from '@/utils/addGpsMetadataToImage'
@@ -63,11 +64,11 @@ export const useCreateOffence = () => {
         ),
       )
 
-      const data = {
+      const data: RequestCreateOffenceDataDto = {
         offenceType,
         objectiveResponsibility: isObjectiveResponsibility,
-        lat: location.lat.toString(),
-        long: location.long.toString(),
+        lat: location.lat,
+        long: location.long,
         favouritePhotoId: zonePhoto?.id,
         // offence with objective responsibility does not allow to set resolution type
         resolutionType: isObjectiveResponsibility ? undefined : resolutionType,

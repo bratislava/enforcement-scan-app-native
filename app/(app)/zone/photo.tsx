@@ -1,4 +1,3 @@
-import { FlashList } from '@shopify/flash-list'
 import { Redirect, router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 import { Image, View } from 'react-native'
@@ -9,6 +8,7 @@ import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import Icon from '@/components/shared/Icon'
 import IconButton from '@/components/shared/IconButton'
+import { List } from '@/components/shared/List'
 import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
@@ -62,7 +62,7 @@ const ZonePhotoPage = () => {
       }}
       className="flex-1 justify-start"
     >
-      <FlashList
+      <List
         className="h-full w-full flex-1"
         data={data.photos}
         ItemSeparatorComponent={() => <View className="h-2" />}
@@ -77,7 +77,7 @@ const ZonePhotoPage = () => {
               source={{ uri: createUrlFromImageObject(item) }}
             />
 
-            <View className="absolute h-full w-full items-center justify-center bg-black/10">
+            <View className="absolute h-full w-full items-center justify-center rounded bg-black/10">
               <Icon name="image" size={40} className="text-white" />
 
               {item.tag ? (

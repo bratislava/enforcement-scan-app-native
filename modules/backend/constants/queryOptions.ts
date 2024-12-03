@@ -23,3 +23,10 @@ export const getMobileAppVersionOptions = () =>
     queryFn: () => clientApi.systemControllerGetMobileAppVersion(),
     select: (res) => res.data,
   })
+
+export const getOffencesOverview = () =>
+  queryOptions({
+    queryKey: ['offencesOverview'],
+    queryFn: () => clientApi.scanControllerOffenceOverview(),
+    select: (res) => res.data.offences,
+  })
