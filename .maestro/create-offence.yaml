@@ -10,11 +10,15 @@ appId: com.bratislava.enforcement
     id: municipal-police
 - tapOn:
     id: municipal-police
+- assertVisible: Evidenčné číslo vozidla
 - tapOn: Evidenčné číslo vozidla
-- inputText: BT163CG
+- inputText: AA123AA
 - hideKeyboard
 - tapOn:
     id: licencePlateContinue
+- extendedWaitUntil:
+    notVisible: Načítava sa...
+    timeout: 15000
 - runFlow:
     when:
       visible:
@@ -55,7 +59,7 @@ appId: com.bratislava.enforcement
 - tapOn:
     id: newScan
 - tapOn: Evidenčné číslo vozidla
-- inputText: BT163CG
+- inputText: AA123AA
 - tapOn: Ďalej
 # Will consider as duplicity
 - assertVisible:

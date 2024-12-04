@@ -108,10 +108,7 @@ const OffencePage = () => {
   const onContinue = () => {
     setTouched(true)
 
-    if (
-      !(offenceType && (isObjectiveResponsibility || resolutionType) && ecv && scanData) ||
-      isLocationError
-    ) {
+    if (!(offenceType && (isObjectiveResponsibility || resolutionType)) || isLocationError) {
       return
     }
 
