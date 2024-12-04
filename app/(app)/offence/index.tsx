@@ -88,16 +88,17 @@ const OffencePage = () => {
       return { scanResponseData: scanResponse?.data, duplicityResponseData: duplicityResponse.data }
     },
     onSuccess: ({ duplicityResponseData, scanResponseData }) => {
-      if (duplicityResponseData?.length > 0) {
-        openModal()
-      }
-
-      if (scanData) {
+      if (scanResponseData) {
         setOffenceState({
           scanData: scanResponseData,
         })
       }
 
+      if (duplicityResponseData?.length > 0) {
+        openModal()
+
+        return
+      }
       router.navigate('/offence/vehicle')
     },
   })
