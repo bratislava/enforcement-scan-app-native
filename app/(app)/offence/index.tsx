@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { Link, router } from 'expo-router'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
 
@@ -43,6 +43,7 @@ const OffencePage = () => {
   const { setOffenceState } = useSetOffenceState()
   const role = getRoleByKey(roleKey)
 
+  const [touched, setTouched] = useState(false)
   const { openModal, isModalVisible, closeModal } = useModal()
 
   const isLocationError = useMemo(
@@ -55,12 +56,9 @@ const OffencePage = () => {
     [role?.actions.zone, offenceType, location, udrData],
   )
 
-  const { mutate, isPending, isError } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      if (
-        !(offenceType && (isObjectiveResponsibility || resolutionType) && ecv && scanData) ||
-        isLocationError
-      ) {
+      if (!(ecv && scanData)) {
         throw new Error('Missing required data')
       }
 
@@ -107,18 +105,35 @@ const OffencePage = () => {
     setOffenceState({ ecv: sanitizeLicencePlate(newLicencePlate) })
   }
 
+  const onContinue = () => {
+    setTouched(true)
+
+    if (
+      !(offenceType && (isObjectiveResponsibility || resolutionType) && ecv && scanData) ||
+      isLocationError
+    ) {
+      return
+    }
+
+    mutate()
+  }
+
   return (
     <DismissKeyboard>
       <ScreenView
         title={t('offence.title')}
         className="flex-1 justify-start"
-        actionButton={<ContinueButton loading={isPending} onPress={() => mutate()} />}
+        actionButton={<ContinueButton loading={isPending} onPress={onContinue} />}
       >
         <ScrollView alwaysBounceHorizontal={false}>
           <ScreenContent>
-            <Field label={t('offence.vehicle')}>
+            <Field
+              label={t('offence.vehicle')}
+              errorMessage={touched && !ecv ? t('offence.required') : undefined}
+            >
               <TextInput
                 value={ecv}
+                hasError={touched && !ecv}
                 autoCapitalize="characters"
                 className="font-belfast-700bold text-[18px] text-black"
                 isDisabled={!!role?.actions.scanCheck}
@@ -128,7 +143,7 @@ const OffencePage = () => {
 
             <Field
               label={t('offence.location')}
-              errorMessage={isError && isLocationError ? t('offence.outOfZone') : undefined}
+              errorMessage={touched && isLocationError ? t('offence.outOfZone') : undefined}
             >
               <PressableStyled
                 onPress={() => {
@@ -141,11 +156,11 @@ const OffencePage = () => {
 
             <Field
               label={t('offence.offenceType')}
-              errorMessage={isError && !offenceType ? t('offence.required') : undefined}
+              errorMessage={touched && !offenceType ? t('offence.required') : undefined}
             >
               <Link asChild href="/offence/offence-type">
                 <SelectButton
-                  hasError={isError && !offenceType}
+                  hasError={touched && !offenceType}
                   value={offenceType ? getOffenceTypeLabel(offenceType) : undefined}
                   placeholder={t('offence.offenceTypePlaceholder')}
                 />
@@ -155,11 +170,11 @@ const OffencePage = () => {
             {isObjectiveResponsibility ? null : (
               <Field
                 label={t('offence.offenceResolution')}
-                errorMessage={isError && !resolutionType ? t('offence.required') : undefined}
+                errorMessage={touched && !resolutionType ? t('offence.required') : undefined}
               >
                 <Link asChild href="/offence/resolution-type">
                   <SelectButton
-                    hasError={isError && !resolutionType}
+                    hasError={touched && !resolutionType}
                     value={resolutionType ? getResolutionTypeLabel(resolutionType) : undefined}
                     placeholder={t('offence.offenceResolutionPlaceholder')}
                   />
