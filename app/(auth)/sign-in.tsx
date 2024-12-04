@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
-import DismissKeyboard from '@/components/shared/DissmissKeyboard'
+import DismissKeyboard from '@/components/shared/DismissKeyboard'
 import Typography from '@/components/shared/Typography'
 import { useSignIn } from '@/modules/auth/hooks/useSignIn'
 

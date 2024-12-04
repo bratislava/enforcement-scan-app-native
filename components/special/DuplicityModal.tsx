@@ -15,6 +15,7 @@ export const DuplicityModal = ({ visible, onCloseModal }: Props) => {
   const router = useRouter()
 
   const onContinue = () => {
+    onCloseModal()
     router.navigate('/offence/vehicle')
   }
 

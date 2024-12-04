@@ -55,8 +55,7 @@ export const useScanLicencePlate = () => {
 
       if (res.data) {
         setOffenceState({
-          scanUuid: res.data.uuid,
-          scanResult: res.data.scanResult,
+          scanData: res.data,
           location: { lat: location.coords.latitude, long: location.coords.longitude },
         })
 
@@ -67,7 +66,7 @@ export const useScanLicencePlate = () => {
         return
       }
 
-      setOffenceState({ scanUuid: undefined, scanResult: undefined })
+      setOffenceState({ scanData: undefined })
     },
   })
 

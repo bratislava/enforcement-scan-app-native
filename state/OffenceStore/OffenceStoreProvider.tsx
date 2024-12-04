@@ -3,7 +3,7 @@ import { createContext, ReactNode, useRef } from 'react'
 import {
   OffenceTypeEnum,
   ResolutionOffenceTypeEnum,
-  ScanResultEnum,
+  ResponseCreateOrUpdateScanDto,
 } from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { defaultOffenceState } from '@/state/OffenceStore/constants'
@@ -23,8 +23,7 @@ export type PositionObject = {
 export type OffenceState = {
   roleKey?: string
   ecv?: string
-  scanUuid?: string
-  scanResult?: ScanResultEnum
+  scanData?: ResponseCreateOrUpdateScanDto
   ecvUpdatedManually?: boolean
 
   // offence data

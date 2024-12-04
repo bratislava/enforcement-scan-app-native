@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query'
 import { Link, router } from 'expo-router'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,7 +13,7 @@ import ContinueButton from '@/components/navigation/ContinueButton'
 import { useModal } from '@/components/screen-layout/Modal/useModal'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
-import DismissKeyboard from '@/components/shared/DissmissKeyboard'
+import DismissKeyboard from '@/components/shared/DismissKeyboard'
 import PressableStyled from '@/components/shared/PressableStyled'
 import { DuplicityModal } from '@/components/special/DuplicityModal'
 import { clientApi } from '@/modules/backend/client-api'
@@ -30,13 +31,19 @@ const OffencePage = () => {
   const { t } = useTranslation()
   const { udrData } = useArcgisStoreContext()
 
-  const { ecv, offenceType, roleKey, resolutionType, isObjectiveResponsibility, location } =
-    useOffenceStoreContext((state) => state)
+  const {
+    ecv,
+    offenceType,
+    roleKey,
+    resolutionType,
+    isObjectiveResponsibility,
+    location,
+    scanData,
+  } = useOffenceStoreContext((state) => state)
   const { setOffenceState } = useSetOffenceState()
   const role = getRoleByKey(roleKey)
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isTouched, setIsTouched] = useState(false)
+  const [touched, setTouched] = useState(false)
   const { openModal, isModalVisible, closeModal } = useModal()
 
   const isLocationError = useMemo(
@@ -49,42 +56,63 @@ const OffencePage = () => {
     [role?.actions.zone, offenceType, location, udrData],
   )
 
-  const onSubmit = async () => {
-    if (isSubmitting) {
-      return
-    }
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () => {
+      if (!(ecv && scanData)) {
+        throw new Error('Missing required data')
+      }
 
-    setIsSubmitting(true)
-    setIsTouched(true)
+      let scanResponse
 
-    if (!(offenceType && (isObjectiveResponsibility || resolutionType) && ecv) || isLocationError) {
-      setIsSubmitting(false)
+      // Update scan if ECV was updated manually
+      if (scanData.ecv !== ecv) {
+        scanResponse = await clientApi.scanControllerCreateOrUpdateScanEcv({
+          ...scanData,
+          ecv,
+          ecvUpdatedManually: true,
+          udr: scanData.udr ?? undefined,
+          streetName: scanData.streetName ?? undefined,
+        })
+      }
 
-      return
-    }
+      const duplicityResponse = await clientApi.scanControllerGetOffenceList(
+        ecv,
+        undefined,
+        undefined,
+        location?.lat,
+        location?.long,
+      )
 
-    const response = await clientApi.scanControllerGetOffenceList(
-      ecv,
-      undefined,
-      undefined,
-      location?.lat,
-      location?.long,
-    )
+      return { scanResponseData: scanResponse?.data, duplicityResponseData: duplicityResponse.data }
+    },
+    onSuccess: ({ duplicityResponseData, scanResponseData }) => {
+      if (scanResponseData) {
+        setOffenceState({
+          scanData: scanResponseData,
+        })
+      }
 
-    if (response.data.length > 0) {
-      openModal()
-      setIsSubmitting(false)
+      if (duplicityResponseData?.length > 0) {
+        openModal()
 
-      return
-    }
-
-    router.navigate('/offence/vehicle')
-    setIsSubmitting(false)
-    setIsTouched(false)
-  }
+        return
+      }
+      router.navigate('/offence/vehicle')
+    },
+  })
 
   const handleLicencePlateChange = (newLicencePlate: string) => {
     setOffenceState({ ecv: sanitizeLicencePlate(newLicencePlate) })
+  }
+
+  const onContinue = () => {
+    setTouched(true)
+
+    if (!(offenceType && (isObjectiveResponsibility || resolutionType)) || isLocationError) {
+      return
+    }
+
+    mutate()
   }
 
   return (
@@ -92,13 +120,17 @@ const OffencePage = () => {
       <ScreenView
         title={t('offence.title')}
         className="flex-1 justify-start"
-        actionButton={<ContinueButton loading={isSubmitting} onPress={onSubmit} />}
+        actionButton={<ContinueButton loading={isPending} onPress={onContinue} />}
       >
         <ScrollView alwaysBounceHorizontal={false}>
           <ScreenContent>
-            <Field label={t('offence.vehicle')}>
+            <Field
+              label={t('offence.vehicle')}
+              errorMessage={touched && !ecv ? t('offence.required') : undefined}
+            >
               <TextInput
                 value={ecv}
+                hasError={touched && !ecv}
                 autoCapitalize="characters"
                 className="font-belfast-700bold text-[18px] text-black"
                 isDisabled={!!role?.actions.scanCheck}
@@ -108,7 +140,7 @@ const OffencePage = () => {
 
             <Field
               label={t('offence.location')}
-              errorMessage={isTouched && isLocationError ? t('offence.outOfZone') : undefined}
+              errorMessage={touched && isLocationError ? t('offence.outOfZone') : undefined}
             >
               <PressableStyled
                 onPress={() => {
@@ -121,11 +153,11 @@ const OffencePage = () => {
 
             <Field
               label={t('offence.offenceType')}
-              errorMessage={isTouched && !offenceType ? t('offence.required') : undefined}
+              errorMessage={touched && !offenceType ? t('offence.required') : undefined}
             >
               <Link asChild href="/offence/offence-type">
                 <SelectButton
-                  hasError={isTouched && !offenceType}
+                  hasError={touched && !offenceType}
                   value={offenceType ? getOffenceTypeLabel(offenceType) : undefined}
                   placeholder={t('offence.offenceTypePlaceholder')}
                 />
@@ -135,11 +167,11 @@ const OffencePage = () => {
             {isObjectiveResponsibility ? null : (
               <Field
                 label={t('offence.offenceResolution')}
-                errorMessage={isTouched && !resolutionType ? t('offence.required') : undefined}
+                errorMessage={touched && !resolutionType ? t('offence.required') : undefined}
               >
                 <Link asChild href="/offence/resolution-type">
                   <SelectButton
-                    hasError={isTouched && !resolutionType}
+                    hasError={touched && !resolutionType}
                     value={resolutionType ? getResolutionTypeLabel(resolutionType) : undefined}
                     placeholder={t('offence.offenceResolutionPlaceholder')}
                   />

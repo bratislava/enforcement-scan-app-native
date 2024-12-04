@@ -9,7 +9,7 @@ import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCamer
 import OcrCamera from '@/components/camera/OcrCamera'
 import { HomeButton } from '@/components/navigation/HomeButton'
 import ScreenView from '@/components/screen-layout/ScreenView'
-import DismissKeyboard from '@/components/shared/DissmissKeyboard'
+import DismissKeyboard from '@/components/shared/DismissKeyboard'
 import { ScanResultEnum } from '@/modules/backend/openapi-generated'
 import { useScanLicencePlate } from '@/modules/camera/hooks/useScanLicencePlate'
 import FlashlightContextProvider from '@/modules/camera/state/FlashlightContextProvider'
@@ -29,7 +29,7 @@ const LicencePlateCameraComp = () => {
 
   const pathname = usePathname()
 
-  const scanResult = useOffenceStoreContext((state) => state.scanResult)
+  const scanResult = useOffenceStoreContext((state) => state.scanData?.scanResult)
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
 
   const { setOffenceState } = useSetOffenceState()
@@ -86,7 +86,7 @@ const LicencePlateCameraComp = () => {
       return
     }
 
-    setOffenceState({ scanResult: undefined })
+    setOffenceState({ scanData: undefined })
 
     if (generatedEcv) {
       await checkEcv({ ecv: generatedEcv })
@@ -98,11 +98,11 @@ const LicencePlateCameraComp = () => {
       plateHistoryRef.current = []
 
       if (!ecv) {
-        setOffenceState({ ecv: '', scanResult: undefined, ecvUpdatedManually: false, photos: [] })
+        setOffenceState({ ecv: '', scanData: undefined, ecvUpdatedManually: false, photos: [] })
 
         return
       }
-      setOffenceState({ scanResult: undefined, ecv, ecvUpdatedManually: !!ecv })
+      setOffenceState({ scanData: undefined, ecv, ecvUpdatedManually: !!ecv })
     },
     [setOffenceState],
   )
