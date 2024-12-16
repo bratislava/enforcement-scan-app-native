@@ -6,6 +6,7 @@ import {
   ResponseCreateOrUpdateScanDto,
 } from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
+import { OffenceStep } from '@/modules/stepper/types'
 import { defaultOffenceState } from '@/state/OffenceStore/constants'
 import { createStore, Store } from '@/utils/store'
 
@@ -40,6 +41,9 @@ export type OffenceState = {
 
   // vehicle data
   vehicleId?: number
+} & {
+  currentStep?: OffenceStep<any>
+  steps?: OffenceStep<any>[]
 }
 
 export const OffenceStoreContext = createContext<Store<OffenceState>>(
