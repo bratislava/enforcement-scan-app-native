@@ -1,9 +1,14 @@
 import { OffenceTypeEnum, ScanReasonEnum } from '@/modules/backend/openapi-generated'
 import { AvailableSteps } from '@/modules/stepper/types'
+import { OffenceState } from '@/state/OffenceStore/OffenceStoreProvider'
 
-type OffenceTypeStep = { offenceTypes: OffenceTypeEnum[]; steps: AvailableSteps[] }
+type OffenceTypeStep = {
+  offenceTypes: OffenceTypeEnum[]
+  steps: AvailableSteps[]
+  defaultValues: OffenceState
+}
 
-export const offenceTypeSteps: OffenceTypeStep[] = [
+export const OFFENCE_TYPE_STEPS: OffenceTypeStep[] = [
   {
     offenceTypes: [OffenceTypeEnum.N, OffenceTypeEnum.NB],
     steps: [
@@ -17,7 +22,7 @@ export const offenceTypeSteps: OffenceTypeStep[] = [
       },
       {
         path: 'offence',
-        options: { isLocationRequired: true },
+        options: { canChangeLicencePlate: false, hasToBeInZone: true },
       },
       {
         path: 'offence/vehicle',
@@ -27,21 +32,24 @@ export const offenceTypeSteps: OffenceTypeStep[] = [
         options: { numberOfPhotos: 6 },
       },
     ],
+    defaultValues: {
+      isObjectiveResponsibility: true,
+      photos: [],
+    },
   },
   {
     offenceTypes: [OffenceTypeEnum.Dz],
     steps: [
       {
         path: 'zone',
-        options: { residents: true },
       },
       {
         path: 'scan',
-        options: { scanCheck: true, scanReason: ScanReasonEnum.PaasParkingAuthorization },
+        options: { scanCheck: false, scanReason: ScanReasonEnum.PaasParkingAuthorization },
       },
       {
         path: 'offence',
-        options: { isLocationRequired: false },
+        options: { canChangeLicencePlate: true, hasToBeInZone: false },
       },
       {
         path: 'offence/vehicle',
@@ -51,6 +59,10 @@ export const offenceTypeSteps: OffenceTypeStep[] = [
         options: { numberOfPhotos: 6 },
       },
     ],
+    defaultValues: {
+      isObjectiveResponsibility: true,
+      photos: [],
+    },
   },
   {
     offenceTypes: [
@@ -82,6 +94,7 @@ export const offenceTypeSteps: OffenceTypeStep[] = [
       },
       {
         path: 'offence',
+        options: { canChangeLicencePlate: true, hasToBeInZone: false },
       },
       {
         path: 'offence/vehicle',
@@ -91,6 +104,10 @@ export const offenceTypeSteps: OffenceTypeStep[] = [
         options: { numberOfPhotos: 6 },
       },
     ],
+    defaultValues: {
+      isObjectiveResponsibility: true,
+      photos: [],
+    },
   },
 ]
 
@@ -102,6 +119,6 @@ function validateOffenceTypes(steps: OffenceTypeStep[]): boolean {
   return uniqueOffenceTypes.size === allOffenceTypes.length
 }
 
-if (!validateOffenceTypes(offenceTypeSteps)) {
+if (!validateOffenceTypes(OFFENCE_TYPE_STEPS)) {
   throw new Error('Duplicate offenceTypes found or some offenceTypes are missing')
 }

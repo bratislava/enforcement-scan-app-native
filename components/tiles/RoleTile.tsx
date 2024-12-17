@@ -1,36 +1,38 @@
 import { View } from 'react-native'
 
 import FlexRow from '@/components/shared/FlexRow'
-import Icon, { IconName } from '@/components/shared/Icon'
+import Icon from '@/components/shared/Icon'
 import Panel from '@/components/shared/Panel'
 import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
-import { RoleKeyType } from '@/modules/backend/constants/roles'
+import { OFFENCE_TYPES } from '@/modules/backend/constants/offenceTypes'
+import { OffenceTypeEnum } from '@/modules/backend/openapi-generated'
 
 type Props = {
-  id: RoleKeyType
-  title: string
-  // description: string
-  icon: IconName
+  value: OffenceTypeEnum
   onPress: () => void
 }
 
-const RoleTile = ({ id, title, icon, onPress }: Props) => (
-  <PressableStyled testID={id} onPress={onPress}>
-    <Panel>
-      <FlexRow className="items-center g-4">
-        <Icon name={icon} />
+const OffenceTypeTile = ({ value, onPress }: Props) => {
+  const offenceTypeObject = OFFENCE_TYPES.find((offenceType) => value === offenceType.value)
 
-        <View className="flex-1">
-          <Typography variant="default-semibold">{title}</Typography>
-          {/* Hide description for now */}
-          {/* <Typography>{description}</Typography> */}
-        </View>
+  if (!offenceTypeObject) {
+    throw new Error('Offence type not found')
+  }
 
-        <Icon name="chevron-right" />
-      </FlexRow>
-    </Panel>
-  </PressableStyled>
-)
+  return (
+    <PressableStyled testID={value} onPress={onPress}>
+      <Panel>
+        <FlexRow className="items-center g-4">
+          <View className="flex-1">
+            <Typography variant="default-semibold">{offenceTypeObject.label}</Typography>
+          </View>
 
-export default RoleTile
+          <Icon name="chevron-right" />
+        </FlexRow>
+      </Panel>
+    </PressableStyled>
+  )
+}
+
+export default OffenceTypeTile

@@ -31,9 +31,9 @@ export type OffenceState = {
   location?: PositionObject
   offenceType?: OffenceTypeEnum
   resolutionType?: ResolutionOffenceTypeEnum
-  isObjectiveResponsibility: boolean
+  isObjectiveResponsibility?: boolean
 
-  photos: string[]
+  photos?: string[]
 
   // zone data
   zone?: MapUdrZoneWithTranslationProps

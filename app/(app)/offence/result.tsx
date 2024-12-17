@@ -9,7 +9,6 @@ import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
 import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import ScreenViewCentered from '@/components/screen-layout/ScreenViewCentered'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { getDefaultOffenceStateByRole } from '@/state/OffenceStore/getDefaultOffenceStateByRole'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -38,7 +37,7 @@ const OffenceResultPage = () => {
       e.preventDefault()
 
       if (e.data.action.type === 'GO_BACK') {
-        resetOffenceState({ ...getDefaultOffenceStateByRole(role.key), zone, zonePhoto, location })
+        // resetOffenceState({ ...getDefaultOffenceStateByRole(role.key), zone, zonePhoto, location })
         router.navigate('scan/licence-plate-camera')
       } else navigation.dispatch(e.data.action)
     })
@@ -53,10 +52,10 @@ const OffenceResultPage = () => {
     )
   }
 
-  const onNewZonePress = () => {
-    resetOffenceState(getDefaultOffenceStateByRole(role.key))
-    router.navigate('zone')
-  }
+  // const onNewZonePress = () => {
+  //   resetOffenceState(getDefaultOffenceStateByRole(role.key))
+  //   router.navigate('zone')
+  // }
 
   return (
     <ScreenViewCentered
@@ -70,11 +69,11 @@ const OffenceResultPage = () => {
             {t('offenceResult.newScan')}
           </ContinueButton>
 
-          {role?.actions.zone ? (
+          {/* {role?.actions.zone ? (
             <ContinueButton variant="secondary" onPress={onNewZonePress}>
               {t('offenceResult.newZone')}
             </ContinueButton>
-          ) : null}
+          ) : null} */}
         </View>
       }
     >
