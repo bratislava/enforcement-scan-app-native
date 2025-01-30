@@ -32,7 +32,12 @@ export const ROLES: RoleItem[] = [
       scanCheck: true,
     },
     resolutionTypes: [ResolutionOffenceTypeEnum.JustRegistration],
-    offenceTypes: [OffenceTypeEnum.O, OffenceTypeEnum.NB, OffenceTypeEnum.Dz],
+    offenceTypes: [
+      OffenceTypeEnum.O,
+      OffenceTypeEnum.NB,
+      OffenceTypeEnum.Dz,
+      OffenceTypeEnum.Zigzag,
+    ],
     scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
   {

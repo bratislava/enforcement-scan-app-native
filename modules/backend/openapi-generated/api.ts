@@ -162,6 +162,7 @@ export const OffenceTypeEnum = {
   U: 'U',
   Dz: 'DZ',
   NB: 'N_B',
+  Zigzag: 'ZIGZAG',
 } as const
 
 export type OffenceTypeEnum = (typeof OffenceTypeEnum)[keyof typeof OffenceTypeEnum]
@@ -1044,7 +1045,7 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
      * Search for offences by ecv, gps coordinates, udr, offence type and date. To return duplicities within last two weeks, ecv and gps coordinates on input are expected.
      * @summary Find offences matching given filters
      * @param {string} ecv
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O and DZ, rest are OTHER / municipal police offence types.
+     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O, DZ and ZIGZAG, rest are OTHER / municipal police offence types.
      * @param {string} [udr]
      * @param {number} [lat]
      * @param {number} [_long]
@@ -1356,7 +1357,7 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
      * Search for offences by ecv, gps coordinates, udr, offence type and date. To return duplicities within last two weeks, ecv and gps coordinates on input are expected.
      * @summary Find offences matching given filters
      * @param {string} ecv
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O and DZ, rest are OTHER / municipal police offence types.
+     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O, DZ and ZIGZAG, rest are OTHER / municipal police offence types.
      * @param {string} [udr]
      * @param {number} [lat]
      * @param {number} [_long]
@@ -1545,7 +1546,7 @@ export const ScannersAndOffencesApiFactory = function (
      * Search for offences by ecv, gps coordinates, udr, offence type and date. To return duplicities within last two weeks, ecv and gps coordinates on input are expected.
      * @summary Find offences matching given filters
      * @param {string} ecv
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O and DZ, rest are OTHER / municipal police offence types.
+     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O, DZ and ZIGZAG, rest are OTHER / municipal police offence types.
      * @param {string} [udr]
      * @param {number} [lat]
      * @param {number} [_long]
@@ -1693,7 +1694,7 @@ export class ScannersAndOffencesApi extends BaseAPI {
    * Search for offences by ecv, gps coordinates, udr, offence type and date. To return duplicities within last two weeks, ecv and gps coordinates on input are expected.
    * @summary Find offences matching given filters
    * @param {string} ecv
-   * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O and DZ, rest are OTHER / municipal police offence types.
+   * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O, DZ and ZIGZAG, rest are OTHER / municipal police offence types.
    * @param {string} [udr]
    * @param {number} [lat]
    * @param {number} [_long]
@@ -1779,6 +1780,7 @@ export const ScanControllerGetOffenceListOffenceTypesEnum = {
   U: 'U',
   Dz: 'DZ',
   NB: 'N_B',
+  Zigzag: 'ZIGZAG',
 } as const
 export type ScanControllerGetOffenceListOffenceTypesEnum =
   (typeof ScanControllerGetOffenceListOffenceTypesEnum)[keyof typeof ScanControllerGetOffenceListOffenceTypesEnum]

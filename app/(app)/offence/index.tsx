@@ -9,6 +9,7 @@ import SelectButton from '@/components/inputs/SelectButton'
 import TextInput from '@/components/inputs/TextInput'
 import SelectRow from '@/components/list-rows/SelectRow'
 import LocationMapPreview from '@/components/map/location-map/LocationMapPreview'
+import { OFFENSES_ALLOWED_OUTSIDE_ZONE } from '@/components/map/location-map/LocationMapScreen'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import { useModal } from '@/components/screen-layout/Modal/useModal'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
@@ -20,7 +21,6 @@ import { clientApi } from '@/modules/backend/client-api'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { OffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { findContainingFeature } from '@/modules/map/utils/findContainingFeature'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -49,7 +49,7 @@ const OffencePage = () => {
   const isLocationError = useMemo(
     () =>
       role?.actions.zone &&
-      offenceType !== OffenceTypeEnum.Dz &&
+      !OFFENSES_ALLOWED_OUTSIDE_ZONE.has(offenceType) &&
       location &&
       udrData &&
       !findContainingFeature(udrData.features, [location.long, location.lat]),
