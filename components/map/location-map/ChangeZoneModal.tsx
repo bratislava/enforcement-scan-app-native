@@ -1,10 +1,9 @@
-import { router } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 
 import AvatarCircleIcon from '@/components/info/AvatarCircleIcon'
 import Modal from '@/components/screen-layout/Modal/Modal'
 import ModalContentWithActions from '@/components/screen-layout/Modal/ModalContentWithActions'
-import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 type Props = {
   visible: boolean
@@ -13,10 +12,9 @@ type Props = {
 
 export const ChangeZoneModal = ({ visible, onCloseModal }: Props) => {
   const { t } = useTranslation()
-  const { setOffenceState } = useSetOffenceState()
+  const router = useRouter()
 
   const onContinue = () => {
-    setOffenceState({ location: undefined })
     router.navigate('/zone')
   }
 
