@@ -30,3 +30,11 @@ export const getOffencesOverview = () =>
     queryFn: () => clientApi.scanControllerOffenceOverview(),
     select: (res) => res.data.offences,
   })
+
+export const getLicencePlateTicketsAndPermitsInfo = (ecv?: string) =>
+  queryOptions({
+    queryKey: ['licencePlateTicketsPermitsInfo', ecv],
+    queryFn: () => clientApi.scanControllerTicketsAndPermits(ecv!),
+    select: (res) => res.data,
+    enabled: !!ecv,
+  })
