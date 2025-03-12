@@ -15,7 +15,7 @@ import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
 import { getLicencePlateTicketsAndPermitsInfo } from '@/modules/backend/constants/queryOptions'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 
-const ScanLicencePlateInfo = () => {
+const ScanLicencePlateInfoScreen = () => {
   const { t } = useTranslation()
 
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
@@ -79,4 +79,4 @@ const ScanLicencePlateInfo = () => {
   )
 }
 
-export default ScanLicencePlateInfo
+export default ScanLicencePlateInfoScreen
