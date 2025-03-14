@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query'
+import { queryOptions, skipToken } from '@tanstack/react-query'
 
 import { clientApi } from '@/modules/backend/client-api'
 
@@ -12,9 +12,8 @@ export const getFavouritePhotosOptions = () =>
 export const getVehiclePropertiesOptions = (ecv?: string) =>
   queryOptions({
     queryKey: ['VehicleProperties', ecv],
-    queryFn: () => clientApi.scanControllerGetVehicleProperties(ecv!),
+    queryFn: ecv ? () => clientApi.scanControllerGetVehicleProperties(ecv) : skipToken,
     select: (res) => res.data,
-    enabled: !!ecv,
   })
 
 export const getMobileAppVersionOptions = () =>
@@ -34,7 +33,6 @@ export const getOffencesOverview = () =>
 export const getLicencePlateTicketsAndPermitsInfo = (ecv?: string) =>
   queryOptions({
     queryKey: ['licencePlateTicketsPermitsInfo', ecv],
-    queryFn: () => clientApi.scanControllerTicketsAndPermits(ecv!),
+    queryFn: ecv ? () => clientApi.scanControllerTicketsAndPermits(ecv) : skipToken,
     select: (res) => res.data,
-    enabled: !!ecv,
   })

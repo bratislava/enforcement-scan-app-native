@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
-import ContentWithAvatar from '@/components/screen-layout/ContentWithAvatar'
 import EmptyStateScreen from '@/components/screen-layout/EmptyStateScreen'
 import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
+import Button from '@/components/shared/Button'
 import { List } from '@/components/shared/List'
 import Typography from '@/components/shared/Typography'
 import PermitTile from '@/components/tiles/PermitTile'
@@ -18,10 +18,10 @@ import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreCont
 const ScanLicencePlateInfoScreen = () => {
   const { t } = useTranslation()
 
-  const generatedEcv = useOffenceStoreContext((state) => state.ecv)
+  const ecv = useOffenceStoreContext((state) => state.ecv)
 
   const { data, isError, error, isPending, refetch, isRefetching } = useQueryWithFocusRefetch(
-    getLicencePlateTicketsAndPermitsInfo(generatedEcv),
+    getLicencePlateTicketsAndPermitsInfo(ecv),
   )
 
   if (isPending) {
@@ -38,6 +38,11 @@ const ScanLicencePlateInfoScreen = () => {
         title={t('scanLicencePlate.info.title')}
         contentTitle={t('scanLicencePlate.info.empty.title')}
         text={t('scanLicencePlate.info.empty.text')}
+        actionButton={
+          <Button loading={isRefetching} onPress={() => refetch()}>
+            {t('scanLicencePlate.info.empty.action')}
+          </Button>
+        }
       />
     )
   }
@@ -45,35 +50,35 @@ const ScanLicencePlateInfoScreen = () => {
   return (
     <ScreenView title={t('scanLicencePlate.info.title')}>
       <ScreenContent>
-        <Typography variant="h1">{t('scanLicencePlate.info.tickets.title')}</Typography>
-
         {data.tickets.length > 0 ? (
-          <List
-            onRefresh={refetch}
-            estimatedItemSize={78}
-            refreshing={isRefetching}
-            ItemSeparatorComponent={() => <View className="h-2" />}
-            data={data.tickets}
-            renderItem={({ item }) => <TicketTile {...item} />}
-          />
-        ) : (
-          <ContentWithAvatar title={t('scanLicencePlate.info.tickets.empty.title')} />
-        )}
+          <>
+            <Typography variant="h1">{t('scanLicencePlate.info.tickets.title')}</Typography>
 
-        <Typography variant="h1">{t('scanLicencePlate.info.permits.title')}</Typography>
+            <List
+              onRefresh={refetch}
+              estimatedItemSize={78}
+              refreshing={isRefetching}
+              ItemSeparatorComponent={() => <View className="h-2" />}
+              data={data.tickets}
+              renderItem={({ item }) => <TicketTile {...item} />}
+            />
+          </>
+        ) : null}
 
         {data.permitCards.length > 0 ? (
-          <List
-            onRefresh={refetch}
-            estimatedItemSize={102}
-            refreshing={isRefetching}
-            ItemSeparatorComponent={() => <View className="h-2" />}
-            data={data.permitCards}
-            renderItem={({ item }) => <PermitTile {...item} />}
-          />
-        ) : (
-          <ContentWithAvatar title={t('scanLicencePlate.info.permits.empty.title')} />
-        )}
+          <>
+            <Typography variant="h1">{t('scanLicencePlate.info.permits.title')}</Typography>
+
+            <List
+              onRefresh={refetch}
+              estimatedItemSize={102}
+              refreshing={isRefetching}
+              ItemSeparatorComponent={() => <View className="h-2" />}
+              data={data.permitCards}
+              renderItem={({ item }) => <PermitTile {...item} />}
+            />
+          </>
+        ) : null}
       </ScreenContent>
     </ScreenView>
   )

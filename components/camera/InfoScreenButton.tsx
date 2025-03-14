@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next'
 import IconButton from '@/components/shared/IconButton'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 
-export type TorchState = 'on' | 'off'
-
 export const InfoScreenButton = () => {
   const { t } = useTranslation()
   const generatedEcv = useOffenceStoreContext((state) => state.ecv)
