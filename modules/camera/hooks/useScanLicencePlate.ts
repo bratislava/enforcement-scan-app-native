@@ -1,8 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
+import * as Application from 'expo-application'
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
 import { useCallback } from 'react'
 
+import { APP_VERSION } from '@/components/info/AppVersion'
 import { clientApi } from '@/modules/backend/client-api'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { ScanReasonEnum } from '@/modules/backend/openapi-generated'
@@ -51,6 +53,8 @@ export const useScanLicencePlate = () => {
         udrGlobalId: zone?.udrUuid,
         district: zone?.cityDistrict,
         areaName: zone?.name,
+        mobileAppVersion: APP_VERSION,
+        deviceId: Application.getAndroidId(),
       })
 
       if (res.data) {
