@@ -26,7 +26,7 @@
     "@tanstack/react-query": "^5.53.3",
     "@turf/boolean-point-in-polygon": "^7.1.0",
     "@types/react": "~18.2.79",
-    "axios": "~1.7.7",
+    "axios": "~1.8.3",
     "clsx": "~2.1.0",
     "core-js": "~3.36.1",
     "expo": "~51.0.36",
@@ -71,7 +71,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/eslint-parser": "^7.24.1",
-    "@openapitools/openapi-generator-cli": "^2.13.5",
+    "@openapitools/openapi-generator-cli": "^2.18.4",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
     "eslint": "^8.57.0",
