@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 import { Camera } from 'react-native-vision-camera'
 
+import { InfoScreenButton } from '@/components/camera/InfoScreenButton'
 import { LicencePlateCameraBackground } from '@/components/camera/LicencePlateCameraBackground'
 import LicencePlateCameraBottomSheet from '@/components/camera/LicencePlateCameraBottomSheet'
 import OcrCamera from '@/components/camera/OcrCamera'
@@ -135,6 +136,8 @@ const LicencePlateCameraComp = () => {
             <OcrCamera ref={ref} onFrameCapture={onFrameCapture} />
 
             <LicencePlateCameraBackground />
+
+            <InfoScreenButton />
           </View>
 
           <LicencePlateCameraBottomSheet
