@@ -338,6 +338,49 @@ export type ResolutionOffenceTypeEnum =
 /**
  *
  * @export
+ * @interface ResponseCardDto
+ */
+export interface ResponseCardDto {
+  /**
+   * Id of card in parkdots, helps FE to use cache
+   * @type {string}
+   * @memberof ResponseCardDto
+   */
+  id: string
+  /**
+   * Vehicle ECV
+   * @type {string}
+   * @memberof ResponseCardDto
+   */
+  cardSubject: string
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseCardDto
+   */
+  state: ResponseCardDtoStateEnum
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseCardDto
+   */
+  cardSchemeName: string
+}
+
+export const ResponseCardDtoStateEnum = {
+  Valid: 'VALID',
+  Invalid: 'INVALID',
+  Verified: 'VERIFIED',
+  Expired: 'EXPIRED',
+  Canceled: 'CANCELED',
+} as const
+
+export type ResponseCardDtoStateEnum =
+  (typeof ResponseCardDtoStateEnum)[keyof typeof ResponseCardDtoStateEnum]
+
+/**
+ *
+ * @export
  * @interface ResponseCreateOffenceDto
  */
 export interface ResponseCreateOffenceDto {
@@ -619,6 +662,50 @@ export interface ResponseGetOffenceOverviewListDto {
    * @memberof ResponseGetOffenceOverviewListDto
    */
   offences: Array<ResponseGetOffenceOverviewDto>
+}
+/**
+ *
+ * @export
+ * @interface ResponseTicketDto
+ */
+export interface ResponseTicketDto {
+  /**
+   * Uuid of ticket in pricingApi, helps FE to use cache
+   * @type {string}
+   * @memberof ResponseTicketDto
+   */
+  id: string
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseTicketDto
+   */
+  udr: string
+  /**
+   *
+   * @type {boolean}
+   * @memberof ResponseTicketDto
+   */
+  isValid: boolean
+}
+/**
+ *
+ * @export
+ * @interface ResponseTicketsAndPermitsDto
+ */
+export interface ResponseTicketsAndPermitsDto {
+  /**
+   *
+   * @type {Array<ResponseTicketDto>}
+   * @memberof ResponseTicketsAndPermitsDto
+   */
+  tickets: Array<ResponseTicketDto>
+  /**
+   *
+   * @type {Array<ResponseCardDto>}
+   * @memberof ResponseTicketsAndPermitsDto
+   */
+  permitCards: Array<ResponseCardDto>
 }
 /**
  *
@@ -1218,6 +1305,58 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
         options: localVarRequestOptions,
       }
     },
+    /**
+     * Given ECV and optionally date, return valid tickets and permit cards
+     * @summary Get active tickets and permit cards of vehicle
+     * @param {string} ecv Vehicle ECV
+     * @param {string} [date] Date on which the ticket/card\&#39;s validity is checked
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerTicketsAndPermits: async (
+      ecv: string,
+      date?: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'ecv' is not null or undefined
+      assertParamExists('scanControllerTicketsAndPermits', 'ecv', ecv)
+      const localVarPath = `/scan/tickets-and-permits`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (ecv !== undefined) {
+        localVarQueryParameter['ecv'] = ecv
+      }
+
+      if (date !== undefined) {
+        localVarQueryParameter['date'] = date
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
   }
 }
 
@@ -1464,6 +1603,39 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
           configuration,
         )(axios, localVarOperationServerBasePath || basePath)
     },
+    /**
+     * Given ECV and optionally date, return valid tickets and permit cards
+     * @summary Get active tickets and permit cards of vehicle
+     * @param {string} ecv Vehicle ECV
+     * @param {string} [date] Date on which the ticket/card\&#39;s validity is checked
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async scanControllerTicketsAndPermits(
+      ecv: string,
+      date?: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseTicketsAndPermitsDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerTicketsAndPermits(
+        ecv,
+        date,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ScannersAndOffencesApi.scanControllerTicketsAndPermits']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
   }
 }
 
@@ -1610,6 +1782,23 @@ export const ScannersAndOffencesApiFactory = function (
         .scanControllerOffenceOverview(date, ecv, options)
         .then((request) => request(axios, basePath))
     },
+    /**
+     * Given ECV and optionally date, return valid tickets and permit cards
+     * @summary Get active tickets and permit cards of vehicle
+     * @param {string} ecv Vehicle ECV
+     * @param {string} [date] Date on which the ticket/card\&#39;s validity is checked
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerTicketsAndPermits(
+      ecv: string,
+      date?: string,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<ResponseTicketsAndPermitsDto> {
+      return localVarFp
+        .scanControllerTicketsAndPermits(ecv, date, options)
+        .then((request) => request(axios, basePath))
+    },
   }
 }
 
@@ -1749,6 +1938,25 @@ export class ScannersAndOffencesApi extends BaseAPI {
   ) {
     return ScannersAndOffencesApiFp(this.configuration)
       .scanControllerOffenceOverview(date, ecv, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Given ECV and optionally date, return valid tickets and permit cards
+   * @summary Get active tickets and permit cards of vehicle
+   * @param {string} ecv Vehicle ECV
+   * @param {string} [date] Date on which the ticket/card\&#39;s validity is checked
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ScannersAndOffencesApi
+   */
+  public scanControllerTicketsAndPermits(
+    ecv: string,
+    date?: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ScannersAndOffencesApiFp(this.configuration)
+      .scanControllerTicketsAndPermits(ecv, date, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
