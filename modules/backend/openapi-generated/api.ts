@@ -314,7 +314,7 @@ export interface RequestCreateOrUpdateScanDto {
    */
   mobileAppVersion?: string
   /**
-   * Logging device id may help to debug certain issues
+   * Logging device ID
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
@@ -1347,7 +1347,8 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
 
       if (date !== undefined) {
-        localVarQueryParameter['date'] = date
+        localVarQueryParameter['date'] =
+          (date as any) instanceof Date ? (date as any).toISOString() : date
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
