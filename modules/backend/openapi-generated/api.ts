@@ -227,12 +227,6 @@ export interface RequestCreateOffenceDataDto {
    * @memberof RequestCreateOffenceDataDto
    */
   favouritePhotoId?: number
-  /**
-   * Current version of mobile app version
-   * @type {string}
-   * @memberof RequestCreateOffenceDataDto
-   */
-  mobileAppVersion?: string
 }
 
 /**
@@ -313,6 +307,18 @@ export interface RequestCreateOrUpdateScanDto {
    * @memberof RequestCreateOrUpdateScanDto
    */
   udrGlobalId?: string | null
+  /**
+   * Current version of mobile app version
+   * @type {string}
+   * @memberof RequestCreateOrUpdateScanDto
+   */
+  mobileAppVersion?: string
+  /**
+   * Logging device ID
+   * @type {string}
+   * @memberof RequestCreateOrUpdateScanDto
+   */
+  deviceId?: string
 }
 
 /**
@@ -1341,7 +1347,8 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
 
       if (date !== undefined) {
-        localVarQueryParameter['date'] = date
+        localVarQueryParameter['date'] =
+          (date as any) instanceof Date ? (date as any).toISOString() : date
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)

@@ -4,7 +4,6 @@ import { useCallback } from 'react'
 import { Position } from 'react-native-image-marker'
 
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
-import { APP_VERSION } from '@/components/info/AppVersion'
 import { clientApi } from '@/modules/backend/client-api'
 import { RequestCreateOffenceDataDto } from '@/modules/backend/openapi-generated'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
@@ -74,7 +73,6 @@ export const useCreateOffence = () => {
         resolutionType: isObjectiveResponsibility ? undefined : resolutionType,
         udr: zone?.udrId,
         vehicleId,
-        mobileAppVersion: APP_VERSION,
       }
 
       return clientApi.scanControllerCreateOffence(
