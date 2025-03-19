@@ -17,7 +17,7 @@ type Props = {
   role: RoleItem
 }
 
-export const OFFENSES_ALLOWED_OUTSIDE_ZONE: Set<OffenceTypeEnum | undefined> = new Set([
+export const OFFENCES_ALLOWED_OUTSIDE_ZONE: Set<OffenceTypeEnum | undefined> = new Set([
   OffenceTypeEnum.Dz,
 ])
 
@@ -43,7 +43,7 @@ const LocationMapScreen = ({ role }: Props) => {
 
   const [centerCoordinate, setCenterCoordinate] = useState(location)
 
-  const isAllowedOutsideZone = OFFENSES_ALLOWED_OUTSIDE_ZONE.has(offenceType)
+  const isAllowedOutsideZone = OFFENCES_ALLOWED_OUTSIDE_ZONE.has(offenceType)
 
   const onLocationSelect = useCallback(() => {
     if (!isAllowedOutsideZone && role.actions.zone && zoneUdrId !== selectedZone?.udrId) {

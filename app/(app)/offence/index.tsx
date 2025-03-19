@@ -9,7 +9,7 @@ import SelectButton from '@/components/inputs/SelectButton'
 import TextInput from '@/components/inputs/TextInput'
 import SelectRow from '@/components/list-rows/SelectRow'
 import LocationMapPreview from '@/components/map/location-map/LocationMapPreview'
-import { OFFENSES_ALLOWED_OUTSIDE_ZONE } from '@/components/map/location-map/LocationMapScreen'
+import { OFFENCES_ALLOWED_OUTSIDE_ZONE } from '@/components/map/location-map/LocationMapScreen'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import { useModal } from '@/components/screen-layout/Modal/useModal'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
@@ -49,7 +49,7 @@ const OffencePage = () => {
   const isLocationError = useMemo(
     () =>
       role?.actions.zone &&
-      !OFFENSES_ALLOWED_OUTSIDE_ZONE.has(offenceType) &&
+      !OFFENCES_ALLOWED_OUTSIDE_ZONE.has(offenceType) &&
       location &&
       udrData &&
       !findContainingFeature(udrData.features, [location.long, location.lat]),
