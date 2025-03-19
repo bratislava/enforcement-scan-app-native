@@ -19,7 +19,6 @@ type Props = {
 
 export const OFFENSES_ALLOWED_OUTSIDE_ZONE: Set<OffenceTypeEnum | undefined> = new Set([
   OffenceTypeEnum.Dz,
-  OffenceTypeEnum.Zigzag,
 ])
 
 const LocationMapScreen = ({ role }: Props) => {
