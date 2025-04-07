@@ -19,7 +19,7 @@ export const ChangeZoneModal = ({ visible, onCloseModal }: Props) => {
   }
 
   return (
-    <Modal visible={visible}>
+    <Modal visible={visible} onRequestClose={onCloseModal}>
       <ModalContentWithActions
         customAvatarComponent={<AvatarCircleIcon name="map" />}
         title={t('zone.changeModal.title')}

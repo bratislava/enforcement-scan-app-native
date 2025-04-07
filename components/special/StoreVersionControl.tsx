@@ -41,7 +41,7 @@ const StoreVersionControl = () => {
   }
 
   return (
-    <Modal visible={showModal}>
+    <Modal visible={showModal} onRequestClose={closeModal}>
       <ModalContentWithActions
         customAvatarComponent={<AvatarCircle />}
         title={t('storeVersionControl.title')}
