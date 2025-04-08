@@ -36,6 +36,7 @@ const AppRoute = () => {
       await queryClient.resetQueries({ queryKey: getFavouritePhotosOptions().queryKey })
     },
   })
+  const udr = useOffenceStoreContext((state) => state.zone?.udrId)
 
   const takePicture = async (tag: string) => {
     setLoading(true)
@@ -67,13 +68,14 @@ const AppRoute = () => {
     }
 
     try {
+      const dateString = new Date().toLocaleDateString().replaceAll('/', '-')
       const photoResponse = await createPhotoMutation.mutateAsync({
         file: {
           uri: imageWithMetadataUri,
           type: 'image/jpeg',
           name: imageWithMetadataUri.split('/').pop()!,
         } as unknown as File,
-        tag,
+        tag: `${tag} ${udr} ${dateString}`,
       })
 
       setOffenceState({ zonePhoto: photoResponse.data })
