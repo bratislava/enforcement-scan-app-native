@@ -68,14 +68,14 @@ const AppRoute = () => {
     }
 
     try {
-      const dateString = new Date().toLocaleDateString().replaceAll('/', '-')
+      const timeString = `${new Date().getHours()}:${new Date().getMinutes()}`
       const photoResponse = await createPhotoMutation.mutateAsync({
         file: {
           uri: imageWithMetadataUri,
           type: 'image/jpeg',
           name: imageWithMetadataUri.split('/').pop()!,
         } as unknown as File,
-        tag: `${tag} ${udr} ${dateString}`,
+        tag: `${tag} ${udr} ${timeString}`,
       })
 
       setOffenceState({ zonePhoto: photoResponse.data })
