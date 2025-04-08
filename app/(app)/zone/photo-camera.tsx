@@ -23,6 +23,7 @@ const AppRoute = () => {
   const { t } = useTranslation()
   const { setOffenceState } = useSetOffenceState()
   const zonePhoto = useOffenceStoreContext((state) => state.zonePhoto)
+  const udr = useOffenceStoreContext((state) => state.zone?.udrId)
 
   const ref = useRef<Camera>(null)
   const [loading, setLoading] = useState(false)
@@ -36,7 +37,6 @@ const AppRoute = () => {
       await queryClient.resetQueries({ queryKey: getFavouritePhotosOptions().queryKey })
     },
   })
-  const udr = useOffenceStoreContext((state) => state.zone?.udrId)
 
   const takePicture = async (tag: string) => {
     setLoading(true)
@@ -68,14 +68,14 @@ const AppRoute = () => {
     }
 
     try {
-      const timeString = `${new Date().getHours()}:${new Date().getMinutes()}`
+      const timeString = new Date().toLocaleString('sk-SK', { hour: '2-digit', minute: '2-digit' })
       const photoResponse = await createPhotoMutation.mutateAsync({
         file: {
           uri: imageWithMetadataUri,
           type: 'image/jpeg',
           name: imageWithMetadataUri.split('/').pop()!,
         } as unknown as File,
-        tag: `${tag} ${udr} ${timeString}`,
+        tag: `${tag}${tag ? ' ' : ''}${udr} ${timeString}`,
       })
 
       setOffenceState({ zonePhoto: photoResponse.data })
