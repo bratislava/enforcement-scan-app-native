@@ -75,7 +75,7 @@ const AppRoute = () => {
           type: 'image/jpeg',
           name: imageWithMetadataUri.split('/').pop()!,
         } as unknown as File,
-        tag: `${tag}${tag ? ' ' : ''}${udr} ${timeString}`,
+        tag: [tag, udr, timeString].filter(Boolean).join(' '),
       })
 
       setOffenceState({ zonePhoto: photoResponse.data })
