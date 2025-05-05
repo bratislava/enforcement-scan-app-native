@@ -8,4 +8,5 @@ updates:
   - package-ecosystem: 'npm' # See documentation for possible values
     directory: '/next' # Location of package manifests
     schedule:
-      interval: 'monthly'
+      interval: "weekly"
+      day: "saturday"
