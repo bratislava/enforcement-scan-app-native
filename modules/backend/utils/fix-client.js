@@ -5,7 +5,7 @@ const fs = require('fs').promises
 async function replaceOptionsType() {
   try {
     const data = await fs.readFile('modules/backend/openapi-generated/api.ts', 'utf-8')
-    const result = data.replace(/options\?: any/g, 'options?: AxiosRequestConfig')
+    const result = data.replace(/options\?: any/g, 'options?: RawAxiosRequestConfig')
     await fs.writeFile('modules/backend/openapi-generated/api.ts', result, 'utf-8')
   } catch (error) {
     console.error(error)

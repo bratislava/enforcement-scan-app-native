@@ -13,14 +13,17 @@
  */
 
 import type { Configuration } from './configuration'
-import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig, AxiosRequestConfig } from 'axios'
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios'
 import globalAxios from 'axios'
 // Some imports not used depending on template conditions
 // @ts-ignore
 import {
   DUMMY_BASE_URL,
   assertParamExists,
+  setApiKeyToObject,
+  setBasicAuthToObject,
   setBearerAuthToObject,
+  setOAuthToObject,
   setSearchParams,
   serializeDataIfNeeded,
   toPathString,
@@ -28,7 +31,7 @@ import {
 } from './common'
 import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, BaseAPI, RequiredError, operationServerMap } from './base'
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
 /**
  *
@@ -884,7 +887,7 @@ export const DefaultApiFactory = function (
      * @throws {RequiredError}
      */
     defaultControllerHealthcheck(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<DefaultResponseHealthcheck> {
       return localVarFp
         .defaultControllerHealthcheck(options)
@@ -980,14 +983,14 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
      * Send id of scan, which founded offence. With this send all necessary data for create offence
      * @summary Create offence from last scanned ecv
      * @param {string} scanUuid
-     * @param {RequestCreateOffenceDataDto} data
+     * @param {string} data Stringified JSON of RequestCreateOffenceDataDto
      * @param {Array<File>} files Send base64 of files
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerCreateOffence: async (
       scanUuid: string,
-      data: RequestCreateOffenceDataDto,
+      data: string,
       files: Array<File>,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
@@ -1018,8 +1021,7 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
       if (data !== undefined) {
-        // TODO: fix
-        localVarFormParams.append('data', JSON.stringify(data))
+        localVarFormParams.append('data', data as any)
       }
       if (files) {
         files.forEach((element) => {
@@ -1411,14 +1413,14 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
      * Send id of scan, which founded offence. With this send all necessary data for create offence
      * @summary Create offence from last scanned ecv
      * @param {string} scanUuid
-     * @param {RequestCreateOffenceDataDto} data
+     * @param {string} data Stringified JSON of RequestCreateOffenceDataDto
      * @param {Array<File>} files Send base64 of files
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async scanControllerCreateOffence(
       scanUuid: string,
-      data: RequestCreateOffenceDataDto,
+      data: string,
       files: Array<File>,
       options?: RawAxiosRequestConfig,
     ): Promise<
@@ -1668,7 +1670,7 @@ export const ScannersAndOffencesApiFactory = function (
     scanControllerCreateFavouritePhoto(
       file: File,
       tag?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseGetFavouritePhotoDto> {
       return localVarFp
         .scanControllerCreateFavouritePhoto(file, tag, options)
@@ -1678,16 +1680,16 @@ export const ScannersAndOffencesApiFactory = function (
      * Send id of scan, which founded offence. With this send all necessary data for create offence
      * @summary Create offence from last scanned ecv
      * @param {string} scanUuid
-     * @param {RequestCreateOffenceDataDto} data
+     * @param {string} data Stringified JSON of RequestCreateOffenceDataDto
      * @param {Array<File>} files Send base64 of files
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerCreateOffence(
       scanUuid: string,
-      data: RequestCreateOffenceDataDto,
+      data: string,
       files: Array<File>,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseCreateOffenceDto> {
       return localVarFp
         .scanControllerCreateOffence(scanUuid, data, files, options)
@@ -1702,7 +1704,7 @@ export const ScannersAndOffencesApiFactory = function (
      */
     scanControllerCreateOrUpdateScanEcv(
       requestCreateOrUpdateScanDto: RequestCreateOrUpdateScanDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseCreateOrUpdateScanDto> {
       return localVarFp
         .scanControllerCreateOrUpdateScanEcv(requestCreateOrUpdateScanDto, options)
@@ -1715,7 +1717,7 @@ export const ScannersAndOffencesApiFactory = function (
      * @throws {RequiredError}
      */
     scanControllerGetFavouritePhotos(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseGetFavouritePhotosDto> {
       return localVarFp
         .scanControllerGetFavouritePhotos(options)
@@ -1742,7 +1744,7 @@ export const ScannersAndOffencesApiFactory = function (
       _long?: number,
       startDate?: string,
       endDate?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<ResponseCreateOffenceDto>> {
       return localVarFp
         .scanControllerGetOffenceList(
@@ -1766,7 +1768,7 @@ export const ScannersAndOffencesApiFactory = function (
      */
     scanControllerGetVehicleProperties(
       ecv: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseVehiclePropertiesDto> {
       return localVarFp
         .scanControllerGetVehicleProperties(ecv, options)
@@ -1783,7 +1785,7 @@ export const ScannersAndOffencesApiFactory = function (
     scanControllerOffenceOverview(
       date?: string,
       ecv?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseGetOffenceOverviewListDto> {
       return localVarFp
         .scanControllerOffenceOverview(date, ecv, options)
@@ -1800,7 +1802,7 @@ export const ScannersAndOffencesApiFactory = function (
     scanControllerTicketsAndPermits(
       ecv: string,
       date?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseTicketsAndPermitsDto> {
       return localVarFp
         .scanControllerTicketsAndPermits(ecv, date, options)
@@ -1839,7 +1841,7 @@ export class ScannersAndOffencesApi extends BaseAPI {
    * Send id of scan, which founded offence. With this send all necessary data for create offence
    * @summary Create offence from last scanned ecv
    * @param {string} scanUuid
-   * @param {RequestCreateOffenceDataDto} data
+   * @param {string} data Stringified JSON of RequestCreateOffenceDataDto
    * @param {Array<File>} files Send base64 of files
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -1847,7 +1849,7 @@ export class ScannersAndOffencesApi extends BaseAPI {
    */
   public scanControllerCreateOffence(
     scanUuid: string,
-    data: RequestCreateOffenceDataDto,
+    data: string,
     files: Array<File>,
     options?: RawAxiosRequestConfig,
   ) {
@@ -2176,7 +2178,7 @@ export const SystemApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    systemControllerGetMobileAppVersion(options?: AxiosRequestConfig): AxiosPromise<string> {
+    systemControllerGetMobileAppVersion(options?: RawAxiosRequestConfig): AxiosPromise<string> {
       return localVarFp
         .systemControllerGetMobileAppVersion(options)
         .then((request) => request(axios, basePath))
@@ -2190,7 +2192,7 @@ export const SystemApiFactory = function (
      */
     systemControllerUpdateMobileAppVersion(
       mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<string> {
       return localVarFp
         .systemControllerUpdateMobileAppVersion(mobileAppVersionUpdateDto, options)
