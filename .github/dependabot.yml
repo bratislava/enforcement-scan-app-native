@@ -6,6 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/next' # Location of package manifests
+    directory: '/' # Location of package.json file
     schedule:
-      interval: 'monthly'
+      interval: "weekly"
+      day: "saturday"
