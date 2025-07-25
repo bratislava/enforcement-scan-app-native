@@ -67,21 +67,6 @@
       "env": {
         "EXPO_PUBLIC_ANDROID_PACKAGE_NAME": "com.bratislava.enforcementscanapp"
       }
-    },
-    "build-and-maestro-test": {
-      "extends": "staging",
-      "autoIncrement": false,
-      "withoutCredentials": true,
-      "config": "build-and-maestro-test.yml",
-      "env": {
-        "MAESTRO_USERNAME": "$(MAESTRO_USERNAME)",
-        "MAESTRO_PASSWORD": "$(MAESTRO_PASSWORD)"
-      },
-      "android": {
-        "buildType": "apk",
-        "resourceClass": "large",
-        "image": "latest"
-      }
     }
   },
   "submit": {
