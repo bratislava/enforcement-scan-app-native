@@ -1,0 +1,73 @@
+appId: com.bratislava.enforcement
+---
+- launchApp
+- waitForAnimationToEnd
+# Set location to Dunajska street
+- setLocation:
+    latitude: 48.150636
+    longitude: 17.111754
+- assertVisible:
+    id: municipal-police
+- tapOn:
+    id: municipal-police
+- assertVisible: Evidenčné číslo vozidla
+- tapOn: Evidenčné číslo vozidla
+- inputText: AA123AA
+- hideKeyboard
+- tapOn:
+    id: licencePlateContinue
+- extendedWaitUntil:
+    notVisible: Načítava sa...
+    timeout: 15000
+- runFlow:
+    when:
+      visible:
+        id: PAAS_PARKING_VIOLATION_DUPLICITY
+    commands:
+      - tapOn:
+          id: licencePlateContinue
+- extendedWaitUntil:
+    visible: Vyberte druh priestupku
+    timeout: 10000
+- tapOn: Vyberte druh priestupku
+- tapOn: Nerešpektovanie DZ
+- tapOn: Pokračovať
+- runFlow:
+    when:
+      visible: Duplicita
+    commands:
+      - tapOn: Vytvoriť hlásenie
+- assertVisible: Detail vozidla
+- tapOn: Pokračovať
+- repeat:
+    times: 5
+    commands:
+      - extendedWaitUntil:
+          visible:
+            id: takePicture
+            enabled: true
+          timeout: 5000
+      - tapOn:
+          id: takePicture
+# Will create offence
+- tapOn:
+    id: createOffence
+- extendedWaitUntil:
+    visible:
+      id: newScan
+    timeout: 10000
+- tapOn:
+    id: newScan
+- tapOn: Evidenčné číslo vozidla
+- inputText: AA123AA
+- tapOn: Ďalej
+# Will consider as duplicity
+- assertVisible:
+    id: PAAS_PARKING_VIOLATION_DUPLICITY
+- tapOn: Ďalej
+- assertVisible: Vyberte druh priestupku
+- tapOn: Vyberte druh priestupku
+- tapOn: Nerešpektovanie DZ
+- tapOn: Pokračovať
+# Will show duplicity modal
+- assertVisible: Duplicita
