@@ -42,7 +42,7 @@ export const useScanLicencePlate = () => {
       if (!(location && role)) return
 
       const res = await clientApi.scanControllerCreateOrUpdateScanEcv({
-        ecv,
+        ecv: ecv.toUpperCase(),
         scanReason: role.scanReason,
         udr: zone?.udrId,
         lat: location.coords.latitude,
