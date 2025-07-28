@@ -35,7 +35,7 @@ const MapScreen = () => {
       <MapZoneBottomSheet
         ref={zoneBottomSheetRef}
         zone={selectedZone}
-        setFlyToCenter={mapRef.current?.setFlyToCenter}
+        flyTo={mapRef.current?.flyTo}
         isZoomedOut={!isMapPinShown}
       />
     </View>

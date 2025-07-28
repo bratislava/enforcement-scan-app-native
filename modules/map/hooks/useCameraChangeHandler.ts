@@ -10,7 +10,6 @@ import { interpolate } from '@/utils/interpolate'
 
 const HIDE_MARKER_ON_ZOOM_OVER = 13.5
 const DEBOUNCE_TIME = 50
-const RESET_FLY_TO_CENTER_TIME = 500
 const QUERY_RECT_SIZE = 5
 
 type Dependencies = {
@@ -20,7 +19,6 @@ type Dependencies = {
   setSelectedPolygon: Dispatch<SetStateAction<UdrZoneFeature | null>>
   setIsMapPinShown?: Dispatch<SetStateAction<boolean>>
   onStateChange?: (state: MapState) => void
-  setFlyToCenter: Dispatch<SetStateAction<Position | null>>
   onCenterChange?: (center: Position) => void
 }
 
@@ -31,7 +29,6 @@ export const useCameraChangeHandler = ({
   setSelectedPolygon,
   setIsMapPinShown,
   onStateChange,
-  setFlyToCenter,
   onCenterChange,
 }: Dependencies) => {
   const { scale } = useWindowDimensions()
@@ -40,6 +37,7 @@ export const useCameraChangeHandler = ({
   // scaled center is needed to query features at the center of the map
   const scaledCenter = useMapCenter({ safeArea: true, scale: Platform.OS === 'android' })
   const [lastCenter, setLastCenter] = useState<number[]>([0, 0])
+
   const getCurrentPolygon = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async (state: MapState) => {
@@ -88,10 +86,6 @@ export const useCameraChangeHandler = ({
     getCurrentPolygon(state)
   }, DEBOUNCE_TIME)
 
-  const resetFlyToCenterHandler = useDebouncedCallback(() => {
-    setFlyToCenter(null)
-  }, RESET_FLY_TO_CENTER_TIME)
-
   return useCallback(
     (state: MapState) => {
       onStateChange?.(state)
@@ -102,7 +96,6 @@ export const useCameraChangeHandler = ({
         return
       }
       setLastCenter(state.properties.center)
-      resetFlyToCenterHandler()
       if (!Keyboard.isVisible()) {
         debouncedHandleCameraChange(state)
         if (state.properties.zoom < HIDE_MARKER_ON_ZOOM_OVER) {
@@ -112,12 +105,6 @@ export const useCameraChangeHandler = ({
         }
       }
     },
-    [
-      debouncedHandleCameraChange,
-      setIsMapPinShown,
-      lastCenter,
-      onStateChange,
-      resetFlyToCenterHandler,
-    ],
+    [debouncedHandleCameraChange, setIsMapPinShown, lastCenter, onStateChange],
   )
 }

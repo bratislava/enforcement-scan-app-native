@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import { useWindowDimensions } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useSafeAreaFrame } from 'react-native-safe-area-context'
+
+import { HEADER_HEIGHT } from '@/components/screen-layout/ScreenView'
 
 type Options = {
   safeArea?: boolean
@@ -8,26 +10,29 @@ type Options = {
 }
 
 // TODO: make screen height dependent?
-export const getBottomMapPadding = () => {
-  // Half of the `MapZoneBottomSheet` height when zone is shown
-  return 50
+export const getMapPadding = () => {
+  return {
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    // Half of the `MapZoneBottomSheet` height when zone is shown
+    paddingBottom: 180,
+  }
 }
 
 export const useMapCenter = (options?: Options) => {
   const { safeArea = false, scale = false } = options ?? {}
-  const insets = useSafeAreaInsets()
+  const safeAreaFrame = useSafeAreaFrame()
   const dimensions = useWindowDimensions()
 
   return useMemo(() => {
-    const bottomPadding = getBottomMapPadding()
-    const windowWidth = safeArea ? dimensions.width - insets.right - insets.left : dimensions.width
-    const windowHeight = safeArea
-      ? dimensions.height - insets.top - insets.bottom
-      : dimensions.height
+    const bottomPadding = getMapPadding().paddingBottom
+    const windowWidth = safeArea ? safeAreaFrame.width : dimensions.width
+    const windowHeight = (safeArea ? safeAreaFrame.height : dimensions.height) - HEADER_HEIGHT
 
     return {
       top: ((windowHeight - bottomPadding) * (scale ? dimensions.scale : 1)) / 2,
       left: (windowWidth * (scale ? dimensions.scale : 1)) / 2,
     }
-  }, [safeArea, dimensions.width, dimensions.height, dimensions.scale, insets, scale])
+  }, [safeAreaFrame, dimensions, safeArea, scale])
 }

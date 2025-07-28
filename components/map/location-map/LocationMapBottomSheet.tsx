@@ -11,16 +11,16 @@ import BottomSheetHandleWithShadow from '@/components/screen-layout/BottomSheet/
 type Props = {
   isDisabled?: boolean
   onPress: () => void
-  setFlyToCenter?: MapRef['setFlyToCenter']
+  flyTo?: MapRef['flyTo']
 }
 
 const LocationMapBottomSheet = forwardRef<BottomSheet, Props>(
-  ({ setFlyToCenter, isDisabled, onPress }, ref) => {
+  ({ flyTo, isDisabled, onPress }, ref) => {
     const animatedPosition = useSharedValue(0)
 
     return (
       <>
-        <MapZoneBottomSheetAttachment {...{ animatedPosition, setFlyToCenter }} />
+        <MapZoneBottomSheetAttachment {...{ animatedPosition, flyTo }} />
 
         <BottomSheet
           key="mapZoneBottomSheet"

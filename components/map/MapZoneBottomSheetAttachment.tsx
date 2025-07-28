@@ -16,10 +16,10 @@ const LOCATION_REQUEST_THROTTLE = 500 // ms
 const LOCATION_REQUEST_TIMEOUT = 500 // ms
 
 type Props = Omit<BottomSheetTopAttachmentProps, 'children'> & {
-  setFlyToCenter?: MapRef['setFlyToCenter']
+  flyTo?: MapRef['flyTo']
 }
 
-const MapZoneBottomSheetAttachment = ({ setFlyToCenter, ...restProps }: Props) => {
+const MapZoneBottomSheetAttachment = ({ flyTo, ...restProps }: Props) => {
   const [permissionStatus] = useLocationPermission()
   const [isButtonDisabled, setIsButtonDisabled] = useState(false)
   const [isButtonDisabledTimeout, setIsButtonDisabledTimeout] = useState<NodeJS.Timeout | null>(
@@ -38,7 +38,7 @@ const MapZoneBottomSheetAttachment = ({ setFlyToCenter, ...restProps }: Props) =
           }),
         ])
         if (location) {
-          setFlyToCenter?.([location.coords.longitude, location.coords.latitude])
+          flyTo?.([location.coords.longitude, location.coords.latitude])
         }
         setIsButtonDisabledTimeout(
           setTimeout(() => {
@@ -50,7 +50,7 @@ const MapZoneBottomSheetAttachment = ({ setFlyToCenter, ...restProps }: Props) =
         setIsButtonDisabled(false)
       }
     }
-  }, [setFlyToCenter, permissionStatus])
+  }, [flyTo, permissionStatus])
 
   useEffect(() => {
     return () => {

@@ -1,5 +1,6 @@
 import BottomSheet from '@gorhom/bottom-sheet'
 import { router } from 'expo-router'
+import { Position } from 'geojson'
 import { useCallback, useRef, useState } from 'react'
 import { View } from 'react-native'
 
@@ -64,13 +65,22 @@ const LocationMapScreen = ({ role }: Props) => {
     setOffenceState,
   ])
 
+  const onCenterChange = useCallback(
+    (center: Position) => {
+      setCenterCoordinate({
+        lat: center[1], // lat is second in Position type
+        long: center[0], // long is first in Position type
+      })
+    },
+    [setCenterCoordinate],
+  )
+
   return (
     <View className="flex-1 items-stretch">
       {centerCoordinate ? (
         <LocationMap
           ref={mapRef}
-          centerCoordinate={centerCoordinate}
-          setCenterCoordinate={setCenterCoordinate}
+          onCenterChange={onCenterChange}
           selectedZone={selectedZone}
           onZoneChange={handleZoneChange}
         />
@@ -80,7 +90,7 @@ const LocationMapScreen = ({ role }: Props) => {
         isDisabled={role?.actions.zone && !isAllowedOutsideZone ? !selectedZone : false}
         onPress={onLocationSelect}
         ref={zoneBottomSheetRef}
-        setFlyToCenter={mapRef.current?.setFlyToCenter}
+        flyTo={mapRef.current?.flyTo}
       />
 
       <ChangeZoneModal visible={isModalShown} onCloseModal={() => setIsModalShown(false)} />
