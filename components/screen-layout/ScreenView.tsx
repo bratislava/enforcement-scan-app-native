@@ -21,6 +21,8 @@ export type ScreenViewProps = {
   options?: Exclude<ScreenProps['options'], Function>
 } & ViewProps
 
+export const HEADER_HEIGHT = 72
+
 const ScreenView = ({
   children,
   className,

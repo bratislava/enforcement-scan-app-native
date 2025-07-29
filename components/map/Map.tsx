@@ -19,6 +19,7 @@ import MapPin from '@/components/map/MapPin'
 import MapZones from '@/components/map/MapZones'
 import { MAP_STYLE_URL } from '@/modules/map/constants'
 import { useCameraChangeHandler } from '@/modules/map/hooks/useCameraChangeHandler'
+import { getMapPadding } from '@/modules/map/hooks/useMapCenter'
 import { useMapStoreUpdateContext } from '@/modules/map/state/MapStoreProvider/useMapStoreUpdateContext'
 import { MapUdrZoneWithTranslationProps, UdrZoneFeature } from '@/modules/map/types'
 import { udrStyles } from '@/modules/map/utils/layer-styles/visitors'
@@ -29,11 +30,12 @@ type Props = {
 }
 
 export type MapRef = {
-  setFlyToCenter: (center: Position) => void
+  flyTo: (center: Position) => void
 }
 
 const ZOOM_ON_PLACE_SELECT = 16
 
+// TODO: Consider merging with LocationMap component (they have very similar structure)
 const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange }, ref) => {
   const camera = useRef<Camera>(null)
   const map = useRef<MapView>(null)
@@ -46,8 +48,6 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
     setMapHeading(mapState.properties.heading)
   }
 
-  const [flyToCenter, setFlyToCenter] = useState<Position | null>(null)
-  const [cameraZoom, setCameraZoom] = useState<number | undefined>()
   const [newCameraHeading, setNewCameraHeading] = useState<number | null>(null)
 
   const selectedZone = useMemo(() => selectedPolygon?.properties, [selectedPolygon])
@@ -60,13 +60,20 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
     onMapPinVisibilityChange?.(isMapPinShown)
   }, [onMapPinVisibilityChange, isMapPinShown])
 
-  const handleSetFlyToCenter = useCallback((center: Position) => {
-    setFlyToCenter(center)
-    setCameraZoom(ZOOM_ON_PLACE_SELECT)
+  const handleFlyTo = useCallback((center: Position, zoomLevel: number = ZOOM_ON_PLACE_SELECT) => {
+    camera.current?.setCamera({
+      centerCoordinate: center,
+      zoomLevel,
+      // both setCamera and flyTo function don't respect the padding set in the Camera component so it needs to be set again
+      padding: getMapPadding(),
+      animationMode: 'moveTo',
+    })
   }, [])
+
   const handleRotateToNorth = useCallback(() => {
     setNewCameraHeading(0)
   }, [])
+
   useEffect(() => {
     if (newCameraHeading !== null) {
       camera.current?.setCamera({
@@ -78,12 +85,14 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
 
   useEffect(() => {
     updateMapStoreContext({
-      setFlyToCenter: handleSetFlyToCenter,
+      flyTo: (center) => {
+        handleFlyTo(center)
+      },
       rotateToNorth: handleRotateToNorth,
     })
-  }, [updateMapStoreContext, handleSetFlyToCenter, handleRotateToNorth])
+  }, [updateMapStoreContext, handleFlyTo, handleRotateToNorth])
 
-  useImperativeHandle(ref, () => ({ setFlyToCenter: handleSetFlyToCenter }), [handleSetFlyToCenter])
+  useImperativeHandle(ref, () => ({ flyTo: handleFlyTo }), [handleFlyTo])
 
   const handleCameraChange = useCameraChangeHandler({
     isMapPinShown,
@@ -92,7 +101,6 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
     setIsMapPinShown,
     setSelectedPolygon,
     onStateChange,
-    setFlyToCenter,
   })
 
   return (
@@ -105,12 +113,7 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
         scaleBarEnabled={false}
         pitchEnabled={false}
       >
-        <MapCamera
-          ref={camera}
-          flyToCenter={flyToCenter}
-          cameraZoom={cameraZoom}
-          setFlyToCenter={setFlyToCenter}
-        />
+        <MapCamera ref={camera} />
 
         <MapZones />
 
@@ -120,7 +123,7 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
           shape={selectedPolygon ?? { coordinates: [], type: 'Polygon' }}
         >
           <FillLayer id="highlight" style={udrStyles.zoneFillSelected} />
-          <LineLayer id="higlight-lines" style={udrStyles.lineSelected} />
+          <LineLayer id="highlight-lines" style={udrStyles.lineSelected} />
         </ShapeSource>
 
         <UserMapIndicator />

@@ -15,18 +15,18 @@ import { cn } from '@/utils/cn'
 
 type Props = {
   zone: MapUdrZoneWithTranslationProps | null
-  setFlyToCenter?: MapRef['setFlyToCenter']
+  flyTo?: MapRef['flyTo']
   isZoomedOut?: boolean
 }
 
 const MapZoneBottomSheet = forwardRef<BottomSheet, Props>(
-  ({ zone: selectedZone, setFlyToCenter, isZoomedOut }, ref) => {
+  ({ zone: selectedZone, flyTo, isZoomedOut }, ref) => {
     const { t } = useTranslation()
     const animatedPosition = useSharedValue(0)
 
     return (
       <>
-        <MapZoneBottomSheetAttachment {...{ animatedPosition, setFlyToCenter }} />
+        <MapZoneBottomSheetAttachment {...{ animatedPosition, flyTo }} />
         <BottomSheet
           key="mapZoneBottomSheet"
           ref={ref}

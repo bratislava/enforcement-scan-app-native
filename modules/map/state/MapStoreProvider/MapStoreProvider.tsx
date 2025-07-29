@@ -2,7 +2,7 @@ import { Position } from 'geojson'
 import { createContext, PropsWithChildren, useCallback, useState } from 'react'
 
 type MapContextProps = {
-  setFlyToCenter: ((center: Position) => void) | null
+  flyTo: ((center: Position) => void) | null
   rotateToNorth: (() => void) | null
 }
 
@@ -15,7 +15,7 @@ export const MapStoreUpdateContext = createContext<
 MapStoreUpdateContext.displayName = 'MapUpdateContext'
 
 const defaultInitialMapValues: MapContextProps = {
-  setFlyToCenter: null,
+  flyTo: null,
   rotateToNorth: null,
 }
 
