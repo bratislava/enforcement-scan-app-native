@@ -1,15 +1,15 @@
 module.exports = {
   expo: {
+    newArchEnabled: true,
     name: 'Skenovacia aplikácia',
     slug: 'enforcement-scan-app',
     scheme: 'enforcement-scan-app',
-    version: '1.3.1',
+    version: '1.4.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
     splash: {
-      image: './assets/splash.png',
-      resizeMode: 'contain',
+      image: './assets/icon.png',
       backgroundColor: '#16254C',
     },
     assetBundlePatterns: ['**/*'],
@@ -18,6 +18,10 @@ module.exports = {
       adaptiveIcon: {
         foregroundImage: './assets/icon.png',
         backgroundColor: '#ffffff',
+      },
+      androidXOptions: {
+        useAndroidX: true,
+        enableJetifier: true,
       },
     },
     experiments: {
