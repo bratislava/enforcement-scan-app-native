@@ -41,6 +41,7 @@ const LocationMap = forwardRef(({ selectedZone, onCenterChange, onZoneChange }: 
         zoomLevel,
         // both setCamera and flyTo function don't respect the padding set in the Camera component so it needs to be set again
         padding: getMapPadding(),
+        animationMode: 'moveTo',
       })
     },
     [],

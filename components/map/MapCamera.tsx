@@ -33,8 +33,7 @@ const MapCamera = forwardRef<Camera, Props>(
     }
 
     useEffect(() => {
-      const isWithinCity = isWithinCityBounds(location)
-      if (isWithinCity && location && !centerCoordinate) {
+      if (isWithinCityBounds(location) && location && !centerCoordinate) {
         flyToCoordinate([location.coords.longitude, location.coords.latitude])
       }
     }, [centerCoordinate, location])
