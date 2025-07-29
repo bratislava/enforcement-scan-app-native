@@ -19,6 +19,7 @@ module.exports = {
         foregroundImage: './assets/icon.png',
         backgroundColor: '#ffffff',
       },
+      edgeToEdge: true,
       androidXOptions: {
         useAndroidX: true,
         enableJetifier: true,
@@ -31,6 +32,7 @@ module.exports = {
       'expo-router',
       'expo-font',
       'react-native-vision-camera',
+      'expo-web-browser',
       [
         '@rnmapbox/maps',
         {
