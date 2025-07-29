@@ -77,7 +77,7 @@ export const useCreateOffence = () => {
 
       return clientApi.scanControllerCreateOffence(
         scanData.uuid,
-        data,
+        JSON.stringify(data),
         // Axios throws Network Error if the file is fetched and sent with `new File()`
         photosWithLocationMetadata.map((photoPath) => {
           const photoUri = getPhotoUri(photoPath)
