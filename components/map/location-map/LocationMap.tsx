@@ -20,6 +20,7 @@ type Props = {
   onZoneChange?: (feature: MapUdrZoneWithTranslationProps | null) => void
 }
 
+// TODO: Consider merging with Map component (they have very similar structure)
 const LocationMap = forwardRef(({ selectedZone, onCenterChange, onZoneChange }: Props, ref) => {
   const map = useRef<MapView>(null)
   const camera = useRef<Camera>(null)

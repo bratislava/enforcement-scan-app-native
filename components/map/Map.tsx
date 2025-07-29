@@ -35,6 +35,7 @@ export type MapRef = {
 
 const ZOOM_ON_PLACE_SELECT = 16
 
+// TODO: Consider merging with LocationMap component (they have very similar structure)
 const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange }, ref) => {
   const camera = useRef<Camera>(null)
   const map = useRef<MapView>(null)
