@@ -68,6 +68,7 @@ const TextInput = forwardRef<TextInputType, TextInputProps>(
             !multiline && 'h-[24px]',
             className,
           )}
+          numberOfLines={multiline ? undefined : 1}
           multiline={multiline}
           {...rest}
         />

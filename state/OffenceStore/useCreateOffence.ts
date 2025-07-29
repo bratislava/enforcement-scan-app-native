@@ -13,7 +13,7 @@ import { addTextToImage } from '@/utils/addTextToImage'
 import { coordsToString } from '@/utils/coordsToString'
 
 const onRouteToResult = (offenceResult: 'success' | 'error') => {
-  router.navigate({
+  router.push({
     pathname: 'offence/result',
     params: {
       offenceResult,

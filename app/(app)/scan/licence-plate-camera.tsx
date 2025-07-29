@@ -82,7 +82,7 @@ const LicencePlateCameraComp = () => {
 
   const onContinue = async () => {
     if (scanResult && scanResult !== ScanResultEnum.Other) {
-      router.navigate('/offence')
+      router.push('/offence')
 
       return
     }

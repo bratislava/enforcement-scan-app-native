@@ -28,7 +28,7 @@ import { environment } from '@/environment'
 import AuthStoreProvider from '@/modules/auth/state/AuthStoreProvider'
 import colors from '@/tailwind.config.colors'
 
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation()
+const navigationIntegration = Sentry.reactNavigationIntegration()
 
 Sentry.init({
   dsn: environment.sentryDns,
@@ -37,12 +37,7 @@ Sentry.init({
   // Disabled in development to avoid unnecessary events in Sentry
   enabled: environment.deployment === 'production',
   environment: environment.deployment,
-  integrations: [
-    new Sentry.ReactNativeTracing({
-      routingInstrumentation,
-      enableNativeFramesTracking: true,
-    }),
-  ],
+  integrations: [navigationIntegration],
 })
 
 const onFetchUpdateAsync = async () => {
@@ -63,7 +58,7 @@ const RootLayout = () => {
   const ref = useNavigationContainerRef()
   useEffect(() => {
     if (ref) {
-      routingInstrumentation.registerNavigationContainer(ref)
+      navigationIntegration.registerNavigationContainer(ref)
     }
   }, [ref])
 
@@ -113,7 +108,7 @@ const RootLayout = () => {
                     />
                     <Stack
                       screenOptions={{
-                        headerBackTitleVisible: false,
+                        headerBackButtonDisplayMode: 'minimal',
                         headerShown: false,
                         headerTitleStyle: {
                           fontFamily: 'BelfastGrotesk_700Bold',

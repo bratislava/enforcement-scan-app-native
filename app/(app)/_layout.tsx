@@ -48,7 +48,7 @@ const RootLayout = () => {
       <ArcgisStoreProvider>
         <Stack
           screenOptions={{
-            headerBackTitleVisible: false,
+            headerBackButtonDisplayMode: 'minimal',
             headerTitleStyle: {
               fontFamily: 'BelfastGrotesk_700Bold',
             },

@@ -46,7 +46,7 @@ const PhotosPage = () => {
           <IconButton
             accessibilityLabel={t('offence.picture.detail.add')}
             name="add"
-            onPress={() => router.navigate('/offence/photos')}
+            onPress={() => router.push('/offence/photos')}
           />
         ),
       }}

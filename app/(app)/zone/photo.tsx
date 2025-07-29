@@ -27,7 +27,7 @@ const ZonePhotoPage = () => {
 
   const redirectToCamera = (zonePhoto?: ResponseGetFavouritePhotoDto) => {
     setOffenceState({ zonePhoto })
-    router.navigate(ZONE_PHOTO_CAMERA_ROUTE)
+    router.push(ZONE_PHOTO_CAMERA_ROUTE)
   }
 
   if (isPending) {

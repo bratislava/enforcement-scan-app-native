@@ -3,7 +3,6 @@ import * as Location from 'expo-location'
 import { router } from 'expo-router'
 
 import { environment } from '@/environment'
-import { useClearHistory } from '@/hooks/useClearHistory'
 import { AUTH_SCOPES, discovery, useAuthTokens } from '@/modules/auth/hooks/useAuthTokens'
 import { useAuthStoreUpdateContext } from '@/modules/auth/state/useAuthStoreUpdateContext'
 import { getUserFromTokens } from '@/modules/auth/utils'
@@ -15,7 +14,6 @@ export const useSignIn = () => {
   const [, setTokens] = useAuthTokens()
 
   const onAuthStoreUpdate = useAuthStoreUpdateContext()
-  const clearHistory = useClearHistory()
 
   const [locationPermissionStatus] = useLocationPermission()
   const [cameraPermissionStatus] = useCameraPermission()
@@ -67,6 +65,7 @@ export const useSignIn = () => {
         }
       }
 
+      router.dismissAll()
       if (
         locationPermissionStatus === Location.PermissionStatus.GRANTED ||
         cameraPermissionStatus === PermissionStatuses.GRANTED
@@ -75,7 +74,6 @@ export const useSignIn = () => {
       } else {
         router.replace('/permissions')
       }
-      clearHistory()
     } catch (error) {
       onAuthStoreUpdate({ user: null })
       throw error

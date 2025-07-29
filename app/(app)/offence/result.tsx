@@ -39,7 +39,7 @@ const OffenceResultPage = () => {
 
       if (e.data.action.type === 'GO_BACK') {
         resetOffenceState({ ...getDefaultOffenceStateByRole(role.key), zone, zonePhoto, location })
-        router.navigate('scan/licence-plate-camera')
+        router.dismissTo('scan/licence-plate-camera')
       } else navigation.dispatch(e.data.action)
     })
   }, [location, navigation, resetOffenceState, zone, zonePhoto, showErrorScreen, role?.key])
@@ -55,7 +55,7 @@ const OffenceResultPage = () => {
 
   const onNewZonePress = () => {
     resetOffenceState(getDefaultOffenceStateByRole(role.key))
-    router.navigate('zone')
+    router.dismissTo('zone')
   }
 
   return (
