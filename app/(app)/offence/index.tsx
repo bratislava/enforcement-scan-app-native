@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { Link, router } from 'expo-router'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView } from 'react-native'
 
@@ -8,28 +8,27 @@ import Field from '@/components/inputs/Field'
 import SelectButton from '@/components/inputs/SelectButton'
 import TextInput from '@/components/inputs/TextInput'
 import SelectRow from '@/components/list-rows/SelectRow'
+import { ChangeZoneModal } from '@/components/map/location-map/ChangeZoneModal'
 import LocationMapPreview from '@/components/map/location-map/LocationMapPreview'
-import { OFFENCES_ALLOWED_OUTSIDE_ZONE } from '@/components/map/location-map/LocationMapScreen'
 import ContinueButton from '@/components/navigation/ContinueButton'
-import { useModal } from '@/components/screen-layout/Modal/useModal'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DismissKeyboard'
 import PressableStyled from '@/components/shared/PressableStyled'
 import { DuplicityModal } from '@/components/special/DuplicityModal'
+import { useOffenceValidation } from '@/hooks/useOffenceValidation'
 import { clientApi } from '@/modules/backend/client-api'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { findContainingFeature } from '@/modules/map/utils/findContainingFeature'
-import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { sanitizeLicencePlate } from '@/utils/sanitizeLicencePlate'
 
+type ModalType = 'duplicity' | 'changeZone' | null
+
 const OffencePage = () => {
   const { t } = useTranslation()
-  const { udrData } = useArcgisStoreContext()
 
   const {
     ecv,
@@ -44,17 +43,9 @@ const OffencePage = () => {
   const role = getRoleByKey(roleKey)
 
   const [touched, setTouched] = useState(false)
-  const { openModal, isModalVisible, closeModal } = useModal()
+  const [shownModal, setShownModal] = useState<ModalType>(null)
 
-  const isLocationError = useMemo(
-    () =>
-      role?.actions.zone &&
-      !OFFENCES_ALLOWED_OUTSIDE_ZONE.has(offenceType) &&
-      location &&
-      udrData &&
-      !findContainingFeature(udrData.features, [location.long, location.lat]),
-    [role?.actions.zone, offenceType, location, udrData],
-  )
+  const { isOutsideZone, isOutsideOriginalZone, hasEmptyFields } = useOffenceValidation()
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -93,13 +84,15 @@ const OffencePage = () => {
       }
 
       if (duplicityResponseData?.length > 0) {
-        openModal()
+        setShownModal('duplicity')
 
         return
       }
       router.navigate('/offence/vehicle')
     },
   })
+
+  const handleCloseModal = () => setShownModal(null)
 
   const handleLicencePlateChange = (newLicencePlate: string) => {
     setOffenceState({ ecv: sanitizeLicencePlate(newLicencePlate) })
@@ -108,7 +101,13 @@ const OffencePage = () => {
   const onContinue = () => {
     setTouched(true)
 
-    if (!(offenceType && (isObjectiveResponsibility || resolutionType)) || isLocationError) {
+    if (hasEmptyFields || isOutsideZone) {
+      return
+    }
+
+    if (isOutsideOriginalZone) {
+      setShownModal('changeZone')
+
       return
     }
 
@@ -140,7 +139,7 @@ const OffencePage = () => {
 
             <Field
               label={t('offence.location')}
-              errorMessage={touched && isLocationError ? t('offence.outOfZone') : undefined}
+              errorMessage={touched && isOutsideZone ? t('offence.outOfZone') : undefined}
             >
               <PressableStyled
                 onPress={() => {
@@ -192,7 +191,8 @@ const OffencePage = () => {
           </ScreenContent>
         </ScrollView>
 
-        <DuplicityModal visible={isModalVisible} onCloseModal={closeModal} />
+        <DuplicityModal visible={shownModal === 'duplicity'} onCloseModal={handleCloseModal} />
+        <ChangeZoneModal visible={shownModal === 'changeZone'} onCloseModal={handleCloseModal} />
       </ScreenView>
     </DismissKeyboard>
   )
