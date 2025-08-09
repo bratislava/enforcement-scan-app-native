@@ -9584,7 +9584,7 @@ prompts@^2.3.2, prompts@^2.4.2:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@15.8.1, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@15.8.1, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -9777,16 +9777,14 @@ react-native-css-interop@0.0.36:
     babel-plugin-tester "^11.0.4"
     lightningcss "1.22.0"
 
-react-native-gesture-handler@~2.16.1:
-  version "2.16.2"
-  resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.16.2.tgz"
-  integrity sha512-vGFlrDKlmyI+BT+FemqVxmvO7nqxU33cgXVsn6IKAFishvlG3oV2Ds67D5nPkHMea8T+s1IcuMm0bF8ntZtAyg==
+react-native-gesture-handler@~2.28.0:
+  version "2.28.0"
+  resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.28.0.tgz#07fb4f5eae72f810aac3019b060d26c1835bfd0c"
+  integrity sha512-0msfJ1vRxXKVgTgvL+1ZOoYw3/0z1R+Ked0+udoJhyplC2jbVKIJ8Z1bzWdpQRCV3QcQ87Op0zJVE5DhKK2A0A==
   dependencies:
     "@egjs/hammerjs" "^2.0.17"
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
-    lodash "^4.17.21"
-    prop-types "^15.7.2"
 
 react-native-helmet-async@2.0.4:
   version "2.0.4"
