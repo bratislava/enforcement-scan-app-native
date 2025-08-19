@@ -76,7 +76,9 @@ const LocationMapScreen = ({ role }: Props) => {
   )
 
   const handleContinueToZone = useCallback(() => {
-    if (centerCoordinate) setOffenceState({ location: centerCoordinate })
+    if (centerCoordinate) {
+      setOffenceState({ location: centerCoordinate })
+    }
   }, [centerCoordinate, setOffenceState])
 
   return (
