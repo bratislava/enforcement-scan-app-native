@@ -13,26 +13,36 @@ type Props = {
 }
 
 const MapZoneShapes = ({ udrData }: Props) => {
-  const udrDataByStatus = useMemo(
+  const shownUdrData = useMemo(
     () => ({
-      active: {
-        ...udrData,
-        features: udrData?.features.filter(
-          (udr) => udr.properties?.status === MapZoneStatusEnum.active,
-        ),
-      },
-      residents: {
-        ...udrData,
-        features: udrData?.features.filter((udr) => udr.properties?.udrId === '0'),
-      },
+      ...udrData,
+      features: udrData.features.filter(
+        (udr) => udr.properties?.status !== MapZoneStatusEnum.planned,
+      ),
     }),
     [udrData],
   )
 
+  const udrDataByStatus = useMemo(
+    () => ({
+      active: {
+        ...shownUdrData,
+        features: shownUdrData.features.filter(
+          (udr) => udr.properties?.status === MapZoneStatusEnum.active,
+        ),
+      },
+      residents: {
+        ...shownUdrData,
+        features: shownUdrData.features.filter((udr) => udr.properties?.udrId === '0'),
+      },
+    }),
+    [shownUdrData],
+  )
+
   return (
     <>
-      {udrData.features?.length > 0 && (
-        <ShapeSource id="udrSource" shape={udrData}>
+      {shownUdrData.features.length > 0 && (
+        <ShapeSource id="udrSource" shape={shownUdrData}>
           <FillLayer id="udrFill" style={udrStyles.zoneFill} />
         </ShapeSource>
       )}
