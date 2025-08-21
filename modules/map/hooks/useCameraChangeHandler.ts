@@ -52,7 +52,7 @@ export const useCameraChangeHandler = ({
           scaledCenter.left - rectHalfSize,
         ],
         null,
-        ['udrFill', 'udrFill2'],
+        ['udrFillActive', 'udrFillResidents'],
       )
 
       // this feature needs screen center that is not scaled to be calculated correctly
