@@ -20,7 +20,7 @@ export const udrStyles = {
     lineWidth: ['interpolate', ['linear'], ['zoom'], 11, 1, 20, 3],
     lineOpacity: 0.4,
   },
-  zoneFill: {
+  zoneFillActive: {
     fillColor: ['case', ['>=', ['get', 'price'], 2], colors.green, colors.lawnGreen],
     fillOpacity: ['case', ['boolean', ['feature-state', 'hover'], false], 0.4, 0.2],
   },

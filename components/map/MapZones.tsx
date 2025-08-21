@@ -13,47 +13,41 @@ type Props = {
 }
 
 const MapZoneShapes = ({ udrData }: Props) => {
-  const shownUdrData = useMemo(
-    () => ({
-      ...udrData,
-      features: udrData.features.filter(
-        (udr) => udr.properties?.status !== MapZoneStatusEnum.planned,
-      ),
-    }),
-    [udrData],
-  )
-
   const udrDataByStatus = useMemo(
     () => ({
       active: {
-        ...shownUdrData,
-        features: shownUdrData.features.filter(
+        ...udrData,
+        features: udrData.features.filter(
           (udr) => udr.properties?.status === MapZoneStatusEnum.active,
         ),
       },
       residents: {
-        ...shownUdrData,
-        features: shownUdrData.features.filter((udr) => udr.properties?.udrId === '0'),
+        ...udrData,
+        features: udrData.features.filter((udr) => udr.properties?.udrId === '0'),
       },
     }),
-    [shownUdrData],
+    [udrData],
   )
 
   return (
     <>
-      {shownUdrData.features.length > 0 && (
-        <ShapeSource id="udrSource" shape={shownUdrData}>
-          <FillLayer id="udrFill" style={udrStyles.zoneFill} />
-        </ShapeSource>
-      )}
       {udrDataByStatus.residents.features?.length > 0 && (
         <ShapeSource id="udrSourceResidents" shape={udrDataByStatus.residents}>
-          <FillLayer id="udrFillResidents" style={udrStyles.zoneFillResidents} />
+          <FillLayer
+            // The id is used in camera change handler to fill selected polygon
+            id="udrFillResidents"
+            style={udrStyles.zoneFillResidents}
+          />
           <LineLayer id="udrLineResidents" style={udrStyles.lineResidents} />
         </ShapeSource>
       )}
       {udrDataByStatus.active.features?.length > 0 && (
         <ShapeSource id="udrSourceActive" shape={udrDataByStatus.active}>
+          <FillLayer
+            // The id is used in camera change handler to fill selected polygon
+            id="udrFillActive"
+            style={udrStyles.zoneFillActive}
+          />
           <LineLayer id="udrLineActive" style={udrStyles.lineActive} />
         </ShapeSource>
       )}
