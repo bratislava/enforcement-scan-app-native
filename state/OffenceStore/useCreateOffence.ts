@@ -68,7 +68,7 @@ export const useCreateOffence = () => {
         objectiveResponsibility: isObjectiveResponsibility,
         lat: location.lat,
         long: location.long,
-        favouritePhotoId: zonePhoto?.id,
+        zoneSignPhotoId: zonePhoto?.id,
         // offence with objective responsibility does not allow to set resolution type
         resolutionType: isObjectiveResponsibility ? undefined : resolutionType,
         udr: zone?.udrId,

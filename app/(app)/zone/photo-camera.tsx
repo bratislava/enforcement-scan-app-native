@@ -9,7 +9,7 @@ import FullScreenCamera from '@/components/camera/FullScreenCamera'
 import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
-import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryOptions'
+import { getZoneSignPhotosOptions } from '@/modules/backend/constants/queryOptions'
 import FlashlightContextProvider from '@/modules/camera/state/FlashlightContextProvider'
 import { getCurrentPositionAsync } from '@/modules/map/utils/getCurrentPositionAsync'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -32,9 +32,9 @@ const AppRoute = () => {
 
   const createPhotoMutation = useMutation({
     mutationFn: ({ file, tag }: { file: File; tag: string }) =>
-      clientApi.scanControllerCreateFavouritePhoto(file, tag),
+      clientApi.scanControllerCreateZoneSignPhoto(file, tag),
     onSuccess: async () => {
-      await queryClient.resetQueries({ queryKey: getFavouritePhotosOptions().queryKey })
+      await queryClient.resetQueries({ queryKey: getZoneSignPhotosOptions().queryKey })
     },
   })
 
