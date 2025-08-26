@@ -36,63 +36,6 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  *
  * @export
- * @interface CustomErrorDependencyDto
- */
-export interface CustomErrorDependencyDto {
-  /**
-   * Status Code
-   * @type {number}
-   * @memberof CustomErrorDependencyDto
-   */
-  statusCode: number
-  /**
-   * status in text
-   * @type {string}
-   * @memberof CustomErrorDependencyDto
-   */
-  status: string
-  /**
-   * Detail error message
-   * @type {string}
-   * @memberof CustomErrorDependencyDto
-   */
-  message: string
-  /**
-   *
-   * @type {CustomErrorsDependencyEnum}
-   * @memberof CustomErrorDependencyDto
-   */
-  errorName: CustomErrorsDependencyEnum
-  /**
-   * Helper for sending additional data in error
-   * @type {string}
-   * @memberof CustomErrorDependencyDto
-   */
-  msg?: string
-}
-
-/**
- * Exact error name
- * @export
- * @enum {string}
- */
-
-export const CustomErrorsDependencyEnum = {
-  NUMBER_0: 0,
-  NUMBER_1: 1,
-  NUMBER_2: 2,
-  NUMBER_3: 3,
-  NUMBER_4: 4,
-  NUMBER_5: 5,
-  NUMBER_6: 6,
-} as const
-
-export type CustomErrorsDependencyEnum =
-  (typeof CustomErrorsDependencyEnum)[keyof typeof CustomErrorsDependencyEnum]
-
-/**
- *
- * @export
  * @interface DefaultResponseHealthcheck
  */
 export interface DefaultResponseHealthcheck {
@@ -102,6 +45,134 @@ export interface DefaultResponseHealthcheck {
    * @memberof DefaultResponseHealthcheck
    */
   appRunning: boolean
+}
+/**
+ * Exact error name
+ * @export
+ * @enum {string}
+ */
+
+export const ErrorNameEnum = {
+  DatabaseError: 'DATABASE_ERROR',
+  AzureError: 'AZURE_ERROR',
+  MagproxyError: 'MAGPROXY_ERROR',
+  MinioError: 'MINIO_ERROR',
+  PricingApiError: 'PRICING_API_ERROR',
+  EnforcementError: 'ENFORCEMENT_ERROR',
+  ParkdotsError: 'PARKDOTS_ERROR',
+  MissingUdr: 'MISSING_UDR',
+  MissingEnv: 'MISSING_ENV',
+  UnexpectedError: 'UNEXPECTED_ERROR',
+  NotFound: 'NOT_FOUND',
+  ArcgisError: 'ARCGIS_ERROR',
+} as const
+
+export type ErrorNameEnum = (typeof ErrorNameEnum)[keyof typeof ErrorNameEnum]
+
+/**
+ *
+ * @export
+ * @interface ErrorResponseDto
+ */
+export interface ErrorResponseDto {
+  /**
+   * Status Code
+   * @type {number}
+   * @memberof ErrorResponseDto
+   */
+  statusCode: number
+  /**
+   * Detail error message
+   * @type {string}
+   * @memberof ErrorResponseDto
+   */
+  message: string
+  /**
+   *
+   * @type {ErrorNameEnum}
+   * @memberof ErrorResponseDto
+   */
+  errorName: ErrorNameEnum
+}
+
+/**
+ *
+ * @export
+ * @interface EvidenceFileDto
+ */
+export interface EvidenceFileDto {
+  /**
+   * ID of the record in database.
+   * @type {number}
+   * @memberof EvidenceFileDto
+   */
+  id: number
+  /**
+   * UUID of the record.
+   * @type {string}
+   * @memberof EvidenceFileDto
+   */
+  uuid: string
+  /**
+   * Timestamp of creation in UTC.
+   * @type {string}
+   * @memberof EvidenceFileDto
+   */
+  createdAt: string
+  /**
+   * Timestamp of the latest update. Time is in UTC format.
+   * @type {string}
+   * @memberof EvidenceFileDto
+   */
+  updatedAt: string
+  /**
+   * System where record was created.
+   * @type {string}
+   * @memberof EvidenceFileDto
+   */
+  createdBy: string
+  /**
+   * System where record was updated.
+   * @type {string}
+   * @memberof EvidenceFileDto
+   */
+  updatedBy: string
+  /**
+   * Email address of author of the record.
+   * @type {string}
+   * @memberof EvidenceFileDto
+   */
+  createdByEmail: string
+  /**
+   * Email address of the user who last updated the record.
+   * @type {string}
+   * @memberof EvidenceFileDto
+   */
+  updatedByEmail: string
+  /**
+   * File path to the image from the root of the S3 bucket.
+   * @type {string}
+   * @memberof EvidenceFileDto
+   */
+  filePath: string
+  /**
+   *
+   * @type {string}
+   * @memberof EvidenceFileDto
+   */
+  fileName: string
+  /**
+   * ID of associated offence.
+   * @type {number}
+   * @memberof EvidenceFileDto
+   */
+  offenceId: number
+  /**
+   * Evidence files for each offence are ordered. This property contains order number of particular evidence photo.
+   * @type {number}
+   * @memberof EvidenceFileDto
+   */
+  orderRank: number
 }
 /**
  *
@@ -117,7 +188,7 @@ export interface MobileAppVersionUpdateDto {
   version: string
 }
 /**
- * State of offence
+ * Current status of offence.
  * @export
  * @enum {string}
  */
@@ -136,7 +207,7 @@ export const OffenceStateEnum = {
 export type OffenceStateEnum = (typeof OffenceStateEnum)[keyof typeof OffenceStateEnum]
 
 /**
- *
+ * Legal paragraph or regulation that was violated.
  * @export
  * @enum {string}
  */
@@ -183,37 +254,37 @@ export interface RequestCreateOffenceDataDto {
    */
   offenceType: OffenceTypeEnum
   /**
-   * Is it objective responsibility(true) or it is subjective(false)?
+   * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N, N_B), this value is always true.
    * @type {boolean}
    * @memberof RequestCreateOffenceDataDto
    */
   objectiveResponsibility: boolean
   /**
-   * Longitude of offence place. If different from originalAutomaticLong, it means it was edited manually before the offence was created - the lon in scanVehicle record will be updated with this value
+   * Longitude of the offence location. If different from the value in associated scan, it indicates the location was manually edited before creating the offence.
    * @type {number}
    * @memberof RequestCreateOffenceDataDto
    */
   long?: number
   /**
-   * Latitude of offence place. If different from originalAutomaticLat, it means it was edited manually before the offence was created - the lat in scanVehicle record will be updated with this value
+   * Latitude of the offence location. If different from the value in associated scan, it indicates the location was manually edited before creating the offence.
    * @type {number}
    * @memberof RequestCreateOffenceDataDto
    */
   lat?: number
   /**
-   * Name of street if is changed in map
+   * Name of the street where the offence occurred. Typically provided only if the location was manually edited and differs from the associated scan.
    * @type {string}
    * @memberof RequestCreateOffenceDataDto
    */
   streetName?: string
   /**
-   * Udr if is changed in map
+   * UDR code (4-digit number or \"0\") for the offence location. Typically provided only if the UDR was manually edited and differs from the associated scan.
    * @type {string}
    * @memberof RequestCreateOffenceDataDto
    */
-  udr?: string
+  udr?: string | null
   /**
-   * Vehicle id, helps to identify vehicle in case of more than 1 item per ecv
+   * Vehicle ID from NEV. Used to identify a specific vehicle when multiple vehicles share the same ECV.
    * @type {number}
    * @memberof RequestCreateOffenceDataDto
    */
@@ -225,11 +296,18 @@ export interface RequestCreateOffenceDataDto {
    */
   resolutionType?: ResolutionOffenceTypeEnum
   /**
-   * Id of zone photo stored in favourite photos
+   * ID of zone sign photo in database.
+   * @type {number}
+   * @memberof RequestCreateOffenceDataDto
+   * @deprecated
+   */
+  favouritePhotoId?: number
+  /**
+   * ID of zone sign photo in database.
    * @type {number}
    * @memberof RequestCreateOffenceDataDto
    */
-  favouritePhotoId?: number
+  zoneSignPhotoId?: number
 }
 
 /**
@@ -239,35 +317,35 @@ export interface RequestCreateOffenceDataDto {
  */
 export interface RequestCreateOrUpdateScanDto {
   /**
-   * Uuid of scan if you want to update, if this is not set, than it will create new scan.
+   * UUID of the scan to update. If not provided, a new scan will be created.
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
   uuid?: string
   /**
-   * Scanned ecv
+   * Vehicle license plate.
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
   ecv: string
   /**
-   * Longitude of scan place
+   * Longitude of the scan location.
    * @type {number}
    * @memberof RequestCreateOrUpdateScanDto
    */
   long: number
   /**
-   * Latitude of scan place
+   * Latitude of the scan location.
    * @type {number}
    * @memberof RequestCreateOrUpdateScanDto
    */
   lat: number
   /**
-   * Is it manually written? if false it is from scanner ECV, if true, it is changed / added manually
+   * Flag indicating whether the ECV was automatically recognized from a photo or entered manually.
    * @type {boolean}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  ecvUpdatedManually: boolean
+  ecvUpdatedManually?: boolean
   /**
    *
    * @type {ScanReasonEnum}
@@ -275,57 +353,57 @@ export interface RequestCreateOrUpdateScanDto {
    */
   scanReason: ScanReasonEnum
   /**
-   * For now, send udr code, but this will be redefined by parkdots endpoints
+   * UDR code (4-digit number or \"0\") for the offence location.
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  udr?: string
+  udr?: string | null
   /**
-   * Street Name from map or gps TBD if this is necessary
+   * Name of the street where the scan was performed.
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  streetName?: string
+  streetName?: string | null
   /**
-   *
+   * Name of the district where the scan was performed.
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  district?: string
+  district?: string | null
   /**
-   *
+   * Name of the zone area where the scan was performed.
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  areaName?: string
+  areaName?: string | null
   /**
-   * Code of area
+   * Array of area codes associated with the scan location.
    * @type {Array<string>}
    * @memberof RequestCreateOrUpdateScanDto
    */
   areaCodes?: Array<string> | null
   /**
-   * Uuid of udr, generated from gis, used for paas parking authorization - part of request to Parkdots
+   * Externally generated UUID of the UDR.
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
   udrGlobalId?: string | null
   /**
-   * Current version of mobile app version
+   * Version of the mobile application used to perform the scan.
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  mobileAppVersion?: string
+  mobileAppVersion?: string | null
   /**
-   * Logging device ID
+   * Unique identifier of the device used to perform the scan.
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
    */
-  deviceId?: string
+  deviceId?: string | null
 }
 
 /**
- * Type of resolution in case of subjective responsibility
+ * Type of offence resolution. Applicable only if subjective responsibility is assigned.
  * @export
  * @enum {string}
  */
@@ -347,17 +425,140 @@ export type ResolutionOffenceTypeEnum =
 /**
  *
  * @export
+ * @interface ResponseBaseOffenceDto
+ */
+export interface ResponseBaseOffenceDto {
+  /**
+   * ID of the record in database.
+   * @type {number}
+   * @memberof ResponseBaseOffenceDto
+   */
+  id: number
+  /**
+   * UUID of the record.
+   * @type {string}
+   * @memberof ResponseBaseOffenceDto
+   */
+  uuid: string
+  /**
+   * Timestamp of creation in UTC.
+   * @type {string}
+   * @memberof ResponseBaseOffenceDto
+   */
+  createdAt: string
+  /**
+   * Timestamp of the latest update. Time is in UTC format.
+   * @type {string}
+   * @memberof ResponseBaseOffenceDto
+   */
+  updatedAt: string
+  /**
+   * System where record was created.
+   * @type {string}
+   * @memberof ResponseBaseOffenceDto
+   */
+  createdBy: string
+  /**
+   * System where record was updated.
+   * @type {string}
+   * @memberof ResponseBaseOffenceDto
+   */
+  updatedBy: string
+  /**
+   * Email address of author of the record.
+   * @type {string}
+   * @memberof ResponseBaseOffenceDto
+   */
+  createdByEmail: string
+  /**
+   * Email address of the user who last updated the record.
+   * @type {string}
+   * @memberof ResponseBaseOffenceDto
+   */
+  updatedByEmail: string
+  /**
+   *
+   * @type {OffenceTypeEnum}
+   * @memberof ResponseBaseOffenceDto
+   */
+  offenceType: OffenceTypeEnum
+  /**
+   * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N, N_B), this value is always true.
+   * @type {boolean}
+   * @memberof ResponseBaseOffenceDto
+   */
+  objectiveResponsibility: boolean
+  /**
+   *
+   * @type {OffenceStateEnum}
+   * @memberof ResponseBaseOffenceDto
+   */
+  offenceState: OffenceStateEnum
+  /**
+   * ID of scan associated with this offence.
+   * @type {number}
+   * @memberof ResponseBaseOffenceDto
+   */
+  scanVehicleId: number
+  /**
+   * Vehicle ID from NEV. Used to separate multiple vehicles with same ECV.
+   * @type {string}
+   * @memberof ResponseBaseOffenceDto
+   */
+  registryVehicleId: string | null
+  /**
+   * ID of zone sign photo associated with this offence.
+   * @type {number}
+   * @memberof ResponseBaseOffenceDto
+   * @deprecated
+   */
+  favouritePhotoId?: number | null
+  /**
+   * ID of zone sign photo associated with this offence.
+   * @type {number}
+   * @memberof ResponseBaseOffenceDto
+   */
+  zoneSignPhotoId: number | null
+  /**
+   *
+   * @type {ResponseCreateOrUpdateScanDto}
+   * @memberof ResponseBaseOffenceDto
+   */
+  ScanVehicle: ResponseCreateOrUpdateScanDto
+  /**
+   *
+   * @type {object}
+   * @memberof ResponseBaseOffenceDto
+   */
+  offenceResolution: object | null
+  /**
+   *
+   * @type {object}
+   * @memberof ResponseBaseOffenceDto
+   */
+  auditorGroup: object | null
+  /**
+   *
+   * @type {number}
+   * @memberof ResponseBaseOffenceDto
+   */
+  retryAttempt: number | null
+}
+
+/**
+ *
+ * @export
  * @interface ResponseCardDto
  */
 export interface ResponseCardDto {
   /**
-   * Id of card in parkdots, helps FE to use cache
+   * UUID of card in Parkdots.
    * @type {string}
    * @memberof ResponseCardDto
    */
   id: string
   /**
-   * Vehicle ECV
+   * Vehicle license plate.
    * @type {string}
    * @memberof ResponseCardDto
    */
@@ -369,7 +570,7 @@ export interface ResponseCardDto {
    */
   state: ResponseCardDtoStateEnum
   /**
-   *
+   * Type of parking card.
    * @type {string}
    * @memberof ResponseCardDto
    */
@@ -394,49 +595,49 @@ export type ResponseCardDtoStateEnum =
  */
 export interface ResponseCreateOffenceDto {
   /**
-   * Id of created offence - used to reference internally in other tables of scan app database
+   * ID of the record in database.
    * @type {number}
    * @memberof ResponseCreateOffenceDto
    */
   id: number
   /**
-   * Uuid of created offence - used to reference externally e.g. in backoffice
+   * UUID of the record.
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
   uuid: string
   /**
-   * Timestamp of creation in UTC
+   * Timestamp of creation in UTC.
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
   createdAt: string
   /**
-   * Timestamp of last update in UTC
+   * Timestamp of the latest update. Time is in UTC format.
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
   updatedAt: string
   /**
-   * Constant \"hmba-scan-app\"
+   * System where record was created.
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
   createdBy: string
   /**
-   * Constant \"hmba-scan-app\"
+   * System where record was updated.
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
   updatedBy: string
   /**
-   * Email of user from AD, who created this scan
+   * Email address of author of the record.
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
   createdByEmail: string
   /**
-   * Email of user from AD, who last updated this scan
+   * Email address of the user who last updated the record.
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
@@ -448,7 +649,7 @@ export interface ResponseCreateOffenceDto {
    */
   offenceType: OffenceTypeEnum
   /**
-   * False if fine was paid on place to police officer, true otherwise. PAAS offences are always true.
+   * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N, N_B), this value is always true.
    * @type {boolean}
    * @memberof ResponseCreateOffenceDto
    */
@@ -460,25 +661,142 @@ export interface ResponseCreateOffenceDto {
    */
   offenceState: OffenceStateEnum
   /**
-   * Id of scan related to this offence
+   * ID of scan associated with this offence.
    * @type {number}
    * @memberof ResponseCreateOffenceDto
    */
   scanVehicleId: number
   /**
-   * Id of vehicle, may be used to identify vehicle in case of multiple items per ecv
+   * Vehicle ID from NEV. Used to separate multiple vehicles with same ECV.
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
-  registryVehicleId?: string | null
+  registryVehicleId: string | null
   /**
-   * Id of zone photo related to this offence
+   * ID of zone sign photo associated with this offence.
+   * @type {number}
+   * @memberof ResponseCreateOffenceDto
+   * @deprecated
+   */
+  favouritePhotoId?: number | null
+  /**
+   * ID of zone sign photo associated with this offence.
    * @type {number}
    * @memberof ResponseCreateOffenceDto
    */
-  favouritePhotoId?: number | null
+  zoneSignPhotoId: number | null
+  /**
+   *
+   * @type {ResponseCreateOrUpdateScanDto}
+   * @memberof ResponseCreateOffenceDto
+   */
+  ScanVehicle: ResponseCreateOrUpdateScanDto
+  /**
+   *
+   * @type {object}
+   * @memberof ResponseCreateOffenceDto
+   */
+  offenceResolution: object | null
+  /**
+   *
+   * @type {object}
+   * @memberof ResponseCreateOffenceDto
+   */
+  auditorGroup: object | null
+  /**
+   *
+   * @type {number}
+   * @memberof ResponseCreateOffenceDto
+   */
+  retryAttempt: number | null
+  /**
+   *
+   * @type {ResponseCreateOffenceDtoFavouritePhoto}
+   * @memberof ResponseCreateOffenceDto
+   * @deprecated
+   */
+  FavouritePhoto?: ResponseCreateOffenceDtoFavouritePhoto | null
+  /**
+   *
+   * @type {ResponseZoneSignPhotoDto}
+   * @memberof ResponseCreateOffenceDto
+   */
+  ZoneSignPhoto: ResponseZoneSignPhotoDto | null
+  /**
+   *
+   * @type {Array<EvidenceFileDto>}
+   * @memberof ResponseCreateOffenceDto
+   */
+  EvidenceFile: Array<EvidenceFileDto>
 }
 
+/**
+ *
+ * @export
+ * @interface ResponseCreateOffenceDtoFavouritePhoto
+ */
+export interface ResponseCreateOffenceDtoFavouritePhoto {
+  /**
+   * ID of the record in database.
+   * @type {number}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  id: number
+  /**
+   * UUID of the record.
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  uuid: string
+  /**
+   * Timestamp of creation in UTC.
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  createdAt: string
+  /**
+   * Timestamp of the latest update. Time is in UTC format.
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  updatedAt: string
+  /**
+   * System where record was created.
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  createdBy: string
+  /**
+   * System where record was updated.
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  updatedBy: string
+  /**
+   * Email address of author of the record.
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  createdByEmail: string
+  /**
+   * Email address of the user who last updated the record.
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  updatedByEmail: string
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  photoUrl: string
+  /**
+   * Tag to image, e.g. zone number
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  tag: string | null
+}
 /**
  *
  * @export
@@ -486,83 +804,35 @@ export interface ResponseCreateOffenceDto {
  */
 export interface ResponseCreateOrUpdateScanDto {
   /**
-   * Id of scan if you want to update, if this is not set, than it will create new scan.
-   * @type {number}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  id: number
-  /**
-   * Uuid of scan if you want to update, if this is not set, than it will create new scan.
+   * UUID of the record.
    * @type {string}
    * @memberof ResponseCreateOrUpdateScanDto
    */
-  uuid: string
+  uuid?: string
   /**
-   * Timestamp of creation in UTC
-   * @type {string}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  createdAt: string
-  /**
-   * Timestamp of last update in UTC
-   * @type {string}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  updatedAt: string
-  /**
-   * System where scan was created
-   * @type {string}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  createdBy: string
-  /**
-   * System where scan was updated
-   * @type {string}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  updatedBy: string
-  /**
-   * Email of user from AD, who created this scan
-   * @type {string}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  createdByEmail: string
-  /**
-   * Email of user from AD, who last updated this scan
-   * @type {string}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  updatedByEmail: string
-  /**
-   * Longitude of last scan or manually updated from pin from map
-   * @type {number}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  long: number
-  /**
-   * Latitude of last scan or manually updated from pin from map
-   * @type {number}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  lat: number
-  /**
-   * Udr ID if it is paas scan
-   * @type {string}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  udr?: string | null
-  /**
-   * Ecv from scan, it is last updated ecv, it is possible that is updated also manually or last scanned
+   * Vehicle license plate.
    * @type {string}
    * @memberof ResponseCreateOrUpdateScanDto
    */
   ecv: string
   /**
-   * Was Ecv updated manually?
+   * Longitude of the scan location.
+   * @type {number}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  long: number
+  /**
+   * Latitude of the scan location.
+   * @type {number}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  lat: number
+  /**
+   * Flag indicating whether the ECV was automatically recognized from a photo or entered manually.
    * @type {boolean}
    * @memberof ResponseCreateOrUpdateScanDto
    */
-  ecvUpdatedManually: boolean
+  ecvUpdatedManually?: boolean
   /**
    *
    * @type {ScanReasonEnum}
@@ -570,11 +840,95 @@ export interface ResponseCreateOrUpdateScanDto {
    */
   scanReason: ScanReasonEnum
   /**
-   * Street of offence by gps from map
+   * UDR code (4-digit number or \"0\") for the offence location.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  udr?: string | null
+  /**
+   * Name of the street where the scan was performed.
    * @type {string}
    * @memberof ResponseCreateOrUpdateScanDto
    */
   streetName?: string | null
+  /**
+   * Name of the district where the scan was performed.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  district?: string | null
+  /**
+   * Name of the zone area where the scan was performed.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  areaName?: string | null
+  /**
+   * Array of area codes associated with the scan location.
+   * @type {Array<string>}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  areaCodes?: Array<string> | null
+  /**
+   * Externally generated UUID of the UDR.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  udrGlobalId?: string | null
+  /**
+   * Version of the mobile application used to perform the scan.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  mobileAppVersion?: string | null
+  /**
+   * Unique identifier of the device used to perform the scan.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  deviceId?: string | null
+  /**
+   * ID of the record in database.
+   * @type {number}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  id: number
+  /**
+   * Timestamp of creation in UTC.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  createdAt: string
+  /**
+   * Timestamp of the latest update. Time is in UTC format.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  updatedAt: string
+  /**
+   * System where record was created.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  createdBy: string
+  /**
+   * System where record was updated.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  updatedBy: string
+  /**
+   * Email address of author of the record.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  createdByEmail: string
+  /**
+   * Email address of the user who last updated the record.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  updatedByEmail: string
   /**
    *
    * @type {ScanResultEnum}
@@ -586,55 +940,17 @@ export interface ResponseCreateOrUpdateScanDto {
 /**
  *
  * @export
- * @interface ResponseGetFavouritePhotoDto
- */
-export interface ResponseGetFavouritePhotoDto {
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseGetFavouritePhotoDto
-   */
-  photoUrl: string
-  /**
-   *
-   * @type {number}
-   * @memberof ResponseGetFavouritePhotoDto
-   */
-  id: number
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseGetFavouritePhotoDto
-   */
-  tag?: string | null
-}
-/**
- *
- * @export
- * @interface ResponseGetFavouritePhotosDto
- */
-export interface ResponseGetFavouritePhotosDto {
-  /**
-   *
-   * @type {Array<ResponseGetFavouritePhotoDto>}
-   * @memberof ResponseGetFavouritePhotosDto
-   */
-  photos: Array<ResponseGetFavouritePhotoDto>
-}
-/**
- *
- * @export
  * @interface ResponseGetOffenceOverviewDto
  */
 export interface ResponseGetOffenceOverviewDto {
   /**
-   *
+   * Vehicle license plate.
    * @type {string}
    * @memberof ResponseGetOffenceOverviewDto
    */
   ecv: string
   /**
-   * Date and time of offence
+   * Timestamp of creation in UTC.
    * @type {string}
    * @memberof ResponseGetOffenceOverviewDto
    */
@@ -646,13 +962,13 @@ export interface ResponseGetOffenceOverviewDto {
    */
   offenceType: OffenceTypeEnum
   /**
-   *
+   * UDR code (4-digit number or \"0\") for the offence location.
    * @type {string}
    * @memberof ResponseGetOffenceOverviewDto
    */
   udr?: string | null
   /**
-   * Flag if report was auto cancelled
+   * Flag indicating whether the offence was automatically cancelled by system recheck of a parking authorization after preconfigured time.
    * @type {boolean}
    * @memberof ResponseGetOffenceOverviewDto
    */
@@ -675,23 +991,36 @@ export interface ResponseGetOffenceOverviewListDto {
 /**
  *
  * @export
+ * @interface ResponseGetZoneSignPhotosDto
+ */
+export interface ResponseGetZoneSignPhotosDto {
+  /**
+   *
+   * @type {Array<ResponseZoneSignPhotoPropertiesDto>}
+   * @memberof ResponseGetZoneSignPhotosDto
+   */
+  photos: Array<ResponseZoneSignPhotoPropertiesDto>
+}
+/**
+ *
+ * @export
  * @interface ResponseTicketDto
  */
 export interface ResponseTicketDto {
   /**
-   * Uuid of ticket in pricingApi, helps FE to use cache
+   * UUID of parking ticket from Pricing API.
    * @type {string}
    * @memberof ResponseTicketDto
    */
   id: string
   /**
-   *
+   * UDR code (4-digit number) of the parking ticket.
    * @type {string}
    * @memberof ResponseTicketDto
    */
   udr: string
   /**
-   *
+   * Flag indicating whether the parking ticket was active at the specified time.
    * @type {boolean}
    * @memberof ResponseTicketDto
    */
@@ -723,7 +1052,7 @@ export interface ResponseTicketsAndPermitsDto {
  */
 export interface ResponseVehiclePropertiesDto {
   /**
-   * List of vehicles for one licence plate, there can be two same licence plate with different vehicle type. User can use which is scanned and send vehicleId to offence response.
+   * List of vehicles for one license plate containing basic properties like color or brand of vehicle.
    * @type {Array<ResponseVehiclePropertiesItemDto>}
    * @memberof ResponseVehiclePropertiesDto
    */
@@ -736,32 +1065,124 @@ export interface ResponseVehiclePropertiesDto {
  */
 export interface ResponseVehiclePropertiesItemDto {
   /**
-   * Color of vehicle from registry
+   * Color of vehicle from NEV registry.
    * @type {string}
    * @memberof ResponseVehiclePropertiesItemDto
    */
   color?: string
   /**
-   * Brand of vehicle from registry
+   * Brand of vehicle from NEV registry.
    * @type {string}
    * @memberof ResponseVehiclePropertiesItemDto
    */
   brand?: string
   /**
-   * Type of vehicle. Is it motorbike, or autobus or normal car or ... ?
+   * Type of vehicle.
    * @type {string}
    * @memberof ResponseVehiclePropertiesItemDto
    */
   vehicleType?: string
   /**
-   * ID of vehicle from state registry
+   * ID of vehicle from NEV registry.
    * @type {number}
    * @memberof ResponseVehiclePropertiesItemDto
    */
   vehicleId: number
 }
 /**
- * Reason of scan
+ *
+ * @export
+ * @interface ResponseZoneSignPhotoDto
+ */
+export interface ResponseZoneSignPhotoDto {
+  /**
+   * ID of the record in database.
+   * @type {number}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  id: number
+  /**
+   * UUID of the record.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  uuid: string
+  /**
+   * Timestamp of creation in UTC.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  createdAt: string
+  /**
+   * Timestamp of the latest update. Time is in UTC format.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  updatedAt: string
+  /**
+   * System where record was created.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  createdBy: string
+  /**
+   * System where record was updated.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  updatedBy: string
+  /**
+   * Email address of author of the record.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  createdByEmail: string
+  /**
+   * Email address of the user who last updated the record.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  updatedByEmail: string
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  photoUrl: string
+  /**
+   * Tag to image, e.g. zone number
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  tag: string | null
+}
+/**
+ *
+ * @export
+ * @interface ResponseZoneSignPhotoPropertiesDto
+ */
+export interface ResponseZoneSignPhotoPropertiesDto {
+  /**
+   *
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoPropertiesDto
+   */
+  photoUrl: string
+  /**
+   * ID of the record in database.
+   * @type {number}
+   * @memberof ResponseZoneSignPhotoPropertiesDto
+   */
+  id: number
+  /**
+   * Tag to image, e.g. zone number
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoPropertiesDto
+   */
+  tag: string | null
+}
+/**
+ * Reason for the scan. For example, if set to PAAS_PARKING_AUTHORIZATION, the system will check whether the specified ECV is authorized to park in the given UDR.
  * @export
  * @enum {string}
  */
@@ -918,17 +1339,459 @@ export class DefaultApi extends BaseAPI {
 }
 
 /**
- * ScannersAndOffencesApi - axios parameter creator
+ * MobileAppApi - axios parameter creator
  * @export
  */
-export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?: Configuration) {
+export const MobileAppApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Upload photo to minio and save url with user to db
+     *
+     * @summary Get latest mobile app version
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    systemControllerGetMobileAppVersion: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/mobile/version`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Get latest mobile app version
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     */
+    systemControllerGetMobileAppVersionOld: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/system/version`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Update mobile app version
+     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    systemControllerUpdateMobileAppVersion: async (
+      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'mobileAppVersionUpdateDto' is not null or undefined
+      assertParamExists(
+        'systemControllerUpdateMobileAppVersion',
+        'mobileAppVersionUpdateDto',
+        mobileAppVersionUpdateDto,
+      )
+      const localVarPath = `/mobile/version`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        mobileAppVersionUpdateDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Update mobile app version
+     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     */
+    systemControllerUpdateMobileAppVersionOld: async (
+      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'mobileAppVersionUpdateDto' is not null or undefined
+      assertParamExists(
+        'systemControllerUpdateMobileAppVersionOld',
+        'mobileAppVersionUpdateDto',
+        mobileAppVersionUpdateDto,
+      )
+      const localVarPath = `/system/version`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        mobileAppVersionUpdateDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * MobileAppApi - functional programming interface
+ * @export
+ */
+export const MobileAppApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = MobileAppApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary Get latest mobile app version
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async systemControllerGetMobileAppVersion(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.systemControllerGetMobileAppVersion(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['MobileAppApi.systemControllerGetMobileAppVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Get latest mobile app version
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     */
+    async systemControllerGetMobileAppVersionOld(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.systemControllerGetMobileAppVersionOld(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['MobileAppApi.systemControllerGetMobileAppVersionOld']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Update mobile app version
+     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async systemControllerUpdateMobileAppVersion(
+      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.systemControllerUpdateMobileAppVersion(
+          mobileAppVersionUpdateDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['MobileAppApi.systemControllerUpdateMobileAppVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Update mobile app version
+     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     */
+    async systemControllerUpdateMobileAppVersionOld(
+      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.systemControllerUpdateMobileAppVersionOld(
+          mobileAppVersionUpdateDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['MobileAppApi.systemControllerUpdateMobileAppVersionOld']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * MobileAppApi - factory interface
+ * @export
+ */
+export const MobileAppApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = MobileAppApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary Get latest mobile app version
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    systemControllerGetMobileAppVersion(options?: RawAxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp
+        .systemControllerGetMobileAppVersion(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Get latest mobile app version
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     */
+    systemControllerGetMobileAppVersionOld(options?: RawAxiosRequestConfig): AxiosPromise<string> {
+      return localVarFp
+        .systemControllerGetMobileAppVersionOld(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Update mobile app version
+     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    systemControllerUpdateMobileAppVersion(
+      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<string> {
+      return localVarFp
+        .systemControllerUpdateMobileAppVersion(mobileAppVersionUpdateDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Update mobile app version
+     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+     * @param {*} [options] Override http request option.
+     * @deprecated
+     * @throws {RequiredError}
+     */
+    systemControllerUpdateMobileAppVersionOld(
+      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<string> {
+      return localVarFp
+        .systemControllerUpdateMobileAppVersionOld(mobileAppVersionUpdateDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * MobileAppApi - object-oriented interface
+ * @export
+ * @class MobileAppApi
+ * @extends {BaseAPI}
+ */
+export class MobileAppApi extends BaseAPI {
+  /**
+   *
+   * @summary Get latest mobile app version
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MobileAppApi
+   */
+  public systemControllerGetMobileAppVersion(options?: RawAxiosRequestConfig) {
+    return MobileAppApiFp(this.configuration)
+      .systemControllerGetMobileAppVersion(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Get latest mobile app version
+   * @param {*} [options] Override http request option.
+   * @deprecated
+   * @throws {RequiredError}
+   * @memberof MobileAppApi
+   */
+  public systemControllerGetMobileAppVersionOld(options?: RawAxiosRequestConfig) {
+    return MobileAppApiFp(this.configuration)
+      .systemControllerGetMobileAppVersionOld(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Update mobile app version
+   * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof MobileAppApi
+   */
+  public systemControllerUpdateMobileAppVersion(
+    mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return MobileAppApiFp(this.configuration)
+      .systemControllerUpdateMobileAppVersion(mobileAppVersionUpdateDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Update mobile app version
+   * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
+   * @param {*} [options] Override http request option.
+   * @deprecated
+   * @throws {RequiredError}
+   * @memberof MobileAppApi
+   */
+  public systemControllerUpdateMobileAppVersionOld(
+    mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return MobileAppApiFp(this.configuration)
+      .systemControllerUpdateMobileAppVersionOld(mobileAppVersionUpdateDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * ScansAndOffencesApi - axios parameter creator
+ * @export
+ */
+export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
      * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scanControllerCreateFavouritePhoto: async (
@@ -980,11 +1843,11 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
     },
     /**
-     * Send id of scan, which founded offence. With this send all necessary data for create offence
-     * @summary Create offence from last scanned ecv
+     * Create offence and send it to Enforcement backoffice.
+     * @summary Create offence from scan.
      * @param {string} scanUuid
-     * @param {string} data Stringified JSON of RequestCreateOffenceDataDto
-     * @param {Array<File>} files Send base64 of files
+     * @param {string} data Stringified JSON of RequestCreateOffenceDataDto.
+     * @param {Array<File>} files Array of jpeg files in base64 format.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1046,8 +1909,8 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
     },
     /**
-     * Create scan of ecv if it is first time. Send if it is for checking parking authorizations, or it is just ordinary scan. It will return parking authorization if you need it. If there is repaired scan or manually repaired scan, sand also first scan ID.
-     * @summary Create or update scan of ecv in database with some basic info about ECV
+     * Creates scan and checks for potential offence duplicities and verifies if vehicle has valid parking ticket or residential card.
+     * @summary Creates a new scan record for a vehicle.
      * @param {RequestCreateOrUpdateScanDto} requestCreateOrUpdateScanDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1099,9 +1962,66 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
     },
     /**
-     * Return photos made today by authenticated user
-     * @summary Get favourite photos
+     * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
+     * @summary Upload photo of zone sign.
+     * @param {File} file Upload image
+     * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerCreateZoneSignPhoto: async (
+      file: File,
+      tag?: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'file' is not null or undefined
+      assertParamExists('scanControllerCreateZoneSignPhoto', 'file', file)
+      const localVarPath = `/scan/zone-sign/create`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      if (file !== undefined) {
+        localVarFormParams.append('file', file as any)
+      }
+
+      if (tag !== undefined) {
+        localVarFormParams.append('tag', tag as any)
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = localVarFormParams
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
+     * @summary Get zone sign photos
+     * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scanControllerGetFavouritePhotos: async (
@@ -1137,22 +2057,22 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
     },
     /**
-     * Search for offences by ecv, gps coordinates, udr, offence type and date. To return duplicities within last two weeks, ecv and gps coordinates on input are expected.
+     * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
      * @summary Find offences matching given filters
-     * @param {string} ecv
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O, DZ and ZIGZAG, rest are OTHER / municipal police offence types.
-     * @param {string} [udr]
-     * @param {number} [lat]
-     * @param {number} [_long]
-     * @param {string} [startDate]
-     * @param {string} [endDate]
+     * @param {string} ecv Vehicle license plate.
+     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N, N_B, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+     * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
+     * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
+     * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
+     * @param {string} [startDate] Start date of the filter interval. Only offences created after this date will be included.
+     * @param {string} [endDate] End date of the filter interval. Only offences created before this date will be included.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerGetOffenceList: async (
       ecv: string,
       offenceTypes?: Array<ScanControllerGetOffenceListOffenceTypesEnum>,
-      udr?: string,
+      udr?: string | null,
       lat?: number,
       _long?: number,
       startDate?: string,
@@ -1219,9 +2139,9 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
     },
     /**
-     * It can return more than one vehicle for one licence plate. Than user can decide, which vehicle is the right.
-     * @summary Return basic properties of vehicle from state registry.
-     * @param {string} ecv
+     * Returns vehicle details for the specified ECV as registered in the state registry. If multiple vehicles are found for the same license plate, all are returned. This endpoint is useful for verifying vehicle information during scanning.
+     * @summary Retrieve basic vehicle properties from the state registry by license plate.
+     * @param {string} ecv Vehicle license plate.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1264,10 +2184,48 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
     },
     /**
-     * Return offences of user filtered by ecv and time, by default select all ecv within last 10 hours
+     * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
+     * @summary Get zone sign photos
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerGetZoneSignPhotos: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/scan/zone-sign/photos`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Returns a list of offences created by the authenticated user, filtered by ECV and time. By default, it selects all offences from the last 10 hours for all ECVs. This endpoint helps users quickly review their recent enforcement activity.
      * @summary Get recent offences of logged user
-     * @param {string} [date] Filter offences by date, offences newer than this timestamp are selected, 10 hours ago is default value
-     * @param {string} [ecv] Filter offences by ecv
+     * @param {string} [date] Start date of the filter interval. Only offences created after this date will be included.
+     * @param {string} [ecv] Vehicle license plate.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1314,10 +2272,10 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
       }
     },
     /**
-     * Given ECV and optionally date, return valid tickets and permit cards
+     * Returns all parking tickets and permit cards for the specified ECV and date (all day). The response includes a flag indicating whether particular ticket was valid on the requested date. Default, today.
      * @summary Get active tickets and permit cards of vehicle
-     * @param {string} ecv Vehicle ECV
-     * @param {string} [date] Date on which the ticket/card\&#39;s validity is checked
+     * @param {string} ecv Vehicle license plate.
+     * @param {string} [date] All parking tickets and cards which were active on this day will be returned. Validity of each ticket will be checked against exact time.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1370,18 +2328,19 @@ export const ScannersAndOffencesApiAxiosParamCreator = function (configuration?:
 }
 
 /**
- * ScannersAndOffencesApi - functional programming interface
+ * ScansAndOffencesApi - functional programming interface
  * @export
  */
-export const ScannersAndOffencesApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = ScannersAndOffencesApiAxiosParamCreator(configuration)
+export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = ScansAndOffencesApiAxiosParamCreator(configuration)
   return {
     /**
-     * Upload photo to minio and save url with user to db
+     * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
      * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async scanControllerCreateFavouritePhoto(
@@ -1389,7 +2348,7 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
       tag?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetFavouritePhotoDto>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseZoneSignPhotoPropertiesDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerCreateFavouritePhoto(
         file,
@@ -1398,7 +2357,7 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['ScannersAndOffencesApi.scanControllerCreateFavouritePhoto']?.[
+        operationServerMap['ScansAndOffencesApi.scanControllerCreateFavouritePhoto']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1410,11 +2369,11 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Send id of scan, which founded offence. With this send all necessary data for create offence
-     * @summary Create offence from last scanned ecv
+     * Create offence and send it to Enforcement backoffice.
+     * @summary Create offence from scan.
      * @param {string} scanUuid
-     * @param {string} data Stringified JSON of RequestCreateOffenceDataDto
-     * @param {Array<File>} files Send base64 of files
+     * @param {string} data Stringified JSON of RequestCreateOffenceDataDto.
+     * @param {Array<File>} files Array of jpeg files in base64 format.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1434,7 +2393,7 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['ScannersAndOffencesApi.scanControllerCreateOffence']?.[
+        operationServerMap['ScansAndOffencesApi.scanControllerCreateOffence']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1446,8 +2405,8 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Create scan of ecv if it is first time. Send if it is for checking parking authorizations, or it is just ordinary scan. It will return parking authorization if you need it. If there is repaired scan or manually repaired scan, sand also first scan ID.
-     * @summary Create or update scan of ecv in database with some basic info about ECV
+     * Creates scan and checks for potential offence duplicities and verifies if vehicle has valid parking ticket or residential card.
+     * @summary Creates a new scan record for a vehicle.
      * @param {RequestCreateOrUpdateScanDto} requestCreateOrUpdateScanDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1464,7 +2423,7 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['ScannersAndOffencesApi.scanControllerCreateOrUpdateScanEcv']?.[
+        operationServerMap['ScansAndOffencesApi.scanControllerCreateOrUpdateScanEcv']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1476,21 +2435,55 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Return photos made today by authenticated user
-     * @summary Get favourite photos
+     * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
+     * @summary Upload photo of zone sign.
+     * @param {File} file Upload image
+     * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async scanControllerCreateZoneSignPhoto(
+      file: File,
+      tag?: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseZoneSignPhotoPropertiesDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerCreateZoneSignPhoto(
+        file,
+        tag,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ScansAndOffencesApi.scanControllerCreateZoneSignPhoto']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
+     * @summary Get zone sign photos
+     * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     async scanControllerGetFavouritePhotos(
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetFavouritePhotosDto>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetZoneSignPhotosDto>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.scanControllerGetFavouritePhotos(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['ScannersAndOffencesApi.scanControllerGetFavouritePhotos']?.[
+        operationServerMap['ScansAndOffencesApi.scanControllerGetFavouritePhotos']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1502,29 +2495,29 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Search for offences by ecv, gps coordinates, udr, offence type and date. To return duplicities within last two weeks, ecv and gps coordinates on input are expected.
+     * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
      * @summary Find offences matching given filters
-     * @param {string} ecv
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O, DZ and ZIGZAG, rest are OTHER / municipal police offence types.
-     * @param {string} [udr]
-     * @param {number} [lat]
-     * @param {number} [_long]
-     * @param {string} [startDate]
-     * @param {string} [endDate]
+     * @param {string} ecv Vehicle license plate.
+     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N, N_B, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+     * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
+     * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
+     * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
+     * @param {string} [startDate] Start date of the filter interval. Only offences created after this date will be included.
+     * @param {string} [endDate] End date of the filter interval. Only offences created before this date will be included.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async scanControllerGetOffenceList(
       ecv: string,
       offenceTypes?: Array<ScanControllerGetOffenceListOffenceTypesEnum>,
-      udr?: string,
+      udr?: string | null,
       lat?: number,
       _long?: number,
       startDate?: string,
       endDate?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ResponseCreateOffenceDto>>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ResponseBaseOffenceDto>>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerGetOffenceList(
         ecv,
@@ -1538,7 +2531,7 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['ScannersAndOffencesApi.scanControllerGetOffenceList']?.[
+        operationServerMap['ScansAndOffencesApi.scanControllerGetOffenceList']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1550,9 +2543,9 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * It can return more than one vehicle for one licence plate. Than user can decide, which vehicle is the right.
-     * @summary Return basic properties of vehicle from state registry.
-     * @param {string} ecv
+     * Returns vehicle details for the specified ECV as registered in the state registry. If multiple vehicles are found for the same license plate, all are returned. This endpoint is useful for verifying vehicle information during scanning.
+     * @summary Retrieve basic vehicle properties from the state registry by license plate.
+     * @param {string} ecv Vehicle license plate.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1568,7 +2561,7 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['ScannersAndOffencesApi.scanControllerGetVehicleProperties']?.[
+        operationServerMap['ScansAndOffencesApi.scanControllerGetVehicleProperties']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1580,10 +2573,36 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Return offences of user filtered by ecv and time, by default select all ecv within last 10 hours
+     * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
+     * @summary Get zone sign photos
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async scanControllerGetZoneSignPhotos(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetZoneSignPhotosDto>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.scanControllerGetZoneSignPhotos(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ScansAndOffencesApi.scanControllerGetZoneSignPhotos']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Returns a list of offences created by the authenticated user, filtered by ECV and time. By default, it selects all offences from the last 10 hours for all ECVs. This endpoint helps users quickly review their recent enforcement activity.
      * @summary Get recent offences of logged user
-     * @param {string} [date] Filter offences by date, offences newer than this timestamp are selected, 10 hours ago is default value
-     * @param {string} [ecv] Filter offences by ecv
+     * @param {string} [date] Start date of the filter interval. Only offences created after this date will be included.
+     * @param {string} [ecv] Vehicle license plate.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1601,7 +2620,7 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['ScannersAndOffencesApi.scanControllerOffenceOverview']?.[
+        operationServerMap['ScansAndOffencesApi.scanControllerOffenceOverview']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1613,10 +2632,10 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
         )(axios, localVarOperationServerBasePath || basePath)
     },
     /**
-     * Given ECV and optionally date, return valid tickets and permit cards
+     * Returns all parking tickets and permit cards for the specified ECV and date (all day). The response includes a flag indicating whether particular ticket was valid on the requested date. Default, today.
      * @summary Get active tickets and permit cards of vehicle
-     * @param {string} ecv Vehicle ECV
-     * @param {string} [date] Date on which the ticket/card\&#39;s validity is checked
+     * @param {string} ecv Vehicle license plate.
+     * @param {string} [date] All parking tickets and cards which were active on this day will be returned. Validity of each ticket will be checked against exact time.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1634,7 +2653,7 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['ScannersAndOffencesApi.scanControllerTicketsAndPermits']?.[
+        operationServerMap['ScansAndOffencesApi.scanControllerTicketsAndPermits']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -1649,39 +2668,40 @@ export const ScannersAndOffencesApiFp = function (configuration?: Configuration)
 }
 
 /**
- * ScannersAndOffencesApi - factory interface
+ * ScansAndOffencesApi - factory interface
  * @export
  */
-export const ScannersAndOffencesApiFactory = function (
+export const ScansAndOffencesApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
   axios?: AxiosInstance,
 ) {
-  const localVarFp = ScannersAndOffencesApiFp(configuration)
+  const localVarFp = ScansAndOffencesApiFp(configuration)
   return {
     /**
-     * Upload photo to minio and save url with user to db
+     * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
      * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scanControllerCreateFavouritePhoto(
       file: File,
       tag?: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseGetFavouritePhotoDto> {
+    ): AxiosPromise<ResponseZoneSignPhotoPropertiesDto> {
       return localVarFp
         .scanControllerCreateFavouritePhoto(file, tag, options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * Send id of scan, which founded offence. With this send all necessary data for create offence
-     * @summary Create offence from last scanned ecv
+     * Create offence and send it to Enforcement backoffice.
+     * @summary Create offence from scan.
      * @param {string} scanUuid
-     * @param {string} data Stringified JSON of RequestCreateOffenceDataDto
-     * @param {Array<File>} files Send base64 of files
+     * @param {string} data Stringified JSON of RequestCreateOffenceDataDto.
+     * @param {Array<File>} files Array of jpeg files in base64 format.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1696,8 +2716,8 @@ export const ScannersAndOffencesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Create scan of ecv if it is first time. Send if it is for checking parking authorizations, or it is just ordinary scan. It will return parking authorization if you need it. If there is repaired scan or manually repaired scan, sand also first scan ID.
-     * @summary Create or update scan of ecv in database with some basic info about ECV
+     * Creates scan and checks for potential offence duplicities and verifies if vehicle has valid parking ticket or residential card.
+     * @summary Creates a new scan record for a vehicle.
      * @param {RequestCreateOrUpdateScanDto} requestCreateOrUpdateScanDto
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1711,41 +2731,59 @@ export const ScannersAndOffencesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Return photos made today by authenticated user
-     * @summary Get favourite photos
+     * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
+     * @summary Upload photo of zone sign.
+     * @param {File} file Upload image
+     * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerCreateZoneSignPhoto(
+      file: File,
+      tag?: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseZoneSignPhotoPropertiesDto> {
+      return localVarFp
+        .scanControllerCreateZoneSignPhoto(file, tag, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
+     * @summary Get zone sign photos
+     * @param {*} [options] Override http request option.
+     * @deprecated
      * @throws {RequiredError}
      */
     scanControllerGetFavouritePhotos(
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseGetFavouritePhotosDto> {
+    ): AxiosPromise<ResponseGetZoneSignPhotosDto> {
       return localVarFp
         .scanControllerGetFavouritePhotos(options)
         .then((request) => request(axios, basePath))
     },
     /**
-     * Search for offences by ecv, gps coordinates, udr, offence type and date. To return duplicities within last two weeks, ecv and gps coordinates on input are expected.
+     * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
      * @summary Find offences matching given filters
-     * @param {string} ecv
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O, DZ and ZIGZAG, rest are OTHER / municipal police offence types.
-     * @param {string} [udr]
-     * @param {number} [lat]
-     * @param {number} [_long]
-     * @param {string} [startDate]
-     * @param {string} [endDate]
+     * @param {string} ecv Vehicle license plate.
+     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N, N_B, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+     * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
+     * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
+     * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
+     * @param {string} [startDate] Start date of the filter interval. Only offences created after this date will be included.
+     * @param {string} [endDate] End date of the filter interval. Only offences created before this date will be included.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerGetOffenceList(
       ecv: string,
       offenceTypes?: Array<ScanControllerGetOffenceListOffenceTypesEnum>,
-      udr?: string,
+      udr?: string | null,
       lat?: number,
       _long?: number,
       startDate?: string,
       endDate?: string,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<Array<ResponseCreateOffenceDto>> {
+    ): AxiosPromise<Array<ResponseBaseOffenceDto>> {
       return localVarFp
         .scanControllerGetOffenceList(
           ecv,
@@ -1760,9 +2798,9 @@ export const ScannersAndOffencesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * It can return more than one vehicle for one licence plate. Than user can decide, which vehicle is the right.
-     * @summary Return basic properties of vehicle from state registry.
-     * @param {string} ecv
+     * Returns vehicle details for the specified ECV as registered in the state registry. If multiple vehicles are found for the same license plate, all are returned. This endpoint is useful for verifying vehicle information during scanning.
+     * @summary Retrieve basic vehicle properties from the state registry by license plate.
+     * @param {string} ecv Vehicle license plate.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1775,10 +2813,23 @@ export const ScannersAndOffencesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Return offences of user filtered by ecv and time, by default select all ecv within last 10 hours
+     * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
+     * @summary Get zone sign photos
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerGetZoneSignPhotos(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ResponseGetZoneSignPhotosDto> {
+      return localVarFp
+        .scanControllerGetZoneSignPhotos(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Returns a list of offences created by the authenticated user, filtered by ECV and time. By default, it selects all offences from the last 10 hours for all ECVs. This endpoint helps users quickly review their recent enforcement activity.
      * @summary Get recent offences of logged user
-     * @param {string} [date] Filter offences by date, offences newer than this timestamp are selected, 10 hours ago is default value
-     * @param {string} [ecv] Filter offences by ecv
+     * @param {string} [date] Start date of the filter interval. Only offences created after this date will be included.
+     * @param {string} [ecv] Vehicle license plate.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1792,10 +2843,10 @@ export const ScannersAndOffencesApiFactory = function (
         .then((request) => request(axios, basePath))
     },
     /**
-     * Given ECV and optionally date, return valid tickets and permit cards
+     * Returns all parking tickets and permit cards for the specified ECV and date (all day). The response includes a flag indicating whether particular ticket was valid on the requested date. Default, today.
      * @summary Get active tickets and permit cards of vehicle
-     * @param {string} ecv Vehicle ECV
-     * @param {string} [date] Date on which the ticket/card\&#39;s validity is checked
+     * @param {string} ecv Vehicle license plate.
+     * @param {string} [date] All parking tickets and cards which were active on this day will be returned. Validity of each ticket will be checked against exact time.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1812,40 +2863,41 @@ export const ScannersAndOffencesApiFactory = function (
 }
 
 /**
- * ScannersAndOffencesApi - object-oriented interface
+ * ScansAndOffencesApi - object-oriented interface
  * @export
- * @class ScannersAndOffencesApi
+ * @class ScansAndOffencesApi
  * @extends {BaseAPI}
  */
-export class ScannersAndOffencesApi extends BaseAPI {
+export class ScansAndOffencesApi extends BaseAPI {
   /**
-   * Upload photo to minio and save url with user to db
+   * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
    * @summary Upload photo of zone sign.
    * @param {File} file Upload image
    * @param {string} [tag] Tag to image, e.g. zone number
    * @param {*} [options] Override http request option.
+   * @deprecated
    * @throws {RequiredError}
-   * @memberof ScannersAndOffencesApi
+   * @memberof ScansAndOffencesApi
    */
   public scanControllerCreateFavouritePhoto(
     file: File,
     tag?: string,
     options?: RawAxiosRequestConfig,
   ) {
-    return ScannersAndOffencesApiFp(this.configuration)
+    return ScansAndOffencesApiFp(this.configuration)
       .scanControllerCreateFavouritePhoto(file, tag, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Send id of scan, which founded offence. With this send all necessary data for create offence
-   * @summary Create offence from last scanned ecv
+   * Create offence and send it to Enforcement backoffice.
+   * @summary Create offence from scan.
    * @param {string} scanUuid
-   * @param {string} data Stringified JSON of RequestCreateOffenceDataDto
-   * @param {Array<File>} files Send base64 of files
+   * @param {string} data Stringified JSON of RequestCreateOffenceDataDto.
+   * @param {Array<File>} files Array of jpeg files in base64 format.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannersAndOffencesApi
+   * @memberof ScansAndOffencesApi
    */
   public scanControllerCreateOffence(
     scanUuid: string,
@@ -1853,118 +2905,151 @@ export class ScannersAndOffencesApi extends BaseAPI {
     files: Array<File>,
     options?: RawAxiosRequestConfig,
   ) {
-    return ScannersAndOffencesApiFp(this.configuration)
+    return ScansAndOffencesApiFp(this.configuration)
       .scanControllerCreateOffence(scanUuid, data, files, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Create scan of ecv if it is first time. Send if it is for checking parking authorizations, or it is just ordinary scan. It will return parking authorization if you need it. If there is repaired scan or manually repaired scan, sand also first scan ID.
-   * @summary Create or update scan of ecv in database with some basic info about ECV
+   * Creates scan and checks for potential offence duplicities and verifies if vehicle has valid parking ticket or residential card.
+   * @summary Creates a new scan record for a vehicle.
    * @param {RequestCreateOrUpdateScanDto} requestCreateOrUpdateScanDto
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannersAndOffencesApi
+   * @memberof ScansAndOffencesApi
    */
   public scanControllerCreateOrUpdateScanEcv(
     requestCreateOrUpdateScanDto: RequestCreateOrUpdateScanDto,
     options?: RawAxiosRequestConfig,
   ) {
-    return ScannersAndOffencesApiFp(this.configuration)
+    return ScansAndOffencesApiFp(this.configuration)
       .scanControllerCreateOrUpdateScanEcv(requestCreateOrUpdateScanDto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Return photos made today by authenticated user
-   * @summary Get favourite photos
+   * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
+   * @summary Upload photo of zone sign.
+   * @param {File} file Upload image
+   * @param {string} [tag] Tag to image, e.g. zone number
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannersAndOffencesApi
+   * @memberof ScansAndOffencesApi
+   */
+  public scanControllerCreateZoneSignPhoto(
+    file: File,
+    tag?: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ScansAndOffencesApiFp(this.configuration)
+      .scanControllerCreateZoneSignPhoto(file, tag, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
+   * @summary Get zone sign photos
+   * @param {*} [options] Override http request option.
+   * @deprecated
+   * @throws {RequiredError}
+   * @memberof ScansAndOffencesApi
    */
   public scanControllerGetFavouritePhotos(options?: RawAxiosRequestConfig) {
-    return ScannersAndOffencesApiFp(this.configuration)
+    return ScansAndOffencesApiFp(this.configuration)
       .scanControllerGetFavouritePhotos(options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Search for offences by ecv, gps coordinates, udr, offence type and date. To return duplicities within last two weeks, ecv and gps coordinates on input are expected.
+   * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
    * @summary Find offences matching given filters
-   * @param {string} ecv
-   * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types are N, N_B, O, DZ and ZIGZAG, rest are OTHER / municipal police offence types.
-   * @param {string} [udr]
-   * @param {number} [lat]
-   * @param {number} [_long]
-   * @param {string} [startDate]
-   * @param {string} [endDate]
+   * @param {string} ecv Vehicle license plate.
+   * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N, N_B, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+   * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
+   * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
+   * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
+   * @param {string} [startDate] Start date of the filter interval. Only offences created after this date will be included.
+   * @param {string} [endDate] End date of the filter interval. Only offences created before this date will be included.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannersAndOffencesApi
+   * @memberof ScansAndOffencesApi
    */
   public scanControllerGetOffenceList(
     ecv: string,
     offenceTypes?: Array<ScanControllerGetOffenceListOffenceTypesEnum>,
-    udr?: string,
+    udr?: string | null,
     lat?: number,
     _long?: number,
     startDate?: string,
     endDate?: string,
     options?: RawAxiosRequestConfig,
   ) {
-    return ScannersAndOffencesApiFp(this.configuration)
+    return ScansAndOffencesApiFp(this.configuration)
       .scanControllerGetOffenceList(ecv, offenceTypes, udr, lat, _long, startDate, endDate, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * It can return more than one vehicle for one licence plate. Than user can decide, which vehicle is the right.
-   * @summary Return basic properties of vehicle from state registry.
-   * @param {string} ecv
+   * Returns vehicle details for the specified ECV as registered in the state registry. If multiple vehicles are found for the same license plate, all are returned. This endpoint is useful for verifying vehicle information during scanning.
+   * @summary Retrieve basic vehicle properties from the state registry by license plate.
+   * @param {string} ecv Vehicle license plate.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannersAndOffencesApi
+   * @memberof ScansAndOffencesApi
    */
   public scanControllerGetVehicleProperties(ecv: string, options?: RawAxiosRequestConfig) {
-    return ScannersAndOffencesApiFp(this.configuration)
+    return ScansAndOffencesApiFp(this.configuration)
       .scanControllerGetVehicleProperties(ecv, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Return offences of user filtered by ecv and time, by default select all ecv within last 10 hours
-   * @summary Get recent offences of logged user
-   * @param {string} [date] Filter offences by date, offences newer than this timestamp are selected, 10 hours ago is default value
-   * @param {string} [ecv] Filter offences by ecv
+   * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
+   * @summary Get zone sign photos
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannersAndOffencesApi
+   * @memberof ScansAndOffencesApi
+   */
+  public scanControllerGetZoneSignPhotos(options?: RawAxiosRequestConfig) {
+    return ScansAndOffencesApiFp(this.configuration)
+      .scanControllerGetZoneSignPhotos(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Returns a list of offences created by the authenticated user, filtered by ECV and time. By default, it selects all offences from the last 10 hours for all ECVs. This endpoint helps users quickly review their recent enforcement activity.
+   * @summary Get recent offences of logged user
+   * @param {string} [date] Start date of the filter interval. Only offences created after this date will be included.
+   * @param {string} [ecv] Vehicle license plate.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ScansAndOffencesApi
    */
   public scanControllerOffenceOverview(
     date?: string,
     ecv?: string,
     options?: RawAxiosRequestConfig,
   ) {
-    return ScannersAndOffencesApiFp(this.configuration)
+    return ScansAndOffencesApiFp(this.configuration)
       .scanControllerOffenceOverview(date, ecv, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
   /**
-   * Given ECV and optionally date, return valid tickets and permit cards
+   * Returns all parking tickets and permit cards for the specified ECV and date (all day). The response includes a flag indicating whether particular ticket was valid on the requested date. Default, today.
    * @summary Get active tickets and permit cards of vehicle
-   * @param {string} ecv Vehicle ECV
-   * @param {string} [date] Date on which the ticket/card\&#39;s validity is checked
+   * @param {string} ecv Vehicle license plate.
+   * @param {string} [date] All parking tickets and cards which were active on this day will be returned. Validity of each ticket will be checked against exact time.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ScannersAndOffencesApi
+   * @memberof ScansAndOffencesApi
    */
   public scanControllerTicketsAndPermits(
     ecv: string,
     date?: string,
     options?: RawAxiosRequestConfig,
   ) {
-    return ScannersAndOffencesApiFp(this.configuration)
+    return ScansAndOffencesApiFp(this.configuration)
       .scanControllerTicketsAndPermits(ecv, date, options)
       .then((request) => request(this.axios, this.basePath))
   }
@@ -2001,240 +3086,3 @@ export const ScanControllerGetOffenceListOffenceTypesEnum = {
 } as const
 export type ScanControllerGetOffenceListOffenceTypesEnum =
   (typeof ScanControllerGetOffenceListOffenceTypesEnum)[keyof typeof ScanControllerGetOffenceListOffenceTypesEnum]
-
-/**
- * SystemApi - axios parameter creator
- * @export
- */
-export const SystemApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     *
-     * @summary Get latest mobile app version
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    systemControllerGetMobileAppVersion: async (
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/system/version`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     *
-     * @summary Update mobile app version
-     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    systemControllerUpdateMobileAppVersion: async (
-      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'mobileAppVersionUpdateDto' is not null or undefined
-      assertParamExists(
-        'systemControllerUpdateMobileAppVersion',
-        'mobileAppVersionUpdateDto',
-        mobileAppVersionUpdateDto,
-      )
-      const localVarPath = `/system/version`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      localVarHeaderParameter['Content-Type'] = 'application/json'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        mobileAppVersionUpdateDto,
-        localVarRequestOptions,
-        configuration,
-      )
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * SystemApi - functional programming interface
- * @export
- */
-export const SystemApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = SystemApiAxiosParamCreator(configuration)
-  return {
-    /**
-     *
-     * @summary Get latest mobile app version
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async systemControllerGetMobileAppVersion(
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.systemControllerGetMobileAppVersion(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['SystemApi.systemControllerGetMobileAppVersion']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     *
-     * @summary Update mobile app version
-     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async systemControllerUpdateMobileAppVersion(
-      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
-      options?: RawAxiosRequestConfig,
-    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.systemControllerUpdateMobileAppVersion(
-          mobileAppVersionUpdateDto,
-          options,
-        )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['SystemApi.systemControllerUpdateMobileAppVersion']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * SystemApi - factory interface
- * @export
- */
-export const SystemApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = SystemApiFp(configuration)
-  return {
-    /**
-     *
-     * @summary Get latest mobile app version
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    systemControllerGetMobileAppVersion(options?: RawAxiosRequestConfig): AxiosPromise<string> {
-      return localVarFp
-        .systemControllerGetMobileAppVersion(options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     *
-     * @summary Update mobile app version
-     * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    systemControllerUpdateMobileAppVersion(
-      mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<string> {
-      return localVarFp
-        .systemControllerUpdateMobileAppVersion(mobileAppVersionUpdateDto, options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * SystemApi - object-oriented interface
- * @export
- * @class SystemApi
- * @extends {BaseAPI}
- */
-export class SystemApi extends BaseAPI {
-  /**
-   *
-   * @summary Get latest mobile app version
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof SystemApi
-   */
-  public systemControllerGetMobileAppVersion(options?: RawAxiosRequestConfig) {
-    return SystemApiFp(this.configuration)
-      .systemControllerGetMobileAppVersion(options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   *
-   * @summary Update mobile app version
-   * @param {MobileAppVersionUpdateDto} mobileAppVersionUpdateDto
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof SystemApi
-   */
-  public systemControllerUpdateMobileAppVersion(
-    mobileAppVersionUpdateDto: MobileAppVersionUpdateDto,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return SystemApiFp(this.configuration)
-      .systemControllerUpdateMobileAppVersion(mobileAppVersionUpdateDto, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}

@@ -2,10 +2,10 @@ import { queryOptions, skipToken } from '@tanstack/react-query'
 
 import { clientApi } from '@/modules/backend/client-api'
 
-export const getFavouritePhotosOptions = () =>
+export const getZoneSignPhotosOptions = () =>
   queryOptions({
-    queryKey: ['FavouritePhotos'],
-    queryFn: () => clientApi.scanControllerGetFavouritePhotos(),
+    queryKey: ['ZoneSignPhotos'],
+    queryFn: () => clientApi.scanControllerGetZoneSignPhotos(),
     select: (res) => res.data,
   })
 
@@ -25,14 +25,14 @@ export const getMobileAppVersionOptions = () =>
 
 export const getOffencesOverview = () =>
   queryOptions({
-    queryKey: ['offencesOverview'],
+    queryKey: ['OffencesOverview'],
     queryFn: () => clientApi.scanControllerOffenceOverview(),
     select: (res) => res.data.offences,
   })
 
 export const getLicencePlateTicketsAndPermitsInfo = (ecv?: string) =>
   queryOptions({
-    queryKey: ['licencePlateTicketsPermitsInfo', ecv],
+    queryKey: ['LicencePlateTicketsPermitsInfo', ecv],
     queryFn: ecv ? () => clientApi.scanControllerTicketsAndPermits(ecv) : skipToken,
     select: (res) => res.data,
   })
