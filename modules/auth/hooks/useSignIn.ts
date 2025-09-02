@@ -65,7 +65,6 @@ export const useSignIn = () => {
         }
       }
 
-      router.dismissAll()
       if (
         locationPermissionStatus === Location.PermissionStatus.GRANTED ||
         cameraPermissionStatus === PermissionStatuses.GRANTED

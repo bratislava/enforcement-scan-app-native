@@ -1,5 +1,3 @@
-import { router } from 'expo-router'
-
 import { AUTHENTICATION_TOKENS_KEY } from '@/modules/auth/hooks/useAuthTokens'
 import { useAuthStoreUpdateContext } from '@/modules/auth/state/useAuthStoreUpdateContext'
 import { storage } from '@/utils/mmkv'
@@ -14,9 +12,6 @@ export const useSignOut = () => {
     try {
       onAuthStoreUpdate({ user: null })
       storage.delete(AUTHENTICATION_TOKENS_KEY)
-
-      router.dismissAll()
-      router.replace('/sign-in')
     } catch (error) {
       console.log('error signing out', error)
     }

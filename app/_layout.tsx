@@ -53,6 +53,12 @@ const onFetchUpdateAsync = async () => {
   }
 }
 
+const queryClient = new QueryClient({
+  // TODO, set to 1 to prevent confusion during development, may be set to default for production
+  // `gcTime` = `cacheTime` in v5: https://tanstack.com/query/latest/docs/react/guides/caching
+  defaultOptions: { queries: { retry: 1, gcTime: 1000 * 60 * 60 } },
+})
+
 const RootLayout = () => {
   // Capture the NavigationContainer ref and register it with the instrumentation.
   const ref = useNavigationContainerRef()
@@ -79,12 +85,6 @@ const RootLayout = () => {
   }, [])
 
   const toastProviderProps = useToastProviderProps()
-
-  const queryClient = new QueryClient({
-    // TODO, set to 1 to prevent confusion during development, may be set to default for production
-    // `gcTime` = `cacheTime` in v5: https://tanstack.com/query/latest/docs/react/guides/caching
-    defaultOptions: { queries: { retry: 1, gcTime: 1000 * 60 * 60 } },
-  })
 
   // Prevent rendering until the font has loaded
   if (!fontsLoaded) {
