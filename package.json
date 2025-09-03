@@ -62,9 +62,9 @@
     "react-native-svg": "15.11.2",
     "react-native-tab-view": "~4.0.10",
     "react-native-toast-notifications": "~3.4.0",
-    "react-native-vision-camera": "4.6.4",
+    "react-native-vision-camera": "4.7.1",
     "react-native-vision-camera-text-recognition": "3.1.1",
-    "react-native-worklets-core": "1.6.0",
+    "react-native-worklets-core": "1.6.2",
     "tailwind-merge": "~2.2.1",
     "typescript": "~5.8.3",
     "use-debounce": "~10.0.3"

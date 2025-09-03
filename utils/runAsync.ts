@@ -3,8 +3,10 @@
  * the issue: https://github.com/mrousavy/react-native-vision-camera/issues/2820
  */
 
-import { CameraRuntimeError, Frame, FrameInternal } from 'react-native-vision-camera'
+import { Frame, FrameInternal } from 'react-native-vision-camera'
 import { Worklets } from 'react-native-worklets-core'
+
+import { FrameProcessorsUnavailableError, throwErrorOnJS } from '@/utils/throwErrorOnJS'
 
 /**
  * A synchronized Shared Value to indicate whether the async context is currently executing
@@ -13,17 +15,7 @@ let isAsyncContextBusy: { value: boolean }
 /**
  * Runs the given function on the async context, and sets {@linkcode isAsyncContextBusy} to false after it finished executing.
  */
-let runOnAsyncContext: (frame: Frame, func: () => void) => void
-
-class FrameProcessorsUnavailableError extends CameraRuntimeError {
-  constructor(reason: unknown) {
-    super(
-      'system/frame-processors-unavailable',
-      'Frame Processors are not available, react-native-worklets-core is not installed! ' +
-        `Error: ${reason instanceof Error ? reason.message : reason}`,
-    )
-  }
-}
+let runOnAsyncContext: (frame: Frame, func: () => void) => Promise<void>
 
 try {
   isAsyncContextBusy = Worklets.createSharedValue(false)
@@ -37,7 +29,7 @@ try {
       func()
     } catch (error) {
       // Re-throw error on JS Thread
-      throw new FrameProcessorsUnavailableError(error)
+      throwErrorOnJS(error)
     } finally {
       // Potentially delete Frame if we were the last ref
       const internal = frame as FrameInternal
@@ -83,5 +75,12 @@ export function runAsync(frame: Frame, func: () => void): void {
   isAsyncContextBusy.value = true
 
   // Call in separate background context
-  runOnAsyncContext(frame, func)
+  try {
+    runOnAsyncContext(frame, func)
+  } catch (error) {
+    // in case of error, free up the async context again
+    isAsyncContextBusy.value = false
+    // re-throw error
+    throw error
+  }
 }
