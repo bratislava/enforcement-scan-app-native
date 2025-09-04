@@ -132,7 +132,7 @@ const OffencePage = () => {
                 value={ecv}
                 hasError={touched && !ecv}
                 autoCapitalize="characters"
-                className="font-belfast-700bold text-[18px] text-black"
+                className="font-source-500medium text-[24px] leading-[28px] text-black"
                 isDisabled={!!role?.actions.scanCheck}
                 onChangeText={handleLicencePlateChange}
               />
