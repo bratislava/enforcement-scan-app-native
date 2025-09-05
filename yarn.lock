@@ -1897,10 +1897,10 @@
   dependencies:
     nanoid "^3.3.11"
 
-"@rnmapbox/maps@^10.1.40":
-  version "10.1.41"
-  resolved "https://registry.yarnpkg.com/@rnmapbox/maps/-/maps-10.1.41.tgz#170b5455135dd7c5d9a3d94ef5d40203d16a8543"
-  integrity sha512-zDSlPAYp3ZKMkexCXW3/6lf9w5+SxgNk4U0GV7v6Kp3PA7LtUkdC2A/B27iF/8TEFqA53gAtUQrIOCuOtenKTA==
+"@rnmapbox/maps@^10.1.42":
+  version "10.1.42"
+  resolved "https://registry.yarnpkg.com/@rnmapbox/maps/-/maps-10.1.42.tgz#cfd5eff93377f1baee037a4d437d376d5d474805"
+  integrity sha512-9Xxc42eY+ycpcyK+YaAS+T+mFds96x3p54qGAimXgEU2aY4wRI1KHjNqYCT1hdrhAWnWiIp9Jtaen8VZvNRbeQ==
   dependencies:
     "@turf/along" "6.5.0"
     "@turf/distance" "6.5.0"
