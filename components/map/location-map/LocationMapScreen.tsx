@@ -75,6 +75,12 @@ const LocationMapScreen = ({ role }: Props) => {
     [setCenterCoordinate],
   )
 
+  const handleContinueToZone = useCallback(() => {
+    if (centerCoordinate) {
+      setOffenceState({ location: centerCoordinate })
+    }
+  }, [centerCoordinate, setOffenceState])
+
   return (
     <View className="flex-1 items-stretch">
       {centerCoordinate ? (
@@ -93,7 +99,11 @@ const LocationMapScreen = ({ role }: Props) => {
         flyTo={mapRef.current?.flyTo}
       />
 
-      <ChangeZoneModal visible={isModalShown} onCloseModal={() => setIsModalShown(false)} />
+      <ChangeZoneModal
+        visible={isModalShown}
+        onContinue={handleContinueToZone}
+        onCloseModal={() => setIsModalShown(false)}
+      />
     </View>
   )
 }

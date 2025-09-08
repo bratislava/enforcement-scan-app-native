@@ -20,7 +20,7 @@ const LocationMapBottomSheet = forwardRef<BottomSheet, Props>(
 
     return (
       <>
-        <MapZoneBottomSheetAttachment {...{ animatedPosition, flyTo }} />
+        <MapZoneBottomSheetAttachment animatedPosition={animatedPosition} flyTo={flyTo} />
 
         <BottomSheet
           key="mapZoneBottomSheet"

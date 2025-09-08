@@ -12,8 +12,8 @@ import { List } from '@/components/shared/List'
 import PressableStyled from '@/components/shared/PressableStyled'
 import Typography from '@/components/shared/Typography'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
-import { getFavouritePhotosOptions } from '@/modules/backend/constants/queryOptions'
-import { ResponseGetFavouritePhotoDto } from '@/modules/backend/openapi-generated'
+import { getZoneSignPhotosOptions } from '@/modules/backend/constants/queryOptions'
+import { ResponseZoneSignPhotoPropertiesDto } from '@/modules/backend/openapi-generated'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
@@ -22,10 +22,10 @@ const ZONE_PHOTO_CAMERA_ROUTE = '/zone/photo-camera'
 const ZonePhotoPage = () => {
   const { t } = useTranslation()
 
-  const { data, isPending, isError, error } = useQueryWithFocusRefetch(getFavouritePhotosOptions())
+  const { data, isPending, isError, error } = useQueryWithFocusRefetch(getZoneSignPhotosOptions())
   const { setOffenceState } = useSetOffenceState()
 
-  const redirectToCamera = (zonePhoto?: ResponseGetFavouritePhotoDto) => {
+  const redirectToCamera = (zonePhoto?: ResponseZoneSignPhotoPropertiesDto) => {
     setOffenceState({ zonePhoto })
     router.push(ZONE_PHOTO_CAMERA_ROUTE)
   }

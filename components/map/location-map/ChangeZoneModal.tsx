@@ -7,14 +7,16 @@ import ModalContentWithActions from '@/components/screen-layout/Modal/ModalConte
 
 type Props = {
   visible: boolean
+  onContinue?: () => void
   onCloseModal: () => void
 }
 
-export const ChangeZoneModal = ({ visible, onCloseModal }: Props) => {
+export const ChangeZoneModal = ({ visible, onContinue, onCloseModal }: Props) => {
   const { t } = useTranslation()
   const router = useRouter()
 
-  const onContinue = () => {
+  const handleContinue = () => {
+    onContinue?.()
     router.dismissTo('/zone')
   }
 
@@ -25,7 +27,7 @@ export const ChangeZoneModal = ({ visible, onCloseModal }: Props) => {
         title={t('zone.changeModal.title')}
         text={t('zone.changeModal.text')}
         primaryActionLabel={t('zone.changeModal.button')}
-        primaryActionOnPress={onContinue}
+        primaryActionOnPress={handleContinue}
         secondaryActionLabel={t('zone.changeModal.close')}
         secondaryActionOnPress={onCloseModal}
       />
