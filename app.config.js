@@ -1,15 +1,15 @@
 module.exports = {
   expo: {
+    newArchEnabled: true,
     name: 'Skenovacia aplikácia',
     slug: 'enforcement-scan-app',
     scheme: 'enforcement-scan-app',
-    version: '1.3.3',
+    version: '1.4.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
     splash: {
-      image: './assets/splash.png',
-      resizeMode: 'contain',
+      image: './assets/icon.png',
       backgroundColor: '#16254C',
     },
     assetBundlePatterns: ['**/*'],
@@ -19,6 +19,11 @@ module.exports = {
         foregroundImage: './assets/icon.png',
         backgroundColor: '#ffffff',
       },
+      edgeToEdge: true,
+      androidXOptions: {
+        useAndroidX: true,
+        enableJetifier: true,
+      },
     },
     experiments: {
       tsconfigPaths: true,
@@ -27,6 +32,7 @@ module.exports = {
       'expo-router',
       'expo-font',
       'react-native-vision-camera',
+      'expo-web-browser',
       [
         '@rnmapbox/maps',
         {

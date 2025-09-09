@@ -47,7 +47,7 @@ export const OffenceStoreContext = createContext<Store<OffenceState>>(
 )
 
 export const OffenceStoreProvider = ({ children }: { children: ReactNode }) => {
-  const storeRef = useRef<Store<OffenceState>>()
+  const storeRef = useRef<Store<OffenceState>>(null)
   if (!storeRef.current) {
     storeRef.current = createStore<OffenceState>(defaultOffenceState)
   }

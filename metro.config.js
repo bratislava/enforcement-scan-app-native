@@ -16,7 +16,9 @@ config.resolver = {
   ...resolver,
   assetExts: resolver.assetExts.filter((ext) => ext !== 'svg'),
   sourceExts: [...resolver.sourceExts, 'svg'],
+  unstable_enablePackageExports: false,
 }
+
 /* end of setup react-native-svg-transformer */
 
 module.exports = withNativeWind(config, { input: 'global.css', inlineRem: 16 })

@@ -28,7 +28,7 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
 
   const animatedPosition = useSharedValue(0)
 
-  const selectPicture = () => router.navigate('/scan/licence-plate-camera')
+  const selectPicture = () => router.push('/scan/licence-plate-camera')
 
   const retakePicture = () => {
     setTag('')

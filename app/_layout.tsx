@@ -28,7 +28,7 @@ import { environment } from '@/environment'
 import AuthStoreProvider from '@/modules/auth/state/AuthStoreProvider'
 import colors from '@/tailwind.config.colors'
 
-const routingInstrumentation = new Sentry.ReactNavigationInstrumentation()
+const navigationIntegration = Sentry.reactNavigationIntegration()
 
 Sentry.init({
   dsn: environment.sentryDns,
@@ -37,12 +37,7 @@ Sentry.init({
   // Disabled in development to avoid unnecessary events in Sentry
   enabled: environment.deployment === 'production',
   environment: environment.deployment,
-  integrations: [
-    new Sentry.ReactNativeTracing({
-      routingInstrumentation,
-      enableNativeFramesTracking: true,
-    }),
-  ],
+  integrations: [navigationIntegration],
 })
 
 const onFetchUpdateAsync = async () => {
@@ -58,12 +53,18 @@ const onFetchUpdateAsync = async () => {
   }
 }
 
+const queryClient = new QueryClient({
+  // TODO, set to 1 to prevent confusion during development, may be set to default for production
+  // `gcTime` = `cacheTime` in v5: https://tanstack.com/query/latest/docs/react/guides/caching
+  defaultOptions: { queries: { retry: 1, gcTime: 1000 * 60 * 60 } },
+})
+
 const RootLayout = () => {
   // Capture the NavigationContainer ref and register it with the instrumentation.
   const ref = useNavigationContainerRef()
   useEffect(() => {
     if (ref) {
-      routingInstrumentation.registerNavigationContainer(ref)
+      navigationIntegration.registerNavigationContainer(ref)
     }
   }, [ref])
 
@@ -84,12 +85,6 @@ const RootLayout = () => {
   }, [])
 
   const toastProviderProps = useToastProviderProps()
-
-  const queryClient = new QueryClient({
-    // TODO, set to 1 to prevent confusion during development, may be set to default for production
-    // `gcTime` = `cacheTime` in v5: https://tanstack.com/query/latest/docs/react/guides/caching
-    defaultOptions: { queries: { retry: 1, gcTime: 1000 * 60 * 60 } },
-  })
 
   // Prevent rendering until the font has loaded
   if (!fontsLoaded) {
@@ -113,7 +108,7 @@ const RootLayout = () => {
                     />
                     <Stack
                       screenOptions={{
-                        headerBackTitleVisible: false,
+                        headerBackButtonDisplayMode: 'minimal',
                         headerShown: false,
                         headerTitleStyle: {
                           fontFamily: 'BelfastGrotesk_700Bold',

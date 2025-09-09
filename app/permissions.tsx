@@ -91,6 +91,8 @@ const PermissionsScreen = () => {
         navigationState={{ index, routes }}
         renderScene={(props) => renderScene(props, routes[index].key)}
         onIndexChange={setIndex}
+        // calling router.replace() during the animation causes a crash
+        animationEnabled={false}
         initialLayout={{ width: layout.width }}
         renderTabBar={() => null}
         tabBarPosition="bottom"

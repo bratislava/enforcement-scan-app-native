@@ -17,7 +17,7 @@ export const ChangeZoneModal = ({ visible, onContinue, onCloseModal }: Props) =>
 
   const handleContinue = () => {
     onContinue?.()
-    router.navigate('/zone')
+    router.dismissTo('/zone')
   }
 
   return (

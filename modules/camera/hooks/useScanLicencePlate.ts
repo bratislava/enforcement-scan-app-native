@@ -64,7 +64,7 @@ export const useScanLicencePlate = () => {
         })
 
         if (res.data.scanResult === ScanReasonEnum.Other) {
-          router.navigate('/offence')
+          router.push('/offence')
         }
 
         return
