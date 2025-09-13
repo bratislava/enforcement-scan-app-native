@@ -8631,10 +8631,10 @@ react-native-screens@~4.11.1:
     react-native-is-edge-to-edge "^1.1.7"
     warn-once "^0.1.0"
 
-react-native-shadow-2@~7.0.8:
-  version "7.0.8"
-  resolved "https://registry.yarnpkg.com/react-native-shadow-2/-/react-native-shadow-2-7.0.8.tgz#df365ba1d8d22b7c63f1afc66d75308c3d6af4e1"
-  integrity sha512-6QlmbJvHCmDGa85jwtfrVxhro1oGm/ezTlciom0A+i0UFAzxlvmRiMHyKXg1hEB2PQkKPoG6ZpANju4mpqPqGA==
+react-native-shadow-2@~7.1.2:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-shadow-2/-/react-native-shadow-2-7.1.2.tgz#21f71e585c61ad8b60d87116a879e53c729f6802"
+  integrity sha512-K2McEwf3D6MbtofmhQyeEJxTC9L0uebed53vxQcaUvKYIcoDUmfsqgRJtftvx9NHxJwuF5f/K6SfUyhYV2qr4w==
   dependencies:
     colord "2.9.2"
 
