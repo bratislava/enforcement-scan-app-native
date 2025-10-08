@@ -79,7 +79,8 @@ const AppRoute = () => {
           name: imageWithMetadataUri.split('/').pop()!,
         } as unknown as File,
         tag: [tag, udr, timeString].filter(Boolean).join(' '),
-        nearestSign: coords ? getNearestSign(coords)?.properties.GlobalID : null,
+        // change after the BE implements this
+        nearestSign: getNearestSign(coords)?.properties.GlobalID,
       })
 
       setOffenceState({ zonePhoto: photoResponse.data })

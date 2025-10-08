@@ -9,8 +9,8 @@ type NearestSignType = Feature<Point, Arcgis.SignPoint> | null
 export const useGetNearestSign = () => {
   const { signData } = useArcgisStoreContext()
 
-  const getNearestSign = (coords: Location.LocationObjectCoords): NearestSignType => {
-    if (!signData) return null
+  const getNearestSign = (coords?: Location.LocationObjectCoords): NearestSignType => {
+    if (!(signData && coords)) return null
 
     let nearestSign: NearestSignType = null
     let minDistance = Infinity
