@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import axios, { AxiosResponse } from 'axios'
-import { FeatureCollection, Polygon } from 'geojson'
+import { FeatureCollection, Point, Polygon } from 'geojson'
 
 import { ArcgisAliased } from '@/modules/arcgis/aliasedTypes'
 import { STATIC_ARCGIS_URL } from '@/modules/arcgis/constants'
@@ -59,8 +59,15 @@ export const useStaticArcgisData = (): Partial<ArcgisData> => {
       ),
     select: (data) => data.data,
   })
+  const { data: rawSignData } = useQuery({
+    queryKey: ['RawSignData'],
+    queryFn: () =>
+      fetchFileOrGetFromCache<FeatureCollection<Point, Arcgis.SignPoint>>('znacky.geojson'),
+    select: (data) => data.data,
+  })
 
   return {
     rawUdrData,
+    rawSignData,
   }
 }

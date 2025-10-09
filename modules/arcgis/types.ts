@@ -1,6 +1,6 @@
 /* eslint-disable babel/camelcase */
 
-import { FeatureCollection, GeoJsonTypes, Geometry, Polygon } from 'geojson'
+import { FeatureCollection, GeoJsonTypes, Geometry, Point, Polygon } from 'geojson'
 
 import { ArcgisAliased } from '@/modules/arcgis/aliasedTypes'
 import { MapZoneStatusEnum } from '@/modules/map/constants'
@@ -74,11 +74,20 @@ export namespace Arcgis {
     web: string // "ano"
   }
 
+  export type SignPoint = {
+    OBJECTID: number
+    zona: string
+    typ_znacky: 'zona' | 'resident' | 'skola'
+    GlobalID: string
+  }
+
   export interface RawData {
     rawUdrData?: FeatureCollection<Polygon, UdrZone>
+    rawSignData?: FeatureCollection<Polygon, SignPoint>
   }
 }
 
 export interface ArcgisData {
   rawUdrData: FeatureCollection<Polygon, Arcgis.UdrZone | ArcgisAliased.UdrZone>
+  rawSignData: FeatureCollection<Point, Arcgis.SignPoint>
 }
