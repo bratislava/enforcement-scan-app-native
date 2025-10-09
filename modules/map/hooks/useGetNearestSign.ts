@@ -2,6 +2,7 @@ import * as Location from 'expo-location'
 import { Feature, Point } from 'geojson'
 
 import { Arcgis } from '@/modules/arcgis/types'
+import { calculateDistance } from '@/modules/map/utils/calculateDistance'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 
 type NearestSignType = Feature<Point, Arcgis.SignPoint> | null
@@ -17,8 +18,12 @@ export const useGetNearestSign = () => {
 
     signData.features.forEach((feature) => {
       const [signLongitude, signLatitude] = feature.geometry.coordinates
-      // the distance is calculated using the Pythagorean theorem
-      const distance = Math.hypot(signLatitude - coords.latitude, signLongitude - coords.longitude)
+      const distance = calculateDistance([
+        signLatitude,
+        signLongitude,
+        coords.latitude,
+        coords.longitude,
+      ])
 
       if (distance < minDistance) {
         minDistance = distance

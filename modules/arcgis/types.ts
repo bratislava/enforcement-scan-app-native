@@ -78,7 +78,7 @@ export namespace Arcgis {
     OBJECTID: number
     zona: string
     typ_znacky: 'zona' | 'resident' | 'skola'
-    GlobalID: string // Uuid
+    GlobalID: string
   }
 
   export interface RawData {
