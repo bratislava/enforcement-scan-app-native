@@ -11,22 +11,27 @@ export type ProcessedMapData = Omit<ReturnType<typeof useProcessedArcgisData>, '
 export const useProcessedArcgisData = () => {
   const [isLoading, setLoading] = useState(true)
   const [udrData, setUdrData] = useState<ProcessDataReturn['udrData'] | null>(null)
+  const [signData, setSignData] = useState<ProcessDataReturn['signData'] | null>(null)
   const [isProcessingFinished, setIsProcessingFinished] = useState(false)
 
-  const { rawUdrData }: Partial<ArcgisData> = useStaticArcgisData()
+  const { rawUdrData, rawSignData }: Partial<ArcgisData> = useStaticArcgisData()
 
   useEffect(() => {
-    if (rawUdrData) {
+    if (rawUdrData && rawSignData) {
       if (isProcessingFinished) return
 
-      const { udrData: processedUdrData } = processData({ rawUdrData })
+      const { udrData: processedUdrData, signData: processedSignData } = processData({
+        rawUdrData,
+        rawSignData,
+      })
 
       setUdrData(processedUdrData)
+      setSignData(processedSignData)
       setLoading(false)
 
       setIsProcessingFinished(true)
     }
-  }, [rawUdrData, isProcessingFinished])
+  }, [rawUdrData, rawSignData, isProcessingFinished])
 
-  return { isLoading, udrData }
+  return { isLoading, udrData, signData }
 }

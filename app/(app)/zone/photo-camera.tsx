@@ -11,6 +11,7 @@ import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
 import { getZoneSignPhotosOptions } from '@/modules/backend/constants/queryOptions'
 import FlashlightContextProvider from '@/modules/camera/state/FlashlightContextProvider'
+import { useGetNearestSign } from '@/modules/map/hooks/useGetNearestSign'
 import { getCurrentPositionAsync } from '@/modules/map/utils/getCurrentPositionAsync'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
@@ -25,14 +26,16 @@ const AppRoute = () => {
   const zonePhoto = useOffenceStoreContext((state) => state.zonePhoto)
   const udr = useOffenceStoreContext((state) => state.zone?.udrId)
 
+  const { getNearestSign } = useGetNearestSign()
+
   const ref = useRef<Camera>(null)
   const [loading, setLoading] = useState(false)
 
   const queryClient = useQueryClient()
 
   const createPhotoMutation = useMutation({
-    mutationFn: ({ file, tag }: { file: File; tag: string }) =>
-      clientApi.scanControllerCreateZoneSignPhoto(file, tag),
+    mutationFn: ({ file, globalId, tag }: { file: File; globalId: string; tag: string }) =>
+      clientApi.scanControllerCreateZoneSignPhoto(file, globalId, tag),
     onSuccess: async () => {
       await queryClient.resetQueries({ queryKey: getZoneSignPhotosOptions().queryKey })
     },
@@ -44,6 +47,7 @@ const AppRoute = () => {
     const { coords } = await getCurrentPositionAsync({
       accuracy: Location.Accuracy.Highest,
     })
+    const zoneSignGlobalId = getNearestSign(coords)?.properties.GlobalID
     const locationString = coords ? `${coordsToString(coords.latitude, coords.longitude)}; ` : ''
 
     const capturedPhoto = await ref.current?.takePhoto()
@@ -61,7 +65,7 @@ const AppRoute = () => {
         })
       : imageWithTimestampUri
 
-    if (!imageWithTimestampUri) {
+    if (!(imageWithTimestampUri && zoneSignGlobalId)) {
       setLoading(false)
 
       return
@@ -76,6 +80,7 @@ const AppRoute = () => {
           name: imageWithMetadataUri.split('/').pop()!,
         } as unknown as File,
         tag: [tag, udr, timeString].filter(Boolean).join(' '),
+        globalId: zoneSignGlobalId,
       })
 
       setOffenceState({ zonePhoto: photoResponse.data })

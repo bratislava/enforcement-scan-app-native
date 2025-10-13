@@ -6,7 +6,7 @@ import { normalizeZone } from '@/modules/map/utils/normalizeZone'
 import { Arcgis, ArcgisData } from '@/modules/arcgis/types'
 import { ArcgisAliased } from '@/modules/arcgis/aliasedTypes'
 import { normalizeAliasedZone } from '@/modules/map/utils/normalizeAliasedZone'
-import { FeatureCollection, MultiPolygon, Polygon } from 'geojson'
+import { FeatureCollection, MultiPolygon, Point, Polygon } from 'geojson'
 
 const zoneMapping = {
   SM1: 'SM1',
@@ -16,7 +16,7 @@ const zoneMapping = {
   'PE1-Dvory IV': 'PE1',
 } as { [key: string]: string }
 
-export const processData = ({ rawUdrData }: ArcgisData) => {
+export const processData = ({ rawUdrData, rawSignData }: ArcgisData) => {
   let GLOBAL_ID = 0
   const isUsingAliasedData = rawUdrData.features.find((udr) =>
     Object.hasOwn(udr.properties, 'UDR ID'),
@@ -49,5 +49,17 @@ export const processData = ({ rawUdrData }: ArcgisData) => {
       }),
   } as FeatureCollection<Polygon | MultiPolygon, MapUdrZoneWithTranslationProps>
 
-  return { udrData }
+  const signData = {
+    type: 'FeatureCollection',
+    features: rawSignData.features
+      .filter(({ properties }) => properties.typ_znacky !== 'skola')
+      .map((feature) => {
+        return {
+          ...feature,
+          id: feature.properties.OBJECTID,
+        }
+      }),
+  } as FeatureCollection<Point, Arcgis.SignPoint>
+
+  return { udrData, signData }
 }
