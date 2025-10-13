@@ -167,12 +167,6 @@ export interface EvidenceFileDto {
    * @memberof EvidenceFileDto
    */
   offenceId: number
-  /**
-   * Evidence files for each offence are ordered. This property contains order number of particular evidence photo.
-   * @type {number}
-   * @memberof EvidenceFileDto
-   */
-  orderRank: number
 }
 /**
  *
@@ -796,6 +790,12 @@ export interface ResponseCreateOffenceDtoFavouritePhoto {
    * @memberof ResponseCreateOffenceDtoFavouritePhoto
    */
   tag: string | null
+  /**
+   * UUID of zone sign from GIS data.
+   * @type {string}
+   * @memberof ResponseCreateOffenceDtoFavouritePhoto
+   */
+  globalId: string | null
 }
 /**
  *
@@ -1155,6 +1155,12 @@ export interface ResponseZoneSignPhotoDto {
    * @memberof ResponseZoneSignPhotoDto
    */
   tag: string | null
+  /**
+   * UUID of zone sign from GIS data.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  globalId: string | null
 }
 /**
  *
@@ -1180,6 +1186,12 @@ export interface ResponseZoneSignPhotoPropertiesDto {
    * @memberof ResponseZoneSignPhotoPropertiesDto
    */
   tag: string | null
+  /**
+   * UUID of zone sign from GIS data.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoPropertiesDto
+   */
+  globalId: string | null
 }
 /**
  * Reason for the scan. For example, if set to PAAS_PARKING_AUTHORIZATION, the system will check whether the specified ECV is authorized to park in the given UDR.
@@ -1789,6 +1801,7 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
      * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
+     * @param {string} globalId UUID of zone sign from GIS data.
      * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -1796,11 +1809,14 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
      */
     scanControllerCreateFavouritePhoto: async (
       file: File,
+      globalId: string,
       tag?: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'file' is not null or undefined
       assertParamExists('scanControllerCreateFavouritePhoto', 'file', file)
+      // verify required parameter 'globalId' is not null or undefined
+      assertParamExists('scanControllerCreateFavouritePhoto', 'globalId', globalId)
       const localVarPath = `/scan/favourite-photo/create`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -1820,6 +1836,10 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
 
       if (file !== undefined) {
         localVarFormParams.append('file', file as any)
+      }
+
+      if (globalId !== undefined) {
+        localVarFormParams.append('globalId', globalId as any)
       }
 
       if (tag !== undefined) {
@@ -1965,17 +1985,21 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
      * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
+     * @param {string} globalId UUID of zone sign from GIS data.
      * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerCreateZoneSignPhoto: async (
       file: File,
+      globalId: string,
       tag?: string,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'file' is not null or undefined
       assertParamExists('scanControllerCreateZoneSignPhoto', 'file', file)
+      // verify required parameter 'globalId' is not null or undefined
+      assertParamExists('scanControllerCreateZoneSignPhoto', 'globalId', globalId)
       const localVarPath = `/scan/zone-sign/create`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -1995,6 +2019,10 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
 
       if (file !== undefined) {
         localVarFormParams.append('file', file as any)
+      }
+
+      if (globalId !== undefined) {
+        localVarFormParams.append('globalId', globalId as any)
       }
 
       if (tag !== undefined) {
@@ -2338,6 +2366,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
      * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
+     * @param {string} globalId UUID of zone sign from GIS data.
      * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -2345,6 +2374,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
      */
     async scanControllerCreateFavouritePhoto(
       file: File,
+      globalId: string,
       tag?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
@@ -2352,6 +2382,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerCreateFavouritePhoto(
         file,
+        globalId,
         tag,
         options,
       )
@@ -2438,12 +2469,14 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
      * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
+     * @param {string} globalId UUID of zone sign from GIS data.
      * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async scanControllerCreateZoneSignPhoto(
       file: File,
+      globalId: string,
       tag?: string,
       options?: RawAxiosRequestConfig,
     ): Promise<
@@ -2451,6 +2484,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerCreateZoneSignPhoto(
         file,
+        globalId,
         tag,
         options,
       )
@@ -2682,6 +2716,7 @@ export const ScansAndOffencesApiFactory = function (
      * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
+     * @param {string} globalId UUID of zone sign from GIS data.
      * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
      * @deprecated
@@ -2689,11 +2724,12 @@ export const ScansAndOffencesApiFactory = function (
      */
     scanControllerCreateFavouritePhoto(
       file: File,
+      globalId: string,
       tag?: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseZoneSignPhotoPropertiesDto> {
       return localVarFp
-        .scanControllerCreateFavouritePhoto(file, tag, options)
+        .scanControllerCreateFavouritePhoto(file, globalId, tag, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2734,17 +2770,19 @@ export const ScansAndOffencesApiFactory = function (
      * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
+     * @param {string} globalId UUID of zone sign from GIS data.
      * @param {string} [tag] Tag to image, e.g. zone number
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerCreateZoneSignPhoto(
       file: File,
+      globalId: string,
       tag?: string,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseZoneSignPhotoPropertiesDto> {
       return localVarFp
-        .scanControllerCreateZoneSignPhoto(file, tag, options)
+        .scanControllerCreateZoneSignPhoto(file, globalId, tag, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2873,6 +2911,7 @@ export class ScansAndOffencesApi extends BaseAPI {
    * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
    * @summary Upload photo of zone sign.
    * @param {File} file Upload image
+   * @param {string} globalId UUID of zone sign from GIS data.
    * @param {string} [tag] Tag to image, e.g. zone number
    * @param {*} [options] Override http request option.
    * @deprecated
@@ -2881,11 +2920,12 @@ export class ScansAndOffencesApi extends BaseAPI {
    */
   public scanControllerCreateFavouritePhoto(
     file: File,
+    globalId: string,
     tag?: string,
     options?: RawAxiosRequestConfig,
   ) {
     return ScansAndOffencesApiFp(this.configuration)
-      .scanControllerCreateFavouritePhoto(file, tag, options)
+      .scanControllerCreateFavouritePhoto(file, globalId, tag, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -2931,6 +2971,7 @@ export class ScansAndOffencesApi extends BaseAPI {
    * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
    * @summary Upload photo of zone sign.
    * @param {File} file Upload image
+   * @param {string} globalId UUID of zone sign from GIS data.
    * @param {string} [tag] Tag to image, e.g. zone number
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
@@ -2938,11 +2979,12 @@ export class ScansAndOffencesApi extends BaseAPI {
    */
   public scanControllerCreateZoneSignPhoto(
     file: File,
+    globalId: string,
     tag?: string,
     options?: RawAxiosRequestConfig,
   ) {
     return ScansAndOffencesApiFp(this.configuration)
-      .scanControllerCreateZoneSignPhoto(file, tag, options)
+      .scanControllerCreateZoneSignPhoto(file, globalId, tag, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
