@@ -1,5 +1,13 @@
 import { Portal } from '@gorhom/portal'
-import { Camera, FillLayer, LineLayer, MapState, MapView, ShapeSource } from '@rnmapbox/maps'
+import {
+  Camera,
+  FillLayer,
+  LineLayer,
+  MapState,
+  MapView,
+  ShapeSource,
+  StyleURL,
+} from '@rnmapbox/maps'
 import { Position } from 'geojson'
 import {
   forwardRef,
@@ -17,7 +25,6 @@ import { UserMapIndicator } from '@/components/map/location-map/UserMapIndicator
 import MapCamera from '@/components/map/MapCamera'
 import MapPin from '@/components/map/MapPin'
 import MapZones from '@/components/map/MapZones'
-import { MAP_STYLE_URL } from '@/modules/map/constants'
 import { useCameraChangeHandler } from '@/modules/map/hooks/useCameraChangeHandler'
 import { getMapPadding } from '@/modules/map/hooks/useMapCenter'
 import { useMapStoreUpdateContext } from '@/modules/map/state/MapStoreProvider/useMapStoreUpdateContext'
@@ -108,7 +115,7 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
       <MapView
         ref={map}
         style={{ flex: 1 }}
-        styleURL={MAP_STYLE_URL}
+        styleURL={StyleURL.Street}
         onCameraChanged={handleCameraChange}
         scaleBarEnabled={false}
         pitchEnabled={false}
