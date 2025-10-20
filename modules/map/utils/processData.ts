@@ -52,7 +52,7 @@ export const processData = ({ rawUdrData, rawSignData }: ArcgisData) => {
   const signData = {
     type: 'FeatureCollection',
     features: rawSignData.features
-      .filter(({ properties }) => properties.typ_znacky !== 'skola')
+      .filter(({ properties }) => properties.typ_znacky === 'zona')
       .map((feature) => {
         return {
           ...feature,
