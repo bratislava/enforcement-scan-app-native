@@ -12,26 +12,23 @@
  * Do not edit the class manually.
  */
 
-import type { Configuration } from './configuration'
-import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios'
+import type { AxiosInstance, AxiosPromise, RawAxiosRequestConfig } from 'axios'
 import globalAxios from 'axios'
+import type { Configuration } from './configuration'
 // Some imports not used depending on template conditions
 // @ts-ignore
+import type { RequestArgs } from './base'
 import {
   DUMMY_BASE_URL,
   assertParamExists,
-  setApiKeyToObject,
-  setBasicAuthToObject,
-  setBearerAuthToObject,
-  setOAuthToObject,
-  setSearchParams,
-  serializeDataIfNeeded,
-  toPathString,
   createRequestFunction,
+  serializeDataIfNeeded,
+  setBearerAuthToObject,
+  setSearchParams,
+  toPathString,
 } from './common'
-import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
+import { BASE_PATH, BaseAPI, RequiredError, operationServerMap } from './base'
 
 /**
  *
@@ -3382,6 +3379,7 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
         'requestCreateOrUpdateScanDto',
         requestCreateOrUpdateScanDto,
       )
+      console.log('requestCreateOrUpdateScanDto', JSON.stringify(requestCreateOrUpdateScanDto))
       const localVarPath = `/scan/create-or-update`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
