@@ -4,7 +4,7 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
+    "android": "expo run:android",
     "postinstall": "patch-package",
     "local-android": "expo start --android --localhost -c",
     "ts:check": "tsc",
@@ -12,7 +12,7 @@
     "lint:fix": "yarn eslint --fix",
     "doctor": "expo install --check",
     "doctor:fix": "expo install --fix",
-    "generate-client-enforcement-scan-app": "openapi-generator-cli generate -i https://enforcement-scan-app-backend.staging.bratislava.sk/api-json -g typescript-axios -o modules/backend/openapi-generated && node ./modules/backend/utils/fix-client.js && prettier --write modules/backend/openapi-generated",
+    "generate-client-enforcement-scan-app": "openapi-generator-cli generate -i http://localhost:3001/api-json -g typescript-axios -o modules/backend/openapi-generated && node ./modules/backend/utils/fix-client.js && prettier --write modules/backend/openapi-generated",
     "generate-clients": "yarn generate-client-enforcement-scan-app"
   },
   "dependencies": {

@@ -5,7 +5,6 @@ import { Position } from 'react-native-image-marker'
 
 import { MAX_PHOTOS } from '@/app/(app)/offence/photos'
 import { clientApi } from '@/modules/backend/client-api'
-import { RequestCreateOffenceDataDto } from '@/modules/backend/openapi-generated'
 import { getPhotoUri } from '@/modules/camera/utils/getPhotoUri'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { addGpsMetadataToImage } from '@/utils/addGpsMetadataToImage'
@@ -63,7 +62,7 @@ export const useCreateOffence = () => {
         ),
       )
 
-      const data: RequestCreateOffenceDataDto = {
+      const data = {
         offenceType,
         objectiveResponsibility: isObjectiveResponsibility,
         lat: location.lat,
@@ -77,8 +76,8 @@ export const useCreateOffence = () => {
 
       return clientApi.scanControllerCreateOffence(
         scanData.uuid,
-        JSON.stringify(data),
-        // Axios throws Network Error if the file is fetched and sent with `new File()`
+        offenceType,
+        isObjectiveResponsibility,
         photosWithLocationMetadata.map((photoPath) => {
           const photoUri = getPhotoUri(photoPath)
 
@@ -88,6 +87,14 @@ export const useCreateOffence = () => {
             type: 'image/jpeg',
           } as unknown as File
         }),
+        location.long,
+        location.lat,
+        'streetName',
+        zone?.udrId,
+        // offence with objective responsibility does not allow to set resolution type
+        vehicleId as number,
+        isObjectiveResponsibility ? undefined : resolutionType,
+        // Axios throws Network Error if the file is fetched and sent with `new File()`
       )
     },
   })
