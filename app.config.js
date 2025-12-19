@@ -27,6 +27,7 @@ module.exports = {
     },
     experiments: {
       tsconfigPaths: true,
+      reactCanary: true,
     },
     plugins: [
       'expo-router',
