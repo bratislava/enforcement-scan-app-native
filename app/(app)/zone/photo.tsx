@@ -43,7 +43,7 @@ const ZonePhotoPage = () => {
     )
   }
 
-  if (data.length === 0) {
+  if (data.photos.length === 0) {
     return <Redirect href={ZONE_PHOTO_CAMERA_ROUTE} />
   }
 
