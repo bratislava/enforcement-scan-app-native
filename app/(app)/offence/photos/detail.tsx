@@ -39,7 +39,7 @@ const AppRoute = () => {
   const takePicture = async () => {
     setLoading(true)
     const capturedPhoto = await ref.current?.takePhoto()
-    const offenceDate = new Date(Date.now())
+    const offenceDate = new Date()
 
     if (photoIndex === 3) {
       setOffenceState({ offenceDate })
