@@ -20,6 +20,7 @@ const AppRoute = () => {
 
   const { setOffenceState } = useSetOffenceState()
   const photos = useOffenceStoreContext((state) => state.photos)
+  const [photoIndex, setPhotoIndex] = useState(0)
 
   const ref = useRef<Camera>(null)
   const [loading, setLoading] = useState(false)
@@ -27,8 +28,14 @@ const AppRoute = () => {
   const takePicture = async () => {
     setLoading(true)
     const capturedPhoto = await ref.current?.takePhoto()
+    const offenceDate = new Date()
+    setPhotoIndex((prev) => prev + 1)
+
+    if (photoIndex === 3) {
+      setOffenceState({ offenceDate })
+    }
     const imageWithTimestampUri = await addTextToImage({
-      text: new Date().toLocaleString(),
+      text: offenceDate.toLocaleString(),
       imagePath: capturedPhoto?.path,
     })
 
