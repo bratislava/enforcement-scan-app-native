@@ -142,13 +142,13 @@ export interface EvidenceFileDto {
    * @type {string}
    * @memberof EvidenceFileDto
    */
-  createdByEmail: string
+  createdByEmail?: string | null
   /**
    * Email address of the user who last updated the record.
    * @type {string}
    * @memberof EvidenceFileDto
    */
-  updatedByEmail: string
+  updatedByEmail?: string | null
   /**
    * File path to the image from the root of the S3 bucket.
    * @type {string}
@@ -167,6 +167,25 @@ export interface EvidenceFileDto {
    * @memberof EvidenceFileDto
    */
   offenceId: number
+}
+/**
+ *
+ * @export
+ * @interface HealthResponseDto
+ */
+export interface HealthResponseDto {
+  /**
+   *
+   * @type {boolean}
+   * @memberof HealthResponseDto
+   */
+  status: boolean
+  /**
+   *
+   * @type {string}
+   * @memberof HealthResponseDto
+   */
+  timestamp: string
 }
 /**
  *
@@ -238,6 +257,145 @@ export type OffenceTypeEnum = (typeof OffenceTypeEnum)[keyof typeof OffenceTypeE
 /**
  *
  * @export
+ * @interface RequestCreateAutomaticScanDto
+ */
+export interface RequestCreateAutomaticScanDto {
+  /**
+   * Identifier of the scanning vehicle
+   * @type {string}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  patrol_vehicle_id: string
+  /**
+   * Azimuth angle of the scanning vehicle in degrees
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  patrol_vehicle_azimuth: number
+  /**
+   * Confidence level of the azimuth measurement
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  patrol_vehicle_azimuth_confidence: number
+  /**
+   * GPS position of the scanning vehicle
+   * @type {object}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  patrol_vehicle_position: object
+  /**
+   * Confidence level of the vehicle position
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  patrol_vehicle_position_confidence: number
+  /**
+   * ID of the scanning vehicle driver
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  patrol_vehicle_driver_id?: number
+  /**
+   * Unique identifier for the parked vehicle detection event
+   * @type {string}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_detection_id: string
+  /**
+   * Timestamp when the parked vehicle was detected
+   * @type {string}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_detection_timestamp: string
+  /**
+   * Confidence level of the parked vehicle detection
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_detection_confidence: number
+  /**
+   * GPS position of the front of the parked vehicle
+   * @type {object}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_front_position: object
+  /**
+   * GPS position of the rear of the parked vehicle
+   * @type {object}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_rear_position: object
+  /**
+   * Confidence level of the parked vehicle position
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_position_confidence: number
+  /**
+   * Type of the parked vehicle
+   * @type {object}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_type: object
+  /**
+   * Confidence level of the vehicle type classification
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_type_confidence: number
+  /**
+   * Identifier of the polygon where vehicle was detected
+   * @type {string}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_polygon_id?: string
+  /**
+   * Confidence level of the polygon detection
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_polygon_confidence?: number
+  /**
+   * License plate number of the parked vehicle
+   * @type {string}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_licence_plate: string
+  /**
+   * Confidence level of the license plate recognition
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_licence_plate_confidence: number
+  /**
+   * Camera operating mode
+   * @type {object}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  camera_mode: object
+  /**
+   * Identifier of the street entrance detection
+   * @type {string}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  street_entrance_detection_id?: string
+  /**
+   * Hash of the archived data
+   * @type {string}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  data_archive_hash: string
+  /**
+   * Metadata for captured images
+   * @type {object}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  data_image_metadata: object
+}
+/**
+ *
+ * @export
  * @interface RequestCreateOffenceDataDto
  */
 export interface RequestCreateOffenceDataDto {
@@ -289,13 +447,6 @@ export interface RequestCreateOffenceDataDto {
    * @memberof RequestCreateOffenceDataDto
    */
   resolutionType?: ResolutionOffenceTypeEnum
-  /**
-   * ID of zone sign photo in database.
-   * @type {number}
-   * @memberof RequestCreateOffenceDataDto
-   * @deprecated
-   */
-  favouritePhotoId?: number
   /**
    * ID of zone sign photo in database.
    * @type {number}
@@ -397,6 +548,128 @@ export interface RequestCreateOrUpdateScanDto {
 }
 
 /**
+ *
+ * @export
+ * @interface RequestCreateSignPostScanDto
+ */
+export interface RequestCreateSignPostScanDto {
+  /**
+   * Identifier of the scanning vehicle
+   * @type {string}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  patrol_vehicle_id: string
+  /**
+   * Azimuth angle of the scanning vehicle in degrees
+   * @type {number}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  patrol_vehicle_azimuth: number
+  /**
+   * Confidence level of the azimuth measurement
+   * @type {number}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  patrol_vehicle_azimuth_confidence: number
+  /**
+   * GPS position of the scanning vehicle
+   * @type {object}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  patrol_vehicle_position: object
+  /**
+   * Confidence level of the vehicle position
+   * @type {number}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  patrol_vehicle_position_confidence: number
+  /**
+   * ID of the scanning vehicle driver
+   * @type {number}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  patrol_vehicle_driver_id?: number
+  /**
+   * Unique identifier for the sign post detection event
+   * @type {string}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  sign_post_detection_id: string
+  /**
+   * Timestamp when the sign post was detected
+   * @type {string}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  sign_post_detection_timestamp: string
+  /**
+   * Unique identifier of the detected sign post
+   * @type {string}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  sign_post_id: string
+  /**
+   * Confidence level of the sign post detection
+   * @type {number}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  sign_post_detection_confidence: number
+  /**
+   * Camera operating mode
+   * @type {object}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  camera_mode: object
+  /**
+   * Hash of the archived data
+   * @type {string}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  data_archive_hash: string
+  /**
+   * Metadata for captured images
+   * @type {object}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  data_image_metadata: object
+}
+/**
+ *
+ * @export
+ * @interface RequestCreateStreetDetectionDto
+ */
+export interface RequestCreateStreetDetectionDto {
+  /**
+   * Unique identifier for the street detection event
+   * @type {string}
+   * @memberof RequestCreateStreetDetectionDto
+   */
+  street_detection_id: string
+  /**
+   * Timestamp when the street was detected
+   * @type {string}
+   * @memberof RequestCreateStreetDetectionDto
+   */
+  timestamp: string
+  /**
+   * Identifier of the scanning vehicle
+   * @type {string}
+   * @memberof RequestCreateStreetDetectionDto
+   */
+  patrol_vehicle_id: string
+  /**
+   * Identifier of the detected street segment
+   * @type {string}
+   * @memberof RequestCreateStreetDetectionDto
+   */
+  street_segment_id: string
+  /**
+   * Indicates if the vehicle is driving in the reverse direction of the street
+   * @type {boolean}
+   * @memberof RequestCreateStreetDetectionDto
+   */
+  is_reverse_drive: boolean
+}
+/**
  * Type of offence resolution. Applicable only if subjective responsibility is assigned.
  * @export
  * @enum {string}
@@ -463,13 +736,13 @@ export interface ResponseBaseOffenceDto {
    * @type {string}
    * @memberof ResponseBaseOffenceDto
    */
-  createdByEmail: string
+  createdByEmail?: string | null
   /**
    * Email address of the user who last updated the record.
    * @type {string}
    * @memberof ResponseBaseOffenceDto
    */
-  updatedByEmail: string
+  updatedByEmail?: string | null
   /**
    *
    * @type {OffenceTypeEnum}
@@ -500,13 +773,6 @@ export interface ResponseBaseOffenceDto {
    * @memberof ResponseBaseOffenceDto
    */
   registryVehicleId: string | null
-  /**
-   * ID of zone sign photo associated with this offence.
-   * @type {number}
-   * @memberof ResponseBaseOffenceDto
-   * @deprecated
-   */
-  favouritePhotoId?: number | null
   /**
    * ID of zone sign photo associated with this offence.
    * @type {number}
@@ -629,13 +895,13 @@ export interface ResponseCreateOffenceDto {
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
-  createdByEmail: string
+  createdByEmail?: string | null
   /**
    * Email address of the user who last updated the record.
    * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
-  updatedByEmail: string
+  updatedByEmail?: string | null
   /**
    *
    * @type {OffenceTypeEnum}
@@ -670,13 +936,6 @@ export interface ResponseCreateOffenceDto {
    * ID of zone sign photo associated with this offence.
    * @type {number}
    * @memberof ResponseCreateOffenceDto
-   * @deprecated
-   */
-  favouritePhotoId?: number | null
-  /**
-   * ID of zone sign photo associated with this offence.
-   * @type {number}
-   * @memberof ResponseCreateOffenceDto
    */
   zoneSignPhotoId: number | null
   /**
@@ -705,13 +964,6 @@ export interface ResponseCreateOffenceDto {
   retryAttempt: number | null
   /**
    *
-   * @type {ResponseCreateOffenceDtoFavouritePhoto}
-   * @memberof ResponseCreateOffenceDto
-   * @deprecated
-   */
-  FavouritePhoto?: ResponseCreateOffenceDtoFavouritePhoto | null
-  /**
-   *
    * @type {ResponseZoneSignPhotoDto}
    * @memberof ResponseCreateOffenceDto
    */
@@ -724,79 +976,6 @@ export interface ResponseCreateOffenceDto {
   EvidenceFile: Array<EvidenceFileDto>
 }
 
-/**
- *
- * @export
- * @interface ResponseCreateOffenceDtoFavouritePhoto
- */
-export interface ResponseCreateOffenceDtoFavouritePhoto {
-  /**
-   * ID of the record in database.
-   * @type {number}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  id: number
-  /**
-   * UUID of the record.
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  uuid: string
-  /**
-   * Timestamp of creation in UTC.
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  createdAt: string
-  /**
-   * Timestamp of the latest update. Time is in UTC format.
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  updatedAt: string
-  /**
-   * System where record was created.
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  createdBy: string
-  /**
-   * System where record was updated.
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  updatedBy: string
-  /**
-   * Email address of author of the record.
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  createdByEmail: string
-  /**
-   * Email address of the user who last updated the record.
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  updatedByEmail: string
-  /**
-   *
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  photoUrl: string
-  /**
-   * Tag to image, e.g. zone number
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  tag: string | null
-  /**
-   * UUID of zone sign from GIS data.
-   * @type {string}
-   * @memberof ResponseCreateOffenceDtoFavouritePhoto
-   */
-  globalId: string | null
-}
 /**
  *
  * @export
@@ -922,13 +1101,13 @@ export interface ResponseCreateOrUpdateScanDto {
    * @type {string}
    * @memberof ResponseCreateOrUpdateScanDto
    */
-  createdByEmail: string
+  createdByEmail?: string | null
   /**
    * Email address of the user who last updated the record.
    * @type {string}
    * @memberof ResponseCreateOrUpdateScanDto
    */
-  updatedByEmail: string
+  updatedByEmail?: string | null
   /**
    *
    * @type {ScanResultEnum}
@@ -1136,31 +1315,43 @@ export interface ResponseZoneSignPhotoDto {
    * @type {string}
    * @memberof ResponseZoneSignPhotoDto
    */
-  createdByEmail: string
+  createdByEmail?: string | null
   /**
    * Email address of the user who last updated the record.
    * @type {string}
    * @memberof ResponseZoneSignPhotoDto
    */
-  updatedByEmail: string
+  updatedByEmail?: string | null
+  /**
+   * UUID of zone sign from GIS data.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  globalId?: string | null
+  /**
+   * Arbitrary info about image, e.g. UDR number.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  tag?: string | null
+  /**
+   * Latitude of image.
+   * @type {number}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  lat?: number | null
+  /**
+   * Longitude of image.
+   * @type {number}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  long?: number | null
   /**
    *
    * @type {string}
    * @memberof ResponseZoneSignPhotoDto
    */
   photoUrl: string
-  /**
-   * Tag to image, e.g. zone number
-   * @type {string}
-   * @memberof ResponseZoneSignPhotoDto
-   */
-  tag: string | null
-  /**
-   * UUID of zone sign from GIS data.
-   * @type {string}
-   * @memberof ResponseZoneSignPhotoDto
-   */
-  globalId: string | null
 }
 /**
  *
@@ -1168,6 +1359,30 @@ export interface ResponseZoneSignPhotoDto {
  * @interface ResponseZoneSignPhotoPropertiesDto
  */
 export interface ResponseZoneSignPhotoPropertiesDto {
+  /**
+   * UUID of zone sign from GIS data.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoPropertiesDto
+   */
+  globalId?: string | null
+  /**
+   * Arbitrary info about image, e.g. UDR number.
+   * @type {string}
+   * @memberof ResponseZoneSignPhotoPropertiesDto
+   */
+  tag?: string | null
+  /**
+   * Latitude of image.
+   * @type {number}
+   * @memberof ResponseZoneSignPhotoPropertiesDto
+   */
+  lat?: number | null
+  /**
+   * Longitude of image.
+   * @type {number}
+   * @memberof ResponseZoneSignPhotoPropertiesDto
+   */
+  long?: number | null
   /**
    *
    * @type {string}
@@ -1180,18 +1395,31 @@ export interface ResponseZoneSignPhotoPropertiesDto {
    * @memberof ResponseZoneSignPhotoPropertiesDto
    */
   id: number
+}
+/**
+ *
+ * @export
+ * @interface RideEventDto
+ */
+export interface RideEventDto {
   /**
-   * Tag to image, e.g. zone number
+   * Unique ID of the driver shift event
    * @type {string}
-   * @memberof ResponseZoneSignPhotoPropertiesDto
+   * @memberof RideEventDto
    */
-  tag: string | null
+  driver_shift_event_id: string
   /**
-   * UUID of zone sign from GIS data.
-   * @type {string}
-   * @memberof ResponseZoneSignPhotoPropertiesDto
+   * Unique ID of the driver
+   * @type {number}
+   * @memberof RideEventDto
    */
-  globalId: string | null
+  driver_id: number
+  /**
+   * Timestamp of the shift event in ISO format
+   * @type {string}
+   * @memberof RideEventDto
+   */
+  timestamp: string
 }
 /**
  * Reason for the scan. For example, if set to PAAS_PARKING_AUTHORIZATION, the system will check whether the specified ECV is authorized to park in the given UDR.
@@ -1219,9 +1447,307 @@ export const ScanResultEnum = {
   PaasParkingViolationDuplicity: 'PAAS_PARKING_VIOLATION_DUPLICITY',
   Other: 'OTHER',
   NoViolation: 'NO_VIOLATION',
+  LowConfidence: 'LOW_CONFIDENCE',
 } as const
 
 export type ScanResultEnum = (typeof ScanResultEnum)[keyof typeof ScanResultEnum]
+
+/**
+ *
+ * @export
+ * @interface SignPostEvidenceDto
+ */
+export interface SignPostEvidenceDto {
+  /**
+   * Unique ID of specific traffic sign detection
+   * @type {string}
+   * @memberof SignPostEvidenceDto
+   */
+  sign_post_detection_id: string
+  /**
+   * Path to evidence archive
+   * @type {string}
+   * @memberof SignPostEvidenceDto
+   */
+  data_archive_path: string
+}
+/**
+ *
+ * @export
+ * @interface SuccessResponseDto
+ */
+export interface SuccessResponseDto {
+  /**
+   *
+   * @type {string}
+   * @memberof SuccessResponseDto
+   */
+  message: string
+}
+/**
+ *
+ * @export
+ * @interface TokenResponseDto
+ */
+export interface TokenResponseDto {
+  /**
+   * The access token for API authentication
+   * @type {string}
+   * @memberof TokenResponseDto
+   */
+  access_token: string
+  /**
+   * Type of the token
+   * @type {string}
+   * @memberof TokenResponseDto
+   */
+  token_type: string
+  /**
+   * Token expiration time in seconds
+   * @type {number}
+   * @memberof TokenResponseDto
+   */
+  expires_in: number
+  /**
+   * Scope of the access token
+   * @type {string}
+   * @memberof TokenResponseDto
+   */
+  scope?: string
+}
+/**
+ *
+ * @export
+ * @interface VehicleDetectionResponseDto
+ */
+export interface VehicleDetectionResponseDto {
+  /**
+   * Flag whether to keep the evidence data for this detection.
+   * @type {boolean}
+   * @memberof VehicleDetectionResponseDto
+   */
+  keep_evidence_data: boolean
+}
+/**
+ *
+ * @export
+ * @interface VehicleEvidenceDto
+ */
+export interface VehicleEvidenceDto {
+  /**
+   * Unique ID of specific parked vehicle detection
+   * @type {string}
+   * @memberof VehicleEvidenceDto
+   */
+  parked_vehicle_detection_id: string
+  /**
+   * Path to evidence archive
+   * @type {string}
+   * @memberof VehicleEvidenceDto
+   */
+  data_archive_path: string
+}
+/**
+ *
+ * @export
+ * @interface VersionResponse
+ */
+export interface VersionResponse {
+  /**
+   * API version
+   * @type {string}
+   * @memberof VersionResponse
+   */
+  version: string
+  /**
+   * Current server timestamp
+   * @type {string}
+   * @memberof VersionResponse
+   */
+  timestamp: string
+}
+
+/**
+ * AuthenticationApi - axios parameter creator
+ * @export
+ */
+export const AuthenticationApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary OAuth2 token endpoint
+     * @param {string} grantType OAuth2 grant type
+     * @param {string} clientId Client identifier for testing environment
+     * @param {string} clientSecret Client secret for testing environment
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitAuthenticationControllerGetAccessToken: async (
+      grantType: string,
+      clientId: string,
+      clientSecret: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'grantType' is not null or undefined
+      assertParamExists('iteraitAuthenticationControllerGetAccessToken', 'grantType', grantType)
+      // verify required parameter 'clientId' is not null or undefined
+      assertParamExists('iteraitAuthenticationControllerGetAccessToken', 'clientId', clientId)
+      // verify required parameter 'clientSecret' is not null or undefined
+      assertParamExists(
+        'iteraitAuthenticationControllerGetAccessToken',
+        'clientSecret',
+        clientSecret,
+      )
+      const localVarPath = `/token`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+      const localVarFormParams = new URLSearchParams()
+
+      if (grantType !== undefined) {
+        localVarFormParams.set('grant_type', grantType as any)
+      }
+
+      if (clientId !== undefined) {
+        localVarFormParams.set('client_id', clientId as any)
+      }
+
+      if (clientSecret !== undefined) {
+        localVarFormParams.set('client_secret', clientSecret as any)
+      }
+
+      localVarHeaderParameter['Content-Type'] = 'application/x-www-form-urlencoded'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = localVarFormParams.toString()
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * AuthenticationApi - functional programming interface
+ * @export
+ */
+export const AuthenticationApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = AuthenticationApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary OAuth2 token endpoint
+     * @param {string} grantType OAuth2 grant type
+     * @param {string} clientId Client identifier for testing environment
+     * @param {string} clientSecret Client secret for testing environment
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitAuthenticationControllerGetAccessToken(
+      grantType: string,
+      clientId: string,
+      clientSecret: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitAuthenticationControllerGetAccessToken(
+          grantType,
+          clientId,
+          clientSecret,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['AuthenticationApi.iteraitAuthenticationControllerGetAccessToken']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * AuthenticationApi - factory interface
+ * @export
+ */
+export const AuthenticationApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = AuthenticationApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary OAuth2 token endpoint
+     * @param {string} grantType OAuth2 grant type
+     * @param {string} clientId Client identifier for testing environment
+     * @param {string} clientSecret Client secret for testing environment
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitAuthenticationControllerGetAccessToken(
+      grantType: string,
+      clientId: string,
+      clientSecret: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<TokenResponseDto> {
+      return localVarFp
+        .iteraitAuthenticationControllerGetAccessToken(grantType, clientId, clientSecret, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * AuthenticationApi - object-oriented interface
+ * @export
+ * @class AuthenticationApi
+ * @extends {BaseAPI}
+ */
+export class AuthenticationApi extends BaseAPI {
+  /**
+   *
+   * @summary OAuth2 token endpoint
+   * @param {string} grantType OAuth2 grant type
+   * @param {string} clientId Client identifier for testing environment
+   * @param {string} clientSecret Client secret for testing environment
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AuthenticationApi
+   */
+  public iteraitAuthenticationControllerGetAccessToken(
+    grantType: string,
+    clientId: string,
+    clientSecret: string,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return AuthenticationApiFp(this.configuration)
+      .iteraitAuthenticationControllerGetAccessToken(grantType, clientId, clientSecret, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
 
 /**
  * DefaultApi - axios parameter creator
@@ -1346,6 +1872,982 @@ export class DefaultApi extends BaseAPI {
   public defaultControllerHealthcheck(options?: RawAxiosRequestConfig) {
     return DefaultApiFp(this.configuration)
       .defaultControllerHealthcheck(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * DetectionSubmissionApi - axios parameter creator
+ * @export
+ */
+export const DetectionSubmissionApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Submit parked vehicle detection data
+     * @param {RequestCreateAutomaticScanDto} requestCreateAutomaticScanDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitDetectionControllerScan: async (
+      requestCreateAutomaticScanDto: RequestCreateAutomaticScanDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestCreateAutomaticScanDto' is not null or undefined
+      assertParamExists(
+        'iteraitDetectionControllerScan',
+        'requestCreateAutomaticScanDto',
+        requestCreateAutomaticScanDto,
+      )
+      const localVarPath = `/vehicle-detection`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestCreateAutomaticScanDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Submit real-time sign post detection data from patrol vehicles.
+     * @summary Submit sign post detection data.
+     * @param {RequestCreateSignPostScanDto} requestCreateSignPostScanDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitDetectionControllerStoreZoneSignPhoto: async (
+      requestCreateSignPostScanDto: RequestCreateSignPostScanDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestCreateSignPostScanDto' is not null or undefined
+      assertParamExists(
+        'iteraitDetectionControllerStoreZoneSignPhoto',
+        'requestCreateSignPostScanDto',
+        requestCreateSignPostScanDto,
+      )
+      const localVarPath = `/sign-post-detection`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestCreateSignPostScanDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Submit vehicle evidence data with archive information.
+     * @summary Submit vehicle evidence data.
+     * @param {RequestCreateStreetDetectionDto} requestCreateStreetDetectionDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitDetectionControllerStreetEntrance: async (
+      requestCreateStreetDetectionDto: RequestCreateStreetDetectionDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestCreateStreetDetectionDto' is not null or undefined
+      assertParamExists(
+        'iteraitDetectionControllerStreetEntrance',
+        'requestCreateStreetDetectionDto',
+        requestCreateStreetDetectionDto,
+      )
+      const localVarPath = `/street-entrance-detection`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestCreateStreetDetectionDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     * Submit sign post evidence data with archive information.
+     * @summary Submit sign post evidence data.
+     * @param {RequestCreateStreetDetectionDto} requestCreateStreetDetectionDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitDetectionControllerStreetExit: async (
+      requestCreateStreetDetectionDto: RequestCreateStreetDetectionDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'requestCreateStreetDetectionDto' is not null or undefined
+      assertParamExists(
+        'iteraitDetectionControllerStreetExit',
+        'requestCreateStreetDetectionDto',
+        requestCreateStreetDetectionDto,
+      )
+      const localVarPath = `/street-exit-detection`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        requestCreateStreetDetectionDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * DetectionSubmissionApi - functional programming interface
+ * @export
+ */
+export const DetectionSubmissionApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = DetectionSubmissionApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary Submit parked vehicle detection data
+     * @param {RequestCreateAutomaticScanDto} requestCreateAutomaticScanDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitDetectionControllerScan(
+      requestCreateAutomaticScanDto: RequestCreateAutomaticScanDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<VehicleDetectionResponseDto>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.iteraitDetectionControllerScan(
+        requestCreateAutomaticScanDto,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DetectionSubmissionApi.iteraitDetectionControllerScan']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Submit real-time sign post detection data from patrol vehicles.
+     * @summary Submit sign post detection data.
+     * @param {RequestCreateSignPostScanDto} requestCreateSignPostScanDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitDetectionControllerStoreZoneSignPhoto(
+      requestCreateSignPostScanDto: RequestCreateSignPostScanDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitDetectionControllerStoreZoneSignPhoto(
+          requestCreateSignPostScanDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DetectionSubmissionApi.iteraitDetectionControllerStoreZoneSignPhoto']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Submit vehicle evidence data with archive information.
+     * @summary Submit vehicle evidence data.
+     * @param {RequestCreateStreetDetectionDto} requestCreateStreetDetectionDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitDetectionControllerStreetEntrance(
+      requestCreateStreetDetectionDto: RequestCreateStreetDetectionDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitDetectionControllerStreetEntrance(
+          requestCreateStreetDetectionDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DetectionSubmissionApi.iteraitDetectionControllerStreetEntrance']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     * Submit sign post evidence data with archive information.
+     * @summary Submit sign post evidence data.
+     * @param {RequestCreateStreetDetectionDto} requestCreateStreetDetectionDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitDetectionControllerStreetExit(
+      requestCreateStreetDetectionDto: RequestCreateStreetDetectionDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitDetectionControllerStreetExit(
+          requestCreateStreetDetectionDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['DetectionSubmissionApi.iteraitDetectionControllerStreetExit']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * DetectionSubmissionApi - factory interface
+ * @export
+ */
+export const DetectionSubmissionApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = DetectionSubmissionApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary Submit parked vehicle detection data
+     * @param {RequestCreateAutomaticScanDto} requestCreateAutomaticScanDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitDetectionControllerScan(
+      requestCreateAutomaticScanDto: RequestCreateAutomaticScanDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<VehicleDetectionResponseDto> {
+      return localVarFp
+        .iteraitDetectionControllerScan(requestCreateAutomaticScanDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Submit real-time sign post detection data from patrol vehicles.
+     * @summary Submit sign post detection data.
+     * @param {RequestCreateSignPostScanDto} requestCreateSignPostScanDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitDetectionControllerStoreZoneSignPhoto(
+      requestCreateSignPostScanDto: RequestCreateSignPostScanDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SuccessResponseDto> {
+      return localVarFp
+        .iteraitDetectionControllerStoreZoneSignPhoto(requestCreateSignPostScanDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Submit vehicle evidence data with archive information.
+     * @summary Submit vehicle evidence data.
+     * @param {RequestCreateStreetDetectionDto} requestCreateStreetDetectionDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitDetectionControllerStreetEntrance(
+      requestCreateStreetDetectionDto: RequestCreateStreetDetectionDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SuccessResponseDto> {
+      return localVarFp
+        .iteraitDetectionControllerStreetEntrance(requestCreateStreetDetectionDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     * Submit sign post evidence data with archive information.
+     * @summary Submit sign post evidence data.
+     * @param {RequestCreateStreetDetectionDto} requestCreateStreetDetectionDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitDetectionControllerStreetExit(
+      requestCreateStreetDetectionDto: RequestCreateStreetDetectionDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SuccessResponseDto> {
+      return localVarFp
+        .iteraitDetectionControllerStreetExit(requestCreateStreetDetectionDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * DetectionSubmissionApi - object-oriented interface
+ * @export
+ * @class DetectionSubmissionApi
+ * @extends {BaseAPI}
+ */
+export class DetectionSubmissionApi extends BaseAPI {
+  /**
+   *
+   * @summary Submit parked vehicle detection data
+   * @param {RequestCreateAutomaticScanDto} requestCreateAutomaticScanDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DetectionSubmissionApi
+   */
+  public iteraitDetectionControllerScan(
+    requestCreateAutomaticScanDto: RequestCreateAutomaticScanDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return DetectionSubmissionApiFp(this.configuration)
+      .iteraitDetectionControllerScan(requestCreateAutomaticScanDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Submit real-time sign post detection data from patrol vehicles.
+   * @summary Submit sign post detection data.
+   * @param {RequestCreateSignPostScanDto} requestCreateSignPostScanDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DetectionSubmissionApi
+   */
+  public iteraitDetectionControllerStoreZoneSignPhoto(
+    requestCreateSignPostScanDto: RequestCreateSignPostScanDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return DetectionSubmissionApiFp(this.configuration)
+      .iteraitDetectionControllerStoreZoneSignPhoto(requestCreateSignPostScanDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Submit vehicle evidence data with archive information.
+   * @summary Submit vehicle evidence data.
+   * @param {RequestCreateStreetDetectionDto} requestCreateStreetDetectionDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DetectionSubmissionApi
+   */
+  public iteraitDetectionControllerStreetEntrance(
+    requestCreateStreetDetectionDto: RequestCreateStreetDetectionDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return DetectionSubmissionApiFp(this.configuration)
+      .iteraitDetectionControllerStreetEntrance(requestCreateStreetDetectionDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   * Submit sign post evidence data with archive information.
+   * @summary Submit sign post evidence data.
+   * @param {RequestCreateStreetDetectionDto} requestCreateStreetDetectionDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DetectionSubmissionApi
+   */
+  public iteraitDetectionControllerStreetExit(
+    requestCreateStreetDetectionDto: RequestCreateStreetDetectionDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return DetectionSubmissionApiFp(this.configuration)
+      .iteraitDetectionControllerStreetExit(requestCreateStreetDetectionDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * EvidenceDataUploadApi - axios parameter creator
+ * @export
+ */
+export const EvidenceDataUploadApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Submit sign post evidence data
+     * @param {SignPostEvidenceDto} signPostEvidenceDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitEvidenceControllerSubmitSignPostEvidenceData: async (
+      signPostEvidenceDto: SignPostEvidenceDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'signPostEvidenceDto' is not null or undefined
+      assertParamExists(
+        'iteraitEvidenceControllerSubmitSignPostEvidenceData',
+        'signPostEvidenceDto',
+        signPostEvidenceDto,
+      )
+      const localVarPath = `/sign-post-evidence-data`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        signPostEvidenceDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Submit vehicle evidence data
+     * @param {VehicleEvidenceDto} vehicleEvidenceDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitEvidenceControllerSubmitVehicleEvidenceData: async (
+      vehicleEvidenceDto: VehicleEvidenceDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'vehicleEvidenceDto' is not null or undefined
+      assertParamExists(
+        'iteraitEvidenceControllerSubmitVehicleEvidenceData',
+        'vehicleEvidenceDto',
+        vehicleEvidenceDto,
+      )
+      const localVarPath = `/vehicle-evidence-data`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        vehicleEvidenceDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * EvidenceDataUploadApi - functional programming interface
+ * @export
+ */
+export const EvidenceDataUploadApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = EvidenceDataUploadApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary Submit sign post evidence data
+     * @param {SignPostEvidenceDto} signPostEvidenceDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitEvidenceControllerSubmitSignPostEvidenceData(
+      signPostEvidenceDto: SignPostEvidenceDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitEvidenceControllerSubmitSignPostEvidenceData(
+          signPostEvidenceDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'EvidenceDataUploadApi.iteraitEvidenceControllerSubmitSignPostEvidenceData'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Submit vehicle evidence data
+     * @param {VehicleEvidenceDto} vehicleEvidenceDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitEvidenceControllerSubmitVehicleEvidenceData(
+      vehicleEvidenceDto: VehicleEvidenceDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitEvidenceControllerSubmitVehicleEvidenceData(
+          vehicleEvidenceDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'EvidenceDataUploadApi.iteraitEvidenceControllerSubmitVehicleEvidenceData'
+        ]?.[localVarOperationServerIndex]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * EvidenceDataUploadApi - factory interface
+ * @export
+ */
+export const EvidenceDataUploadApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = EvidenceDataUploadApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary Submit sign post evidence data
+     * @param {SignPostEvidenceDto} signPostEvidenceDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitEvidenceControllerSubmitSignPostEvidenceData(
+      signPostEvidenceDto: SignPostEvidenceDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SuccessResponseDto> {
+      return localVarFp
+        .iteraitEvidenceControllerSubmitSignPostEvidenceData(signPostEvidenceDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Submit vehicle evidence data
+     * @param {VehicleEvidenceDto} vehicleEvidenceDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitEvidenceControllerSubmitVehicleEvidenceData(
+      vehicleEvidenceDto: VehicleEvidenceDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SuccessResponseDto> {
+      return localVarFp
+        .iteraitEvidenceControllerSubmitVehicleEvidenceData(vehicleEvidenceDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * EvidenceDataUploadApi - object-oriented interface
+ * @export
+ * @class EvidenceDataUploadApi
+ * @extends {BaseAPI}
+ */
+export class EvidenceDataUploadApi extends BaseAPI {
+  /**
+   *
+   * @summary Submit sign post evidence data
+   * @param {SignPostEvidenceDto} signPostEvidenceDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof EvidenceDataUploadApi
+   */
+  public iteraitEvidenceControllerSubmitSignPostEvidenceData(
+    signPostEvidenceDto: SignPostEvidenceDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return EvidenceDataUploadApiFp(this.configuration)
+      .iteraitEvidenceControllerSubmitSignPostEvidenceData(signPostEvidenceDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Submit vehicle evidence data
+   * @param {VehicleEvidenceDto} vehicleEvidenceDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof EvidenceDataUploadApi
+   */
+  public iteraitEvidenceControllerSubmitVehicleEvidenceData(
+    vehicleEvidenceDto: VehicleEvidenceDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return EvidenceDataUploadApiFp(this.configuration)
+      .iteraitEvidenceControllerSubmitVehicleEvidenceData(vehicleEvidenceDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
+
+/**
+ * IntrospectionApi - axios parameter creator
+ * @export
+ */
+export const IntrospectionApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Health check endpoint
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitIntrospectionControllerGetHealth: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/health`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Get API version information
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitIntrospectionControllerGetVersion: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/version`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * IntrospectionApi - functional programming interface
+ * @export
+ */
+export const IntrospectionApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = IntrospectionApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary Health check endpoint
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitIntrospectionControllerGetHealth(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HealthResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitIntrospectionControllerGetHealth(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['IntrospectionApi.iteraitIntrospectionControllerGetHealth']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Get API version information
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitIntrospectionControllerGetVersion(
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VersionResponse>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitIntrospectionControllerGetVersion(options)
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['IntrospectionApi.iteraitIntrospectionControllerGetVersion']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * IntrospectionApi - factory interface
+ * @export
+ */
+export const IntrospectionApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = IntrospectionApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary Health check endpoint
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitIntrospectionControllerGetHealth(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<HealthResponseDto> {
+      return localVarFp
+        .iteraitIntrospectionControllerGetHealth(options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Get API version information
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitIntrospectionControllerGetVersion(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<VersionResponse> {
+      return localVarFp
+        .iteraitIntrospectionControllerGetVersion(options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * IntrospectionApi - object-oriented interface
+ * @export
+ * @class IntrospectionApi
+ * @extends {BaseAPI}
+ */
+export class IntrospectionApi extends BaseAPI {
+  /**
+   *
+   * @summary Health check endpoint
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof IntrospectionApi
+   */
+  public iteraitIntrospectionControllerGetHealth(options?: RawAxiosRequestConfig) {
+    return IntrospectionApiFp(this.configuration)
+      .iteraitIntrospectionControllerGetHealth(options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Get API version information
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof IntrospectionApi
+   */
+  public iteraitIntrospectionControllerGetVersion(options?: RawAxiosRequestConfig) {
+    return IntrospectionApiFp(this.configuration)
+      .iteraitIntrospectionControllerGetVersion(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -1798,71 +3300,6 @@ export class MobileAppApi extends BaseAPI {
 export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
     /**
-     * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
-     * @summary Upload photo of zone sign.
-     * @param {File} file Upload image
-     * @param {string} globalId UUID of zone sign from GIS data.
-     * @param {string} [tag] Tag to image, e.g. zone number
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scanControllerCreateFavouritePhoto: async (
-      file: File,
-      globalId: string,
-      tag?: string,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'file' is not null or undefined
-      assertParamExists('scanControllerCreateFavouritePhoto', 'file', file)
-      // verify required parameter 'globalId' is not null or undefined
-      assertParamExists('scanControllerCreateFavouritePhoto', 'globalId', globalId)
-      const localVarPath = `/scan/favourite-photo/create`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-      const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)()
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      if (file !== undefined) {
-        localVarFormParams.append('file', file as any)
-      }
-
-      if (globalId !== undefined) {
-        localVarFormParams.append('globalId', globalId as any)
-      }
-
-      if (tag !== undefined) {
-        localVarFormParams.append('tag', tag as any)
-      }
-
-      localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-      localVarRequestOptions.data = localVarFormParams
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
      * Create offence and send it to Enforcement backoffice.
      * @summary Create offence from scan.
      * @param {string} scanUuid
@@ -1985,21 +3422,23 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
      * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
-     * @param {string} globalId UUID of zone sign from GIS data.
-     * @param {string} [tag] Tag to image, e.g. zone number
+     * @param {string | null} [globalId] UUID of zone sign from GIS data.
+     * @param {string | null} [tag] Arbitrary info about image, e.g. UDR number.
+     * @param {number | null} [lat] Latitude of image.
+     * @param {number | null} [_long] Longitude of image.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerCreateZoneSignPhoto: async (
       file: File,
-      globalId: string,
-      tag?: string,
+      globalId?: string | null,
+      tag?: string | null,
+      lat?: number | null,
+      _long?: number | null,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'file' is not null or undefined
       assertParamExists('scanControllerCreateZoneSignPhoto', 'file', file)
-      // verify required parameter 'globalId' is not null or undefined
-      assertParamExists('scanControllerCreateZoneSignPhoto', 'globalId', globalId)
       const localVarPath = `/scan/zone-sign/create`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -2017,16 +3456,24 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-      if (file !== undefined) {
-        localVarFormParams.append('file', file as any)
-      }
-
       if (globalId !== undefined) {
         localVarFormParams.append('globalId', globalId as any)
       }
 
       if (tag !== undefined) {
         localVarFormParams.append('tag', tag as any)
+      }
+
+      if (lat !== undefined) {
+        localVarFormParams.append('lat', lat as any)
+      }
+
+      if (_long !== undefined) {
+        localVarFormParams.append('long', _long as any)
+      }
+
+      if (file !== undefined) {
+        localVarFormParams.append('file', file as any)
       }
 
       localVarHeaderParameter['Content-Type'] = 'multipart/form-data'
@@ -2039,45 +3486,6 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
         ...options.headers,
       }
       localVarRequestOptions.data = localVarFormParams
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-    /**
-     * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
-     * @summary Get zone sign photos
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scanControllerGetFavouritePhotos: async (
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/scan/favourite-photo/photos`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      // authentication bearer required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
 
       return {
         url: toPathString(localVarUrlObj),
@@ -2363,43 +3771,6 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ScansAndOffencesApiAxiosParamCreator(configuration)
   return {
     /**
-     * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
-     * @summary Upload photo of zone sign.
-     * @param {File} file Upload image
-     * @param {string} globalId UUID of zone sign from GIS data.
-     * @param {string} [tag] Tag to image, e.g. zone number
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scanControllerCreateFavouritePhoto(
-      file: File,
-      globalId: string,
-      tag?: string,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseZoneSignPhotoPropertiesDto>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerCreateFavouritePhoto(
-        file,
-        globalId,
-        tag,
-        options,
-      )
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ScansAndOffencesApi.scanControllerCreateFavouritePhoto']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
      * Create offence and send it to Enforcement backoffice.
      * @summary Create offence from scan.
      * @param {string} scanUuid
@@ -2469,15 +3840,19 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
      * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
-     * @param {string} globalId UUID of zone sign from GIS data.
-     * @param {string} [tag] Tag to image, e.g. zone number
+     * @param {string | null} [globalId] UUID of zone sign from GIS data.
+     * @param {string | null} [tag] Arbitrary info about image, e.g. UDR number.
+     * @param {number | null} [lat] Latitude of image.
+     * @param {number | null} [_long] Longitude of image.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async scanControllerCreateZoneSignPhoto(
       file: File,
-      globalId: string,
-      tag?: string,
+      globalId?: string | null,
+      tag?: string | null,
+      lat?: number | null,
+      _long?: number | null,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseZoneSignPhotoPropertiesDto>
@@ -2486,38 +3861,13 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
         file,
         globalId,
         tag,
+        lat,
+        _long,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['ScansAndOffencesApi.scanControllerCreateZoneSignPhoto']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-    /**
-     * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
-     * @summary Get zone sign photos
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    async scanControllerGetFavouritePhotos(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseGetZoneSignPhotosDto>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.scanControllerGetFavouritePhotos(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['ScansAndOffencesApi.scanControllerGetFavouritePhotos']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -2713,26 +4063,6 @@ export const ScansAndOffencesApiFactory = function (
   const localVarFp = ScansAndOffencesApiFp(configuration)
   return {
     /**
-     * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
-     * @summary Upload photo of zone sign.
-     * @param {File} file Upload image
-     * @param {string} globalId UUID of zone sign from GIS data.
-     * @param {string} [tag] Tag to image, e.g. zone number
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scanControllerCreateFavouritePhoto(
-      file: File,
-      globalId: string,
-      tag?: string,
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseZoneSignPhotoPropertiesDto> {
-      return localVarFp
-        .scanControllerCreateFavouritePhoto(file, globalId, tag, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
      * Create offence and send it to Enforcement backoffice.
      * @summary Create offence from scan.
      * @param {string} scanUuid
@@ -2770,33 +4100,23 @@ export const ScansAndOffencesApiFactory = function (
      * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
      * @summary Upload photo of zone sign.
      * @param {File} file Upload image
-     * @param {string} globalId UUID of zone sign from GIS data.
-     * @param {string} [tag] Tag to image, e.g. zone number
+     * @param {string | null} [globalId] UUID of zone sign from GIS data.
+     * @param {string | null} [tag] Arbitrary info about image, e.g. UDR number.
+     * @param {number | null} [lat] Latitude of image.
+     * @param {number | null} [_long] Longitude of image.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     scanControllerCreateZoneSignPhoto(
       file: File,
-      globalId: string,
-      tag?: string,
+      globalId?: string | null,
+      tag?: string | null,
+      lat?: number | null,
+      _long?: number | null,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseZoneSignPhotoPropertiesDto> {
       return localVarFp
-        .scanControllerCreateZoneSignPhoto(file, globalId, tag, options)
-        .then((request) => request(axios, basePath))
-    },
-    /**
-     * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
-     * @summary Get zone sign photos
-     * @param {*} [options] Override http request option.
-     * @deprecated
-     * @throws {RequiredError}
-     */
-    scanControllerGetFavouritePhotos(
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseGetZoneSignPhotosDto> {
-      return localVarFp
-        .scanControllerGetFavouritePhotos(options)
+        .scanControllerCreateZoneSignPhoto(file, globalId, tag, lat, _long, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2908,28 +4228,6 @@ export const ScansAndOffencesApiFactory = function (
  */
 export class ScansAndOffencesApi extends BaseAPI {
   /**
-   * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
-   * @summary Upload photo of zone sign.
-   * @param {File} file Upload image
-   * @param {string} globalId UUID of zone sign from GIS data.
-   * @param {string} [tag] Tag to image, e.g. zone number
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof ScansAndOffencesApi
-   */
-  public scanControllerCreateFavouritePhoto(
-    file: File,
-    globalId: string,
-    tag?: string,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return ScansAndOffencesApiFp(this.configuration)
-      .scanControllerCreateFavouritePhoto(file, globalId, tag, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
    * Create offence and send it to Enforcement backoffice.
    * @summary Create offence from scan.
    * @param {string} scanUuid
@@ -2971,34 +4269,24 @@ export class ScansAndOffencesApi extends BaseAPI {
    * Uploads a photo of a zone sign to S3 storage and saves its URL, user information, and optional tag in the database. Returns data about the saved image.
    * @summary Upload photo of zone sign.
    * @param {File} file Upload image
-   * @param {string} globalId UUID of zone sign from GIS data.
-   * @param {string} [tag] Tag to image, e.g. zone number
+   * @param {string | null} [globalId] UUID of zone sign from GIS data.
+   * @param {string | null} [tag] Arbitrary info about image, e.g. UDR number.
+   * @param {number | null} [lat] Latitude of image.
+   * @param {number | null} [_long] Longitude of image.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ScansAndOffencesApi
    */
   public scanControllerCreateZoneSignPhoto(
     file: File,
-    globalId: string,
-    tag?: string,
+    globalId?: string | null,
+    tag?: string | null,
+    lat?: number | null,
+    _long?: number | null,
     options?: RawAxiosRequestConfig,
   ) {
     return ScansAndOffencesApiFp(this.configuration)
-      .scanControllerCreateZoneSignPhoto(file, globalId, tag, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-
-  /**
-   * Returns all zone sign photos uploaded today by the authenticated user. Each photo includes its URL, ID, and tag. This endpoint helps users quickly access their recently uploaded zone sign photos.
-   * @summary Get zone sign photos
-   * @param {*} [options] Override http request option.
-   * @deprecated
-   * @throws {RequiredError}
-   * @memberof ScansAndOffencesApi
-   */
-  public scanControllerGetFavouritePhotos(options?: RawAxiosRequestConfig) {
-    return ScansAndOffencesApiFp(this.configuration)
-      .scanControllerGetFavouritePhotos(options)
+      .scanControllerCreateZoneSignPhoto(file, globalId, tag, lat, _long, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -3128,3 +4416,268 @@ export const ScanControllerGetOffenceListOffenceTypesEnum = {
 } as const
 export type ScanControllerGetOffenceListOffenceTypesEnum =
   (typeof ScanControllerGetOffenceListOffenceTypesEnum)[keyof typeof ScanControllerGetOffenceListOffenceTypesEnum]
+
+/**
+ * ShiftsApi - axios parameter creator
+ * @export
+ */
+export const ShiftsApiAxiosParamCreator = function (configuration?: Configuration) {
+  return {
+    /**
+     *
+     * @summary Submit driver shift end event
+     * @param {RideEventDto} rideEventDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitShiftControllerSubmitDriverShiftEnd: async (
+      rideEventDto: RideEventDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'rideEventDto' is not null or undefined
+      assertParamExists('iteraitShiftControllerSubmitDriverShiftEnd', 'rideEventDto', rideEventDto)
+      const localVarPath = `/driver-shift-end`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        rideEventDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Submit driver shift start event
+     * @param {RideEventDto} rideEventDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitShiftControllerSubmitDriverShiftStart: async (
+      rideEventDto: RideEventDto,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'rideEventDto' is not null or undefined
+      assertParamExists(
+        'iteraitShiftControllerSubmitDriverShiftStart',
+        'rideEventDto',
+        rideEventDto,
+      )
+      const localVarPath = `/driver-shift-start`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      // authentication bearer required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+      localVarHeaderParameter['Content-Type'] = 'application/json'
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        rideEventDto,
+        localVarRequestOptions,
+        configuration,
+      )
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+  }
+}
+
+/**
+ * ShiftsApi - functional programming interface
+ * @export
+ */
+export const ShiftsApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = ShiftsApiAxiosParamCreator(configuration)
+  return {
+    /**
+     *
+     * @summary Submit driver shift end event
+     * @param {RideEventDto} rideEventDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitShiftControllerSubmitDriverShiftEnd(
+      rideEventDto: RideEventDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitShiftControllerSubmitDriverShiftEnd(
+          rideEventDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ShiftsApi.iteraitShiftControllerSubmitDriverShiftEnd']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Submit driver shift start event
+     * @param {RideEventDto} rideEventDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async iteraitShiftControllerSubmitDriverShiftStart(
+      rideEventDto: RideEventDto,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SuccessResponseDto>> {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.iteraitShiftControllerSubmitDriverShiftStart(
+          rideEventDto,
+          options,
+        )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ShiftsApi.iteraitShiftControllerSubmitDriverShiftStart']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+  }
+}
+
+/**
+ * ShiftsApi - factory interface
+ * @export
+ */
+export const ShiftsApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = ShiftsApiFp(configuration)
+  return {
+    /**
+     *
+     * @summary Submit driver shift end event
+     * @param {RideEventDto} rideEventDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitShiftControllerSubmitDriverShiftEnd(
+      rideEventDto: RideEventDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SuccessResponseDto> {
+      return localVarFp
+        .iteraitShiftControllerSubmitDriverShiftEnd(rideEventDto, options)
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Submit driver shift start event
+     * @param {RideEventDto} rideEventDto
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    iteraitShiftControllerSubmitDriverShiftStart(
+      rideEventDto: RideEventDto,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<SuccessResponseDto> {
+      return localVarFp
+        .iteraitShiftControllerSubmitDriverShiftStart(rideEventDto, options)
+        .then((request) => request(axios, basePath))
+    },
+  }
+}
+
+/**
+ * ShiftsApi - object-oriented interface
+ * @export
+ * @class ShiftsApi
+ * @extends {BaseAPI}
+ */
+export class ShiftsApi extends BaseAPI {
+  /**
+   *
+   * @summary Submit driver shift end event
+   * @param {RideEventDto} rideEventDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShiftsApi
+   */
+  public iteraitShiftControllerSubmitDriverShiftEnd(
+    rideEventDto: RideEventDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ShiftsApiFp(this.configuration)
+      .iteraitShiftControllerSubmitDriverShiftEnd(rideEventDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Submit driver shift start event
+   * @param {RideEventDto} rideEventDto
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ShiftsApi
+   */
+  public iteraitShiftControllerSubmitDriverShiftStart(
+    rideEventDto: RideEventDto,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return ShiftsApiFp(this.configuration)
+      .iteraitShiftControllerSubmitDriverShiftStart(rideEventDto, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+}
