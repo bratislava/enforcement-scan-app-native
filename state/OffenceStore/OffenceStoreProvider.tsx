@@ -31,6 +31,7 @@ export type OffenceState = {
   offenceType?: OffenceTypeEnum
   resolutionType?: ResolutionOffenceTypeEnum
   isObjectiveResponsibility: boolean
+  offenceDate?: Date
 
   photos: string[]
 

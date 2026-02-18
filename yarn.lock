@@ -8571,7 +8571,7 @@ react-native-gesture-handler@~2.24.0:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
 
-react-native-image-marker@~1.2.6:
+react-native-image-marker@1.2.6:
   version "1.2.6"
   resolved "https://registry.yarnpkg.com/react-native-image-marker/-/react-native-image-marker-1.2.6.tgz#c38e5c9a8aad2ea355003b7a33fc4b681d5470b7"
   integrity sha512-57PLHF0D2OvwwyHdfC89+7QvTaRl6IHKDm+HIkwDgq3PPPNBewsHfuE3lnqLCuR3Zoi80DyukBVKhoRqomaLPw==

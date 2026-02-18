@@ -33,6 +33,7 @@ export const useCreateOffence = () => {
     photos,
     zone,
     resolutionType,
+    offenceDate,
   } = useOffenceStoreContext((state) => state)
 
   const createOffenceMutation = useMutation({
@@ -64,6 +65,7 @@ export const useCreateOffence = () => {
       )
 
       const data: RequestCreateOffenceDataDto = {
+        createdAt: offenceDate?.toISOString(),
         offenceType,
         objectiveResponsibility: isObjectiveResponsibility,
         lat: location.lat,
