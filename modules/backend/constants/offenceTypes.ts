@@ -18,6 +18,8 @@ export const OFFENCE_TYPES = [
   { label: t('offence.type.25/1m'), value: OffenceTypeEnum.M },
   { label: t('offence.type.25/1n'), value: OffenceTypeEnum.N },
   { label: t('offence.type.25/1nb'), value: OffenceTypeEnum.NB },
+  { label: t('offence.type.25/1n01'), value: OffenceTypeEnum.N01 },
+  { label: t('offence.type.25/1n02'), value: OffenceTypeEnum.N02 },
   { label: t('offence.type.25/1o'), value: OffenceTypeEnum.O },
   { label: t('offence.type.25/1p'), value: OffenceTypeEnum.P },
   { label: t('offence.type.25/1q'), value: OffenceTypeEnum.Q },
@@ -25,6 +27,7 @@ export const OFFENCE_TYPES = [
   { label: t('offence.type.25/1s'), value: OffenceTypeEnum.S },
   { label: t('offence.type.25/1t'), value: OffenceTypeEnum.T },
   { label: t('offence.type.25/1u'), value: OffenceTypeEnum.U },
+  { label: t('offence.type.ztp'), value: OffenceTypeEnum.Ztp },
 ]
 
 export const getOffenceTypeLabel = (type: OffenceTypeEnum) =>

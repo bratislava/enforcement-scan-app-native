@@ -250,6 +250,9 @@ export const OffenceTypeEnum = {
   Dz: 'DZ',
   NB: 'N_B',
   Zigzag: 'ZIGZAG',
+  N01: 'N01',
+  N02: 'N02',
+  Ztp: 'ZTP',
 } as const
 
 export type OffenceTypeEnum = (typeof OffenceTypeEnum)[keyof typeof OffenceTypeEnum]
@@ -392,6 +395,12 @@ export interface RequestCreateAutomaticScanDto {
    * @memberof RequestCreateAutomaticScanDto
    */
   data_image_metadata: object
+  /**
+   * Estimated velocity of scanned vehicle in m/s. May be useful for filtering out cases when scanned vehicle is actually not parked.
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_velocity?: number
 }
 /**
  *
@@ -412,7 +421,7 @@ export interface RequestCreateOffenceDataDto {
    */
   offenceType: OffenceTypeEnum
   /**
-   * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N, N_B), this value is always true.
+   * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N01), this value is always true.
    * @type {boolean}
    * @memberof RequestCreateOffenceDataDto
    */
@@ -468,6 +477,12 @@ export interface RequestCreateOffenceDataDto {
  */
 export interface RequestCreateOrUpdateScanDto {
   /**
+   * Vehicle license plate.
+   * @type {string}
+   * @memberof RequestCreateOrUpdateScanDto
+   */
+  ecv: string
+  /**
    * Date of offence
    * @type {string}
    * @memberof RequestCreateOrUpdateScanDto
@@ -479,12 +494,6 @@ export interface RequestCreateOrUpdateScanDto {
    * @memberof RequestCreateOrUpdateScanDto
    */
   uuid?: string
-  /**
-   * Vehicle license plate.
-   * @type {string}
-   * @memberof RequestCreateOrUpdateScanDto
-   */
-  ecv: string
   /**
    * Longitude of the scan location.
    * @type {number}
@@ -762,7 +771,7 @@ export interface ResponseBaseOffenceDto {
    */
   offenceType: OffenceTypeEnum
   /**
-   * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N, N_B), this value is always true.
+   * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N01), this value is always true.
    * @type {boolean}
    * @memberof ResponseBaseOffenceDto
    */
@@ -921,7 +930,7 @@ export interface ResponseCreateOffenceDto {
    */
   offenceType: OffenceTypeEnum
   /**
-   * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N, N_B), this value is always true.
+   * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N01), this value is always true.
    * @type {boolean}
    * @memberof ResponseCreateOffenceDto
    */
@@ -995,6 +1004,12 @@ export interface ResponseCreateOffenceDto {
  */
 export interface ResponseCreateOrUpdateScanDto {
   /**
+   * Vehicle license plate.
+   * @type {string}
+   * @memberof ResponseCreateOrUpdateScanDto
+   */
+  ecv: string
+  /**
    * Timestamp of creation in UTC.
    * @type {string}
    * @memberof ResponseCreateOrUpdateScanDto
@@ -1006,12 +1021,6 @@ export interface ResponseCreateOrUpdateScanDto {
    * @memberof ResponseCreateOrUpdateScanDto
    */
   uuid?: string
-  /**
-   * Vehicle license plate.
-   * @type {string}
-   * @memberof ResponseCreateOrUpdateScanDto
-   */
-  ecv: string
   /**
    * Longitude of the scan location.
    * @type {number}
@@ -3508,7 +3517,7 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
      * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
      * @summary Find offences matching given filters
      * @param {string} ecv Vehicle license plate.
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N, N_B, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
      * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
      * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
      * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
@@ -3545,12 +3554,12 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
-      if (offenceTypes) {
-        localVarQueryParameter['offenceTypes'] = offenceTypes
-      }
-
       if (ecv !== undefined) {
         localVarQueryParameter['ecv'] = ecv
+      }
+
+      if (offenceTypes) {
+        localVarQueryParameter['offenceTypes'] = offenceTypes
       }
 
       if (udr !== undefined) {
@@ -3894,7 +3903,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
      * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
      * @summary Find offences matching given filters
      * @param {string} ecv Vehicle license plate.
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N, N_B, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
      * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
      * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
      * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
@@ -4135,7 +4144,7 @@ export const ScansAndOffencesApiFactory = function (
      * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
      * @summary Find offences matching given filters
      * @param {string} ecv Vehicle license plate.
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N, N_B, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
      * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
      * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
      * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
@@ -4306,7 +4315,7 @@ export class ScansAndOffencesApi extends BaseAPI {
    * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
    * @summary Find offences matching given filters
    * @param {string} ecv Vehicle license plate.
-   * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N, N_B, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+   * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
    * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
    * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
    * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
@@ -4425,6 +4434,9 @@ export const ScanControllerGetOffenceListOffenceTypesEnum = {
   Dz: 'DZ',
   NB: 'N_B',
   Zigzag: 'ZIGZAG',
+  N01: 'N01',
+  N02: 'N02',
+  Ztp: 'ZTP',
 } as const
 export type ScanControllerGetOffenceListOffenceTypesEnum =
   (typeof ScanControllerGetOffenceListOffenceTypesEnum)[keyof typeof ScanControllerGetOffenceListOffenceTypesEnum]
