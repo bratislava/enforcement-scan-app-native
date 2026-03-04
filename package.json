@@ -30,7 +30,7 @@
     "axios": "~1.11.0",
     "clsx": "~2.1.0",
     "core-js": "~3.36.1",
-    "expo": "53.0.22",
+    "expo": "54.0.20",
     "expo-application": "~6.1.5",
     "expo-auth-session": "~6.2.1",
     "expo-constants": "~17.1.7",
