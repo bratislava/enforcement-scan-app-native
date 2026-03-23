@@ -31,7 +31,7 @@ export const refreshToken = async (tokens: TokenResponse) => {
       {
         refreshToken: tokens.refreshToken,
         clientId: environment.clientId,
-        scopes: [`api://${environment.clientId}/user_auth`, ...AUTH_SCOPES],
+        scopes: AUTH_SCOPES,
       },
       discovery,
     )

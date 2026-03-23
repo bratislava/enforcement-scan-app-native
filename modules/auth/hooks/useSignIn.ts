@@ -42,7 +42,7 @@ export const useSignIn = () => {
         const res = await exchangeCodeAsync(
           {
             clientId: environment.clientId,
-            scopes: [`api://${environment.clientId}/user_auth`, ...AUTH_SCOPES],
+            scopes: AUTH_SCOPES,
             code: codeResponse.params.code,
             extraParams: request.codeVerifier
               ? {
