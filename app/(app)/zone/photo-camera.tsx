@@ -47,7 +47,7 @@ const AppRoute = () => {
     const { coords } = await getCurrentPositionAsync({
       accuracy: Location.Accuracy.Highest,
     })
-    const zoneSignGlobalId = getNearestSign(coords)?.properties.GlobalID
+    const zoneSignGlobalId = getNearestSign(coords, udr)?.properties.GlobalID
     const locationString = coords ? `${coordsToString(coords.latitude, coords.longitude)}; ` : ''
 
     const capturedPhoto = await ref.current?.takePhoto()

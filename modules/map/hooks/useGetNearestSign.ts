@@ -10,13 +10,22 @@ type NearestSignType = Feature<Point, Arcgis.SignPoint> | null
 export const useGetNearestSign = () => {
   const { signData } = useArcgisStoreContext()
 
-  const getNearestSign = (coords?: Location.LocationObjectCoords): NearestSignType => {
+  const getNearestSign = (
+    coords?: Location.LocationObjectCoords,
+    udrId?: string,
+  ): NearestSignType => {
     if (!(signData && coords)) return null
+
+    const udrSigns = signData?.features?.filter((feature) =>
+      udrId === '0'
+        ? feature.properties.typ_znacky === 'rezidenti'
+        : feature.properties.typ_znacky === 'zona',
+    )
 
     let nearestSign: NearestSignType = null
     let minDistance = Infinity
 
-    signData.features.forEach((feature) => {
+    udrSigns.forEach((feature) => {
       const [signLongitude, signLatitude] = feature.geometry.coordinates
       const distance = calculateDistance([
         signLatitude,
