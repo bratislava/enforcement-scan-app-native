@@ -77,7 +77,7 @@ export namespace Arcgis {
   export type SignPoint = {
     OBJECTID: number
     zona: string
-    typ_znacky: 'zona' | 'resident' | 'skola'
+    typ_znacky: 'zona' | 'rezidenti' | 'skola'
     GlobalID: string
   }
 

@@ -1,20 +1,12 @@
 /* eslint-disable eslint-comments/no-unlimited-disable,unicorn/no-abusive-eslint-disable */
 /* eslint-disable */
-import { UdrZoneFeature, MapUdrZoneWithTranslationProps } from '@/modules/map/types'
-import { MapLayerEnum } from '@/modules/map/constants'
-import { normalizeZone } from '@/modules/map/utils/normalizeZone'
-import { Arcgis, ArcgisData } from '@/modules/arcgis/types'
 import { ArcgisAliased } from '@/modules/arcgis/aliasedTypes'
+import { Arcgis, ArcgisData } from '@/modules/arcgis/types'
+import { MapLayerEnum } from '@/modules/map/constants'
+import { MapUdrZoneWithTranslationProps, UdrZoneFeature } from '@/modules/map/types'
 import { normalizeAliasedZone } from '@/modules/map/utils/normalizeAliasedZone'
+import { normalizeZone } from '@/modules/map/utils/normalizeZone'
 import { FeatureCollection, MultiPolygon, Point, Polygon } from 'geojson'
-
-const zoneMapping = {
-  SM1: 'SM1',
-  NM1a: 'NM1',
-  RU1: 'RU1',
-  RA1: 'RA1',
-  'PE1-Dvory IV': 'PE1',
-} as { [key: string]: string }
 
 export const processData = ({ rawUdrData, rawSignData }: ArcgisData) => {
   let GLOBAL_ID = 0
@@ -51,14 +43,12 @@ export const processData = ({ rawUdrData, rawSignData }: ArcgisData) => {
 
   const signData = {
     type: 'FeatureCollection',
-    features: rawSignData.features
-      .filter(({ properties }) => properties.typ_znacky === 'zona')
-      .map((feature) => {
-        return {
-          ...feature,
-          id: feature.properties.OBJECTID,
-        }
-      }),
+    features: rawSignData.features.map((feature) => {
+      return {
+        ...feature,
+        id: feature.properties.OBJECTID,
+      }
+    }),
   } as FeatureCollection<Point, Arcgis.SignPoint>
 
   return { udrData, signData }
