@@ -34,8 +34,19 @@ const AppRoute = () => {
   const queryClient = useQueryClient()
 
   const createPhotoMutation = useMutation({
-    mutationFn: ({ file, globalId, tag }: { file: File; globalId: string; tag: string }) =>
-      clientApi.scanControllerCreateZoneSignPhoto(file, globalId, tag),
+    mutationFn: ({
+      file,
+      globalId,
+      tag,
+      lat,
+      long,
+    }: {
+      file: File
+      globalId: string
+      tag: string
+      lat: number
+      long: number
+    }) => clientApi.scanControllerCreateZoneSignPhoto(file, globalId, tag, lat, long),
     onSuccess: async () => {
       await queryClient.resetQueries({ queryKey: getZoneSignPhotosOptions().queryKey })
     },
@@ -81,6 +92,8 @@ const AppRoute = () => {
         } as unknown as File,
         tag: [tag, udr, timeString].filter(Boolean).join(' '),
         globalId: zoneSignGlobalId,
+        lat: coords?.latitude,
+        long: coords?.longitude,
       })
 
       setOffenceState({ zonePhoto: photoResponse.data })
