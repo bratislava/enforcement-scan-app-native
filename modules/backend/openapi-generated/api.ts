@@ -12,26 +12,23 @@
  * Do not edit the class manually.
  */
 
-import type { Configuration } from './configuration'
-import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios'
+import type { AxiosInstance, AxiosPromise, RawAxiosRequestConfig } from 'axios'
 import globalAxios from 'axios'
+import type { Configuration } from './configuration'
 // Some imports not used depending on template conditions
 // @ts-ignore
+import type { RequestArgs } from './base'
 import {
   DUMMY_BASE_URL,
   assertParamExists,
-  setApiKeyToObject,
-  setBasicAuthToObject,
-  setBearerAuthToObject,
-  setOAuthToObject,
-  setSearchParams,
-  serializeDataIfNeeded,
-  toPathString,
   createRequestFunction,
+  serializeDataIfNeeded,
+  setBearerAuthToObject,
+  setSearchParams,
+  toPathString,
 } from './common'
-import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
+import { BASE_PATH, BaseAPI, RequiredError, operationServerMap } from './base'
 
 /**
  *
@@ -330,6 +327,12 @@ export interface RequestCreateAutomaticScanDto {
    */
   parked_vehicle_rear_position: object
   /**
+   * GPS position of the center of the parked vehicle. Used as scan position.
+   * @type {object}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_center_position?: object
+  /**
    * Confidence level of the parked vehicle position
    * @type {number}
    * @memberof RequestCreateAutomaticScanDto
@@ -401,6 +404,12 @@ export interface RequestCreateAutomaticScanDto {
    * @memberof RequestCreateAutomaticScanDto
    */
   parked_vehicle_velocity?: number
+  /**
+   * Distance between patrol vehicle and parked vehicle (centroid) in metres.
+   * @type {number}
+   * @memberof RequestCreateAutomaticScanDto
+   */
+  parked_vehicle_distance_from_patrol_vehicle?: number
 }
 /**
  *
@@ -652,6 +661,12 @@ export interface RequestCreateSignPostScanDto {
    * @memberof RequestCreateSignPostScanDto
    */
   data_image_metadata: object
+  /**
+   * Distance between patrol vehicle and scanned sign post in metres.
+   * @type {number}
+   * @memberof RequestCreateSignPostScanDto
+   */
+  sign_post_distance_from_patrol_vehicle?: number
 }
 /**
  *
@@ -1195,7 +1210,7 @@ export interface ResponseGetOffenceOverviewListDto {
  */
 export interface ResponseGetZoneSignPhotosDto {
   /**
-   *
+   * List of zone sign photos.
    * @type {Array<ResponseZoneSignPhotoPropertiesDto>}
    * @memberof ResponseGetZoneSignPhotosDto
    */
@@ -1372,7 +1387,7 @@ export interface ResponseZoneSignPhotoDto {
    * @type {string}
    * @memberof ResponseZoneSignPhotoDto
    */
-  photoUrl: string
+  photoUrl?: string | null
 }
 /**
  *
@@ -1409,7 +1424,7 @@ export interface ResponseZoneSignPhotoPropertiesDto {
    * @type {string}
    * @memberof ResponseZoneSignPhotoPropertiesDto
    */
-  photoUrl: string
+  photoUrl?: string | null
   /**
    * ID of the record in database.
    * @type {number}
@@ -1469,6 +1484,7 @@ export const ScanResultEnum = {
   Other: 'OTHER',
   NoViolation: 'NO_VIOLATION',
   LowConfidence: 'LOW_CONFIDENCE',
+  CarMoved: 'CAR_MOVED',
 } as const
 
 export type ScanResultEnum = (typeof ScanResultEnum)[keyof typeof ScanResultEnum]

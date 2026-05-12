@@ -11,7 +11,7 @@ import { createStore, Store } from '@/utils/store'
 
 export type ZonePhoto = {
   id: number
-  photoUrl: string
+  photoUrl?: string | null
   tag?: string | null
 }
 
