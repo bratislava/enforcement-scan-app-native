@@ -14,6 +14,5 @@ export const defaultValuesForRoles: { [key in RoleKeyType]: Partial<OffenceState
     resolutionType: ResolutionOffenceTypeEnum.JustRegistration,
   },
   'municipal-police': {},
-  petrzalka: {},
   research: {},
 }

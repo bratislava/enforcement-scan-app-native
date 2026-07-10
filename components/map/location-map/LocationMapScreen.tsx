@@ -8,7 +8,7 @@ import { ChangeZoneModal } from '@/components/map/location-map/ChangeZoneModal'
 import LocationMap from '@/components/map/location-map/LocationMap'
 import LocationMapBottomSheet from '@/components/map/location-map/LocationMapBottomSheet'
 import { MapRef } from '@/components/map/Map'
-import { RoleItem } from '@/modules/backend/constants/roles'
+import { DZ_TYPES, RoleItem } from '@/modules/backend/constants/roles'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
@@ -17,7 +17,7 @@ type Props = {
   role: RoleItem
 }
 
-export const OFFENCES_ALLOWED_OUTSIDE_ZONE: Set<string | undefined> = new Set(['DZ'])
+export const OFFENCES_ALLOWED_OUTSIDE_ZONE: Set<string | undefined> = new Set(DZ_TYPES)
 
 const LocationMapScreen = ({ role }: Props) => {
   const zoneBottomSheetRef = useRef<BottomSheet>(null)

@@ -2,7 +2,7 @@ import { IconName } from '@/components/shared/Icon'
 import { t } from '@/i18n.config'
 import { ResolutionOffenceTypeEnum, ScanReasonEnum } from '@/modules/backend/openapi-generated'
 
-export type RoleKeyType = 'paas' | 'municipal-police' | 'petrzalka' | 'research'
+export type RoleKeyType = 'paas' | 'municipal-police' | 'research'
 export type ActionKeyType = 'zone' | 'offence' | 'scanCheck' | 'subjective'
 
 export type RoleItem = {
@@ -16,8 +16,19 @@ export type RoleItem = {
   actions: { [key in ActionKeyType]?: boolean }
 }
 
-const DZ_TYPES = ['DZ01', 'DZ02', 'DZ03', 'DZ04', 'DZ05', 'DZ06', 'DZ07', 'DZ08', 'DZ09', 'DZ11']
-const N_TYPES = ['N01', 'N02']
+export const DZ_TYPES = [
+  'DZ01',
+  'DZ02',
+  'DZ03',
+  'DZ04',
+  'DZ05',
+  'DZ06',
+  'DZ07',
+  'DZ08',
+  'DZ09',
+  'DZ11',
+]
+export const N_TYPES = ['N01', 'N02']
 
 export const ROLES: RoleItem[] = [
   {
@@ -45,20 +56,6 @@ export const ROLES: RoleItem[] = [
     },
     scanReason: ScanReasonEnum.Other,
   },
-
-  // TODO: remove
-  // {
-  //   key: 'petrzalka',
-  //   icon: 'outlined-flag',
-  //   title: t('roles.petrzalka.title'),
-  //   description: t('roles.petrzalka.description'),
-  //   actions: {
-  //     offence: true,
-  //   },
-  //   resolutionTypes: [ResolutionOffenceTypeEnum.JustRegistration],
-  //   offenceTypes: ['N', 'T'],
-  //   scanReason: ScanReasonEnum.PaasParkingAuthorization,
-  // },
   {
     key: 'research',
     icon: 'outlined-flag',
