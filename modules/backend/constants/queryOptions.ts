@@ -36,3 +36,10 @@ export const getLicencePlateTicketsAndPermitsInfo = (ecv?: string) =>
     queryFn: ecv ? () => clientApi.scanControllerTicketsAndPermits(ecv) : skipToken,
     select: (res) => res.data,
   })
+
+export const getOffenceTypes = (date?: string) =>
+  queryOptions({
+    queryKey: ['OffenceTypes', date],
+    queryFn: () => clientApi.scanControllerGetOffenceTypes(date),
+    select: (res) => res.data,
+  })

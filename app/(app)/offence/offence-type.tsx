@@ -1,15 +1,20 @@
 import { router } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 
 import SelectList from '@/components/inputs/SelectList'
+import ErrorScreen from '@/components/screen-layout/ErrorScreen'
+import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
-import { OFFENCE_TYPES } from '@/modules/backend/constants/offenceTypes'
+import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
+import { getOffenceTypes } from '@/modules/backend/constants/queryOptions'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
-import { OffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
 const Page = () => {
+  const { t } = useTranslation()
+
   const offenceType = useOffenceStoreContext((state) => state.offenceType)
 
   const roleKey = useOffenceStoreContext((state) => state.roleKey)
@@ -17,7 +22,9 @@ const Page = () => {
 
   const { setOffenceState } = useSetOffenceState()
 
-  const onOffenceTypeChange = async (newOffenceType: OffenceTypeEnum) => {
+  const { data, isPending, isError, error } = useQueryWithFocusRefetch(getOffenceTypes())
+
+  const onOffenceTypeChange = async (newOffenceType: string) => {
     if (newOffenceType !== offenceType) {
       setOffenceState({ offenceType: newOffenceType })
     }
@@ -27,14 +34,27 @@ const Page = () => {
     }
   }
 
+  if (isPending) {
+    return <LoadingScreen title={t('offence.offenceType')} asScreenView />
+  }
+
+  if (isError) {
+    return <ErrorScreen text={error?.message} />
+  }
+
+  const offenceTypeOptions = data.map(({ code: value, name }) => ({
+    label: name,
+    value,
+  }))
+
   const filteredOffenceOptions = role?.offenceTypes
-    ? OFFENCE_TYPES.filter((offence) => role.offenceTypes?.includes(offence.value))
-    : OFFENCE_TYPES
+    ? offenceTypeOptions.filter((offence) => role.offenceTypes?.includes(offence.value))
+    : offenceTypeOptions
 
   return (
     <ScreenView title="Vyberte typ priestupku">
       <ScreenContent>
-        <SelectList<OffenceTypeEnum>
+        <SelectList<string>
           options={filteredOffenceOptions}
           value={offenceType}
           onSelect={onOffenceTypeChange}

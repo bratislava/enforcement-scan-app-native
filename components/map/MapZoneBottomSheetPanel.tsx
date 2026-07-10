@@ -7,7 +7,6 @@ import ContinueButton from '@/components/navigation/ContinueButton'
 import FlexRow from '@/components/shared/FlexRow'
 import Panel from '@/components/shared/Panel'
 import Typography from '@/components/shared/Typography'
-import { OffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -25,7 +24,7 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
       setOffenceState({
         zone: selectedZone,
         zonePhoto: undefined,
-        offenceType: selectedZone?.udrId === '0' ? OffenceTypeEnum.NB : OffenceTypeEnum.O,
+        offenceType: selectedZone?.udrId === '0' ? 'N01' : 'O',
       })
     }
   }

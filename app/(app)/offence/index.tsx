@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +19,7 @@ import { DuplicityModal } from '@/components/special/DuplicityModal'
 import { useOffenceValidation } from '@/hooks/useOffenceValidation'
 import { clientApi } from '@/modules/backend/client-api'
 import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
+import { getOffenceTypes } from '@/modules/backend/constants/queryOptions'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -46,6 +47,8 @@ const OffencePage = () => {
   const [shownModal, setShownModal] = useState<ModalType>(null)
 
   const { isOutsideZone, isOutsideOriginalZone, hasEmptyFields } = useOffenceValidation()
+
+  const { data: offenceTypes } = useQuery(getOffenceTypes())
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -157,7 +160,7 @@ const OffencePage = () => {
               <Link asChild href="/offence/offence-type">
                 <SelectButton
                   hasError={touched && !offenceType}
-                  value={offenceType ? getOffenceTypeLabel(offenceType) : undefined}
+                  value={offenceType ? getOffenceTypeLabel(offenceTypes, offenceType) : undefined}
                   placeholder={t('offence.offenceTypePlaceholder')}
                 />
               </Link>
