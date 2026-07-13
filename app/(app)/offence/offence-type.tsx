@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 
@@ -6,7 +7,6 @@ import ErrorScreen from '@/components/screen-layout/ErrorScreen'
 import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
-import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
 import { getOffenceTypes } from '@/modules/backend/constants/queryOptions'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -22,7 +22,7 @@ const Page = () => {
 
   const { setOffenceState } = useSetOffenceState()
 
-  const { data, isPending, isError, error } = useQueryWithFocusRefetch(getOffenceTypes())
+  const { data, isPending, isError, error } = useQuery(getOffenceTypes())
 
   const onOffenceTypeChange = async (newOffenceType: string) => {
     if (newOffenceType !== offenceType) {

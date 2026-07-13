@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -16,10 +16,9 @@ import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DismissKeyboard'
 import PressableStyled from '@/components/shared/PressableStyled'
 import { DuplicityModal } from '@/components/special/DuplicityModal'
+import { useOffenceTypeLabel } from '@/hooks/useOffenceTypeLabel'
 import { useOffenceValidation } from '@/hooks/useOffenceValidation'
 import { clientApi } from '@/modules/backend/client-api'
-import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
-import { getOffenceTypes } from '@/modules/backend/constants/queryOptions'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -48,7 +47,7 @@ const OffencePage = () => {
 
   const { isOutsideZone, isOutsideOriginalZone, hasEmptyFields } = useOffenceValidation()
 
-  const { data: offenceTypes } = useQuery(getOffenceTypes())
+  const getOffenceTypeLabel = useOffenceTypeLabel()
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -160,7 +159,7 @@ const OffencePage = () => {
               <Link asChild href="/offence/offence-type">
                 <SelectButton
                   hasError={touched && !offenceType}
-                  value={offenceType ? getOffenceTypeLabel(offenceTypes, offenceType) : undefined}
+                  value={getOffenceTypeLabel(offenceType)}
                   placeholder={t('offence.offenceTypePlaceholder')}
                 />
               </Link>
