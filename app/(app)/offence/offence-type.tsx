@@ -42,14 +42,14 @@ const Page = () => {
     return <ErrorScreen text={error?.message} />
   }
 
-  const offenceTypeOptions = data.map(({ code: value, name }) => ({
+  const filteredOffenceTypes = role?.offenceTypes
+    ? data.filter((offence) => role.offenceTypes?.includes(offence.offenceType))
+    : data
+
+  const filteredOffenceOptions = filteredOffenceTypes.map(({ code: value, name }) => ({
     label: name,
     value,
   }))
-
-  const filteredOffenceOptions = role?.offenceTypes
-    ? offenceTypeOptions.filter((offence) => role.offenceTypes?.includes(offence.value))
-    : offenceTypeOptions
 
   return (
     <ScreenView title="Vyberte typ priestupku">

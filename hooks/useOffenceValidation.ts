@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { OFFENCES_ALLOWED_OUTSIDE_ZONE } from '@/components/map/location-map/LocationMapScreen'
+import { useIsOffenceAllowedOutsideZone } from '@/hooks/useIsOffenceAllowedOutsideZone'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { findContainingFeature } from '@/modules/map/utils/findContainingFeature'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
@@ -18,6 +18,7 @@ export const useOffenceValidation = (): ValidationResult => {
   const { ecv, offenceType, roleKey, resolutionType, isObjectiveResponsibility, location, zone } =
     useOffenceStoreContext((state) => state)
   const isRoleWithZone = getRoleByKey(roleKey)?.actions.zone
+  const isOffenceAllowedOutsideZone = useIsOffenceAllowedOutsideZone()
 
   const gpsZone = useMemo(
     () =>
@@ -26,16 +27,16 @@ export const useOffenceValidation = (): ValidationResult => {
   )
 
   const isOutsideZone = useMemo(
-    () => isRoleWithZone && !OFFENCES_ALLOWED_OUTSIDE_ZONE.has(offenceType) && !gpsZone,
-    [isRoleWithZone, offenceType, gpsZone],
+    () => isRoleWithZone && !isOffenceAllowedOutsideZone(offenceType) && !gpsZone,
+    [isRoleWithZone, isOffenceAllowedOutsideZone, offenceType, gpsZone],
   )
 
   const isOutsideOriginalZone = useMemo(
     () =>
       isRoleWithZone &&
-      !OFFENCES_ALLOWED_OUTSIDE_ZONE.has(offenceType) &&
+      !isOffenceAllowedOutsideZone(offenceType) &&
       zone?.id !== gpsZone?.properties.id,
-    [isRoleWithZone, offenceType, zone?.id, gpsZone?.properties.id],
+    [isRoleWithZone, isOffenceAllowedOutsideZone, offenceType, zone?.id, gpsZone?.properties.id],
   )
 
   const hasEmptyFields = useMemo(

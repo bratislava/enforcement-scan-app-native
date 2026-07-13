@@ -16,20 +16,6 @@ export type RoleItem = {
   actions: { [key in ActionKeyType]?: boolean }
 }
 
-export const DZ_TYPES = [
-  'DZ01',
-  'DZ02',
-  'DZ03',
-  'DZ04',
-  'DZ05',
-  'DZ06',
-  'DZ07',
-  'DZ08',
-  'DZ09',
-  'DZ11',
-]
-export const N_TYPES = ['N01', 'N02']
-
 export const ROLES: RoleItem[] = [
   {
     key: 'paas',
@@ -42,7 +28,7 @@ export const ROLES: RoleItem[] = [
       scanCheck: true,
     },
     resolutionTypes: [ResolutionOffenceTypeEnum.JustRegistration],
-    offenceTypes: ['O', 'N01', ...N_TYPES, ...DZ_TYPES],
+    offenceTypes: ['O', 'N', 'DZ'],
     scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
   {
