@@ -12,37 +12,27 @@
  * Do not edit the class manually.
  */
 
-import type { AxiosInstance, AxiosPromise, RawAxiosRequestConfig } from 'axios'
-import globalAxios from 'axios'
 import type { Configuration } from './configuration'
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios'
+import globalAxios from 'axios'
 // Some imports not used depending on template conditions
 // @ts-ignore
-import type { RequestArgs } from './base'
 import {
   DUMMY_BASE_URL,
   assertParamExists,
-  createRequestFunction,
-  serializeDataIfNeeded,
+  setApiKeyToObject,
+  setBasicAuthToObject,
   setBearerAuthToObject,
+  setOAuthToObject,
   setSearchParams,
+  serializeDataIfNeeded,
   toPathString,
+  createRequestFunction,
 } from './common'
+import type { RequestArgs } from './base'
 // @ts-ignore
-import { BASE_PATH, BaseAPI, RequiredError, operationServerMap } from './base'
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base'
 
-/**
- *
- * @export
- * @interface DefaultResponseHealthcheck
- */
-export interface DefaultResponseHealthcheck {
-  /**
-   * is application it running?
-   * @type {boolean}
-   * @memberof DefaultResponseHealthcheck
-   */
-  appRunning: boolean
-}
 /**
  * Exact error name
  * @export
@@ -217,43 +207,42 @@ export const OffenceStateEnum = {
 export type OffenceStateEnum = (typeof OffenceStateEnum)[keyof typeof OffenceStateEnum]
 
 /**
- * Legal paragraph or regulation that was violated.
+ *
  * @export
- * @enum {string}
+ * @interface OffenceTypesDto
  */
-
-export const OffenceTypeEnum = {
-  A: 'A',
-  B: 'B',
-  C: 'C',
-  D: 'D',
-  E: 'E',
-  F: 'F',
-  G: 'G',
-  H: 'H',
-  I: 'I',
-  J: 'J',
-  K: 'K',
-  L: 'L',
-  M: 'M',
-  N: 'N',
-  O: 'O',
-  P: 'P',
-  Q: 'Q',
-  R: 'R',
-  S: 'S',
-  T: 'T',
-  U: 'U',
-  Dz: 'DZ',
-  NB: 'N_B',
-  Zigzag: 'ZIGZAG',
-  N01: 'N01',
-  N02: 'N02',
-  Ztp: 'ZTP',
-} as const
-
-export type OffenceTypeEnum = (typeof OffenceTypeEnum)[keyof typeof OffenceTypeEnum]
-
+export interface OffenceTypesDto {
+  /**
+   * ID of offence type in backoffice database.
+   * @type {number}
+   * @memberof OffenceTypesDto
+   */
+  id: number
+  /**
+   * Name of offence type in NORIS
+   * @type {string}
+   * @memberof OffenceTypesDto
+   */
+  name: string
+  /**
+   * Longer and more detailed description from NORIS
+   * @type {string}
+   * @memberof OffenceTypesDto
+   */
+  description: string
+  /**
+   * Enforcement offence type
+   * @type {string}
+   * @memberof OffenceTypesDto
+   */
+  offenceType: string
+  /**
+   * NORIS offence code
+   * @type {string}
+   * @memberof OffenceTypesDto
+   */
+  code: string
+}
 /**
  *
  * @export
@@ -424,11 +413,11 @@ export interface RequestCreateOffenceDataDto {
    */
   createdAt?: string
   /**
-   *
-   * @type {OffenceTypeEnum}
+   * Legal paragraph or regulation that was violated.
+   * @type {string}
    * @memberof RequestCreateOffenceDataDto
    */
-  offenceType: OffenceTypeEnum
+  offenceType: string
   /**
    * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N01), this value is always true.
    * @type {boolean}
@@ -780,11 +769,11 @@ export interface ResponseBaseOffenceDto {
    */
   updatedByEmail?: string | null
   /**
-   *
-   * @type {OffenceTypeEnum}
+   * Legal paragraph or regulation that was violated.
+   * @type {string}
    * @memberof ResponseBaseOffenceDto
    */
-  offenceType: OffenceTypeEnum
+  offenceType: string
   /**
    * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N01), this value is always true.
    * @type {boolean}
@@ -939,11 +928,11 @@ export interface ResponseCreateOffenceDto {
    */
   updatedByEmail?: string | null
   /**
-   *
-   * @type {OffenceTypeEnum}
+   * Legal paragraph or regulation that was violated.
+   * @type {string}
    * @memberof ResponseCreateOffenceDto
    */
-  offenceType: OffenceTypeEnum
+  offenceType: string
   /**
    * Set to false if the fine was paid on the spot to a police officer; true otherwise. For PAAS offences (offence types O, N01), this value is always true.
    * @type {boolean}
@@ -1171,11 +1160,11 @@ export interface ResponseGetOffenceOverviewDto {
    */
   createdAt: string
   /**
-   *
-   * @type {OffenceTypeEnum}
+   * Legal paragraph or regulation that was violated.
+   * @type {string}
    * @memberof ResponseGetOffenceOverviewDto
    */
-  offenceType: OffenceTypeEnum
+  offenceType: string
   /**
    * UDR code (4-digit number or \"0\") for the offence location.
    * @type {string}
@@ -1189,7 +1178,6 @@ export interface ResponseGetOffenceOverviewDto {
    */
   isAutoCancelled: boolean
 }
-
 /**
  *
  * @export
@@ -1782,133 +1770,6 @@ export class AuthenticationApi extends BaseAPI {
   ) {
     return AuthenticationApiFp(this.configuration)
       .iteraitAuthenticationControllerGetAccessToken(grantType, clientId, clientSecret, options)
-      .then((request) => request(this.axios, this.basePath))
-  }
-}
-
-/**
- * DefaultApi - axios parameter creator
- * @export
- */
-export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
-  return {
-    /**
-     * See if nest is working!
-     * @summary Healthcheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    defaultControllerHealthcheck: async (
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/healthcheck`
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
-      let baseOptions
-      if (configuration) {
-        baseOptions = configuration.baseOptions
-      }
-
-      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
-      const localVarHeaderParameter = {} as any
-      const localVarQueryParameter = {} as any
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter)
-      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      }
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      }
-    },
-  }
-}
-
-/**
- * DefaultApi - functional programming interface
- * @export
- */
-export const DefaultApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
-  return {
-    /**
-     * See if nest is working!
-     * @summary Healthcheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async defaultControllerHealthcheck(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<DefaultResponseHealthcheck>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.defaultControllerHealthcheck(options)
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
-      const localVarOperationServerBasePath =
-        operationServerMap['DefaultApi.defaultControllerHealthcheck']?.[
-          localVarOperationServerIndex
-        ]?.url
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath)
-    },
-  }
-}
-
-/**
- * DefaultApi - factory interface
- * @export
- */
-export const DefaultApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = DefaultApiFp(configuration)
-  return {
-    /**
-     * See if nest is working!
-     * @summary Healthcheck
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    defaultControllerHealthcheck(
-      options?: RawAxiosRequestConfig,
-    ): AxiosPromise<DefaultResponseHealthcheck> {
-      return localVarFp
-        .defaultControllerHealthcheck(options)
-        .then((request) => request(axios, basePath))
-    },
-  }
-}
-
-/**
- * DefaultApi - object-oriented interface
- * @export
- * @class DefaultApi
- * @extends {BaseAPI}
- */
-export class DefaultApi extends BaseAPI {
-  /**
-   * See if nest is working!
-   * @summary Healthcheck
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DefaultApi
-   */
-  public defaultControllerHealthcheck(options?: RawAxiosRequestConfig) {
-    return DefaultApiFp(this.configuration)
-      .defaultControllerHealthcheck(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -2692,10 +2553,10 @@ export const IntrospectionApiAxiosParamCreator = function (configuration?: Confi
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    iteraitIntrospectionControllerGetHealth: async (
+    introspectionControllerGetHealth: async (
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      const localVarPath = `/health`
+      const localVarPath = `/healthcheck`
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
       let baseOptions
@@ -2726,7 +2587,7 @@ export const IntrospectionApiAxiosParamCreator = function (configuration?: Confi
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    iteraitIntrospectionControllerGetVersion: async (
+    introspectionControllerGetVersion: async (
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/version`
@@ -2770,14 +2631,14 @@ export const IntrospectionApiFp = function (configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async iteraitIntrospectionControllerGetHealth(
+    async introspectionControllerGetHealth(
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<HealthResponseDto>> {
       const localVarAxiosArgs =
-        await localVarAxiosParamCreator.iteraitIntrospectionControllerGetHealth(options)
+        await localVarAxiosParamCreator.introspectionControllerGetHealth(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['IntrospectionApi.iteraitIntrospectionControllerGetHealth']?.[
+        operationServerMap['IntrospectionApi.introspectionControllerGetHealth']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -2794,14 +2655,14 @@ export const IntrospectionApiFp = function (configuration?: Configuration) {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async iteraitIntrospectionControllerGetVersion(
+    async introspectionControllerGetVersion(
       options?: RawAxiosRequestConfig,
     ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<VersionResponse>> {
       const localVarAxiosArgs =
-        await localVarAxiosParamCreator.iteraitIntrospectionControllerGetVersion(options)
+        await localVarAxiosParamCreator.introspectionControllerGetVersion(options)
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
-        operationServerMap['IntrospectionApi.iteraitIntrospectionControllerGetVersion']?.[
+        operationServerMap['IntrospectionApi.introspectionControllerGetVersion']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -2832,11 +2693,11 @@ export const IntrospectionApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    iteraitIntrospectionControllerGetHealth(
+    introspectionControllerGetHealth(
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<HealthResponseDto> {
       return localVarFp
-        .iteraitIntrospectionControllerGetHealth(options)
+        .introspectionControllerGetHealth(options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -2845,11 +2706,11 @@ export const IntrospectionApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    iteraitIntrospectionControllerGetVersion(
+    introspectionControllerGetVersion(
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<VersionResponse> {
       return localVarFp
-        .iteraitIntrospectionControllerGetVersion(options)
+        .introspectionControllerGetVersion(options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -2869,9 +2730,9 @@ export class IntrospectionApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof IntrospectionApi
    */
-  public iteraitIntrospectionControllerGetHealth(options?: RawAxiosRequestConfig) {
+  public introspectionControllerGetHealth(options?: RawAxiosRequestConfig) {
     return IntrospectionApiFp(this.configuration)
-      .iteraitIntrospectionControllerGetHealth(options)
+      .introspectionControllerGetHealth(options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -2882,9 +2743,9 @@ export class IntrospectionApi extends BaseAPI {
    * @throws {RequiredError}
    * @memberof IntrospectionApi
    */
-  public iteraitIntrospectionControllerGetVersion(options?: RawAxiosRequestConfig) {
+  public introspectionControllerGetVersion(options?: RawAxiosRequestConfig) {
     return IntrospectionApiFp(this.configuration)
-      .iteraitIntrospectionControllerGetVersion(options)
+      .introspectionControllerGetVersion(options)
       .then((request) => request(this.axios, this.basePath))
   }
 }
@@ -3533,7 +3394,7 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
      * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
      * @summary Find offences matching given filters
      * @param {string} ecv Vehicle license plate.
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+     * @param {Array<string>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
      * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
      * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
      * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
@@ -3544,7 +3405,7 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
      */
     scanControllerGetOffenceList: async (
       ecv: string,
-      offenceTypes?: Array<ScanControllerGetOffenceListOffenceTypesEnum>,
+      offenceTypes?: Array<string>,
       udr?: string | null,
       lat?: number,
       _long?: number,
@@ -3596,6 +3457,47 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
 
       if (endDate !== undefined) {
         localVarQueryParameter['endDate'] = endDate
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter)
+      let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {}
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      }
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      }
+    },
+    /**
+     *
+     * @summary Get current offence types
+     * @param {string} [date] Filter offence types valid at a given timestamp
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerGetOffenceTypes: async (
+      date?: string,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/scan/offence-types`
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
+      let baseOptions
+      if (configuration) {
+        baseOptions = configuration.baseOptions
+      }
+
+      const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options }
+      const localVarHeaderParameter = {} as any
+      const localVarQueryParameter = {} as any
+
+      if (date !== undefined) {
+        localVarQueryParameter['date'] =
+          (date as any) instanceof Date ? (date as any).toISOString() : date
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter)
@@ -3892,7 +3794,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
       _long?: number | null,
       options?: RawAxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseZoneSignPhotoPropertiesDto>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseZoneSignPhotoDto>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerCreateZoneSignPhoto(
         file,
@@ -3919,7 +3821,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
      * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
      * @summary Find offences matching given filters
      * @param {string} ecv Vehicle license plate.
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+     * @param {Array<string>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
      * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
      * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
      * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
@@ -3930,7 +3832,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
      */
     async scanControllerGetOffenceList(
       ecv: string,
-      offenceTypes?: Array<ScanControllerGetOffenceListOffenceTypesEnum>,
+      offenceTypes?: Array<string>,
       udr?: string | null,
       lat?: number,
       _long?: number,
@@ -3953,6 +3855,34 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
       const localVarOperationServerBasePath =
         operationServerMap['ScansAndOffencesApi.scanControllerGetOffenceList']?.[
+          localVarOperationServerIndex
+        ]?.url
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath)
+    },
+    /**
+     *
+     * @summary Get current offence types
+     * @param {string} [date] Filter offence types valid at a given timestamp
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async scanControllerGetOffenceTypes(
+      date?: string,
+      options?: RawAxiosRequestConfig,
+    ): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OffenceTypesDto>>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.scanControllerGetOffenceTypes(
+        date,
+        options,
+      )
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0
+      const localVarOperationServerBasePath =
+        operationServerMap['ScansAndOffencesApi.scanControllerGetOffenceTypes']?.[
           localVarOperationServerIndex
         ]?.url
       return (axios, basePath) =>
@@ -4151,7 +4081,7 @@ export const ScansAndOffencesApiFactory = function (
       lat?: number | null,
       _long?: number | null,
       options?: RawAxiosRequestConfig,
-    ): AxiosPromise<ResponseZoneSignPhotoPropertiesDto> {
+    ): AxiosPromise<ResponseZoneSignPhotoDto> {
       return localVarFp
         .scanControllerCreateZoneSignPhoto(file, globalId, tag, lat, _long, options)
         .then((request) => request(axios, basePath))
@@ -4160,7 +4090,7 @@ export const ScansAndOffencesApiFactory = function (
      * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
      * @summary Find offences matching given filters
      * @param {string} ecv Vehicle license plate.
-     * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+     * @param {Array<string>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
      * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
      * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
      * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
@@ -4171,7 +4101,7 @@ export const ScansAndOffencesApiFactory = function (
      */
     scanControllerGetOffenceList(
       ecv: string,
-      offenceTypes?: Array<ScanControllerGetOffenceListOffenceTypesEnum>,
+      offenceTypes?: Array<string>,
       udr?: string | null,
       lat?: number,
       _long?: number,
@@ -4190,6 +4120,21 @@ export const ScansAndOffencesApiFactory = function (
           endDate,
           options,
         )
+        .then((request) => request(axios, basePath))
+    },
+    /**
+     *
+     * @summary Get current offence types
+     * @param {string} [date] Filter offence types valid at a given timestamp
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    scanControllerGetOffenceTypes(
+      date?: string,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<Array<OffenceTypesDto>> {
+      return localVarFp
+        .scanControllerGetOffenceTypes(date, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4331,7 +4276,7 @@ export class ScansAndOffencesApi extends BaseAPI {
    * Search for offences based on provided parameters. This endpoint is typically used to detect potential duplicities within the last two weeks by supplying ECV and GPS coordinates.
    * @summary Find offences matching given filters
    * @param {string} ecv Vehicle license plate.
-   * @param {Array<ScanControllerGetOffenceListOffenceTypesEnum>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
+   * @param {Array<string>} [offenceTypes] PAAS offence types include N01, O, DZ, and ZIGZAG. All other types are considered municipal police (OTHER) offence types.
    * @param {string | null} [udr] UDR code (4-digit number or \&quot;0\&quot;) for the offence location.
    * @param {number} [lat] Latitude used to filter offences by proximity. If provided, only offences near this location are returned.
    * @param {number} [_long] Longitude used to filter offences by proximity. If provided, only offences near this location are returned.
@@ -4343,7 +4288,7 @@ export class ScansAndOffencesApi extends BaseAPI {
    */
   public scanControllerGetOffenceList(
     ecv: string,
-    offenceTypes?: Array<ScanControllerGetOffenceListOffenceTypesEnum>,
+    offenceTypes?: Array<string>,
     udr?: string | null,
     lat?: number,
     _long?: number,
@@ -4353,6 +4298,20 @@ export class ScansAndOffencesApi extends BaseAPI {
   ) {
     return ScansAndOffencesApiFp(this.configuration)
       .scanControllerGetOffenceList(ecv, offenceTypes, udr, lat, _long, startDate, endDate, options)
+      .then((request) => request(this.axios, this.basePath))
+  }
+
+  /**
+   *
+   * @summary Get current offence types
+   * @param {string} [date] Filter offence types valid at a given timestamp
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ScansAndOffencesApi
+   */
+  public scanControllerGetOffenceTypes(date?: string, options?: RawAxiosRequestConfig) {
+    return ScansAndOffencesApiFp(this.configuration)
+      .scanControllerGetOffenceTypes(date, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -4421,41 +4380,6 @@ export class ScansAndOffencesApi extends BaseAPI {
       .then((request) => request(this.axios, this.basePath))
   }
 }
-
-/**
- * @export
- */
-export const ScanControllerGetOffenceListOffenceTypesEnum = {
-  A: 'A',
-  B: 'B',
-  C: 'C',
-  D: 'D',
-  E: 'E',
-  F: 'F',
-  G: 'G',
-  H: 'H',
-  I: 'I',
-  J: 'J',
-  K: 'K',
-  L: 'L',
-  M: 'M',
-  N: 'N',
-  O: 'O',
-  P: 'P',
-  Q: 'Q',
-  R: 'R',
-  S: 'S',
-  T: 'T',
-  U: 'U',
-  Dz: 'DZ',
-  NB: 'N_B',
-  Zigzag: 'ZIGZAG',
-  N01: 'N01',
-  N02: 'N02',
-  Ztp: 'ZTP',
-} as const
-export type ScanControllerGetOffenceListOffenceTypesEnum =
-  (typeof ScanControllerGetOffenceListOffenceTypesEnum)[keyof typeof ScanControllerGetOffenceListOffenceTypesEnum]
 
 /**
  * ShiftsApi - axios parameter creator

@@ -16,9 +16,9 @@ import ScreenView from '@/components/screen-layout/ScreenView'
 import DismissKeyboard from '@/components/shared/DismissKeyboard'
 import PressableStyled from '@/components/shared/PressableStyled'
 import { DuplicityModal } from '@/components/special/DuplicityModal'
+import { useOffenceTypeLabel } from '@/hooks/useOffenceTypeLabel'
 import { useOffenceValidation } from '@/hooks/useOffenceValidation'
 import { clientApi } from '@/modules/backend/client-api'
-import { getOffenceTypeLabel } from '@/modules/backend/constants/offenceTypes'
 import { getResolutionTypeLabel } from '@/modules/backend/constants/resolutionTypes'
 import { getRoleByKey } from '@/modules/backend/constants/roles'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -46,6 +46,8 @@ const OffencePage = () => {
   const [shownModal, setShownModal] = useState<ModalType>(null)
 
   const { isOutsideZone, isOutsideOriginalZone, hasEmptyFields } = useOffenceValidation()
+
+  const getOffenceTypeLabel = useOffenceTypeLabel()
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -157,7 +159,7 @@ const OffencePage = () => {
               <Link asChild href="/offence/offence-type">
                 <SelectButton
                   hasError={touched && !offenceType}
-                  value={offenceType ? getOffenceTypeLabel(offenceType) : undefined}
+                  value={getOffenceTypeLabel(offenceType)}
                   placeholder={t('offence.offenceTypePlaceholder')}
                 />
               </Link>

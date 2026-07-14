@@ -8,8 +8,8 @@ import { ChangeZoneModal } from '@/components/map/location-map/ChangeZoneModal'
 import LocationMap from '@/components/map/location-map/LocationMap'
 import LocationMapBottomSheet from '@/components/map/location-map/LocationMapBottomSheet'
 import { MapRef } from '@/components/map/Map'
+import { useIsOffenceAllowedOutsideZone } from '@/hooks/useIsOffenceAllowedOutsideZone'
 import { RoleItem } from '@/modules/backend/constants/roles'
-import { OffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
@@ -17,10 +17,6 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 type Props = {
   role: RoleItem
 }
-
-export const OFFENCES_ALLOWED_OUTSIDE_ZONE: Set<OffenceTypeEnum | undefined> = new Set([
-  OffenceTypeEnum.Dz,
-])
 
 const LocationMapScreen = ({ role }: Props) => {
   const zoneBottomSheetRef = useRef<BottomSheet>(null)
@@ -31,6 +27,8 @@ const LocationMapScreen = ({ role }: Props) => {
   const zoneUdrId = useOffenceStoreContext((state) => state.zone?.udrId)
 
   const { setOffenceState } = useSetOffenceState()
+
+  const isOffenceAllowedOutsideZone = useIsOffenceAllowedOutsideZone()
 
   const [isModalShown, setIsModalShown] = useState(false)
   const [selectedZone, setSelectedZone] = useState<MapUdrZoneWithTranslationProps | null>(null)
@@ -44,7 +42,7 @@ const LocationMapScreen = ({ role }: Props) => {
 
   const [centerCoordinate, setCenterCoordinate] = useState(location)
 
-  const isAllowedOutsideZone = OFFENCES_ALLOWED_OUTSIDE_ZONE.has(offenceType)
+  const isAllowedOutsideZone = isOffenceAllowedOutsideZone(offenceType)
 
   const onLocationSelect = useCallback(() => {
     if (!isAllowedOutsideZone && role.actions.zone && zoneUdrId !== selectedZone?.udrId) {

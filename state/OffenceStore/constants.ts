@@ -1,5 +1,5 @@
 import { RoleKeyType } from '@/modules/backend/constants/roles'
-import { OffenceTypeEnum, ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
+import { ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { OffenceState } from '@/state/OffenceStore/OffenceStoreProvider'
 
 export const defaultOffenceState: OffenceState = {
@@ -10,10 +10,9 @@ export const defaultOffenceState: OffenceState = {
 // TODO: Add default values for other roles when needed
 export const defaultValuesForRoles: { [key in RoleKeyType]: Partial<OffenceState> } = {
   paas: {
-    offenceType: OffenceTypeEnum.O,
+    offenceType: 'O',
     resolutionType: ResolutionOffenceTypeEnum.JustRegistration,
   },
   'municipal-police': {},
-  petrzalka: {},
   research: {},
 }

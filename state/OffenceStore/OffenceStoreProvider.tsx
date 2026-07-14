@@ -1,7 +1,6 @@
 import { createContext, ReactNode, useRef } from 'react'
 
 import {
-  OffenceTypeEnum,
   ResolutionOffenceTypeEnum,
   ResponseCreateOrUpdateScanDto,
 } from '@/modules/backend/openapi-generated'
@@ -28,7 +27,7 @@ export type OffenceState = {
 
   // offence data
   location?: PositionObject
-  offenceType?: OffenceTypeEnum
+  offenceType?: string
   resolutionType?: ResolutionOffenceTypeEnum
   isObjectiveResponsibility: boolean
   offenceDate?: Date

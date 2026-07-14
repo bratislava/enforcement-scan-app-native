@@ -1,12 +1,8 @@
 import { IconName } from '@/components/shared/Icon'
 import { t } from '@/i18n.config'
-import {
-  OffenceTypeEnum,
-  ResolutionOffenceTypeEnum,
-  ScanReasonEnum,
-} from '@/modules/backend/openapi-generated'
+import { ResolutionOffenceTypeEnum, ScanReasonEnum } from '@/modules/backend/openapi-generated'
 
-export type RoleKeyType = 'paas' | 'municipal-police' | 'petrzalka' | 'research'
+export type RoleKeyType = 'paas' | 'municipal-police' | 'research'
 export type ActionKeyType = 'zone' | 'offence' | 'scanCheck' | 'subjective'
 
 export type RoleItem = {
@@ -16,7 +12,7 @@ export type RoleItem = {
   description: string
   scanReason: ScanReasonEnum
   resolutionTypes?: ResolutionOffenceTypeEnum[]
-  offenceTypes?: OffenceTypeEnum[]
+  offenceTypes?: string[]
   actions: { [key in ActionKeyType]?: boolean }
 }
 
@@ -32,7 +28,7 @@ export const ROLES: RoleItem[] = [
       scanCheck: true,
     },
     resolutionTypes: [ResolutionOffenceTypeEnum.JustRegistration],
-    offenceTypes: [OffenceTypeEnum.O, OffenceTypeEnum.NB, OffenceTypeEnum.Dz],
+    offenceTypes: ['O', 'N', 'DZ'],
     scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
   {
@@ -45,18 +41,6 @@ export const ROLES: RoleItem[] = [
       offence: true,
     },
     scanReason: ScanReasonEnum.Other,
-  },
-  {
-    key: 'petrzalka',
-    icon: 'outlined-flag',
-    title: t('roles.petrzalka.title'),
-    description: t('roles.petrzalka.description'),
-    actions: {
-      offence: true,
-    },
-    resolutionTypes: [ResolutionOffenceTypeEnum.JustRegistration],
-    offenceTypes: [OffenceTypeEnum.N, OffenceTypeEnum.T, OffenceTypeEnum.NB],
-    scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
   {
     key: 'research',
