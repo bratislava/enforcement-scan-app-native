@@ -199,4 +199,14 @@ Regenerate rather than editing generated files by hand when the backend changes.
 
 ---
 
-> **Keep this doc in sync:** if a code change updates something described here (routing, scan/offence flow, auth, integrations), update this `ARCHITECTURE.md` in the same change.
+## Deployment
+
+- **EAS Build (`eas.json`)** -- profiles above; `appVersionSource: remote`, auto-increment on staging/prod; submit to Google Play `internal` (draft). InTune distribution uses the `prod-apk` APK profile.
+- **OTA updates (`expo-updates`)** -- update URL + `runtimeVersion.policy: appVersion` in `app.config.js`; production launches auto check/fetch/reload. `ota-*` tags publish OTA instead of a full build.
+- **Force update** -- `StoreVersionControl.tsx` polls `systemControllerGetMobileAppVersion`; if the backend minimum version exceeds the installed `APP_VERSION`, it shows an update modal. `APP_VERSION` is also sent as the `Version` header on API calls.
+- **CI (`.github/workflows/`)** -- `build.yml` (tags `prod**`/`staging**` -> `eas build`/`eas update`), `validate.yml` (PR: TS check + ESLint), `codeql-analysis.yml`.
+- **E2E** -- Maestro flows in `.maestro/`.
+
+---
+
+> **Keep this doc in sync:** if a code change updates something described here (routing, scan/offence flow, auth, integrations, deployment), update this `ARCHITECTURE.md` in the same change.
