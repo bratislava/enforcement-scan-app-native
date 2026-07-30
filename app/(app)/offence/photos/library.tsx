@@ -71,7 +71,6 @@ const PhotosPage = () => {
           </PressableStyled>
         )}
         numColumns={2}
-        estimatedItemSize={100}
       />
     </ScreenView>
   )

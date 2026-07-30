@@ -4,7 +4,7 @@ module.exports = {
     name: 'Skenovacia aplikácia',
     slug: 'enforcement-scan-app',
     scheme: 'enforcement-scan-app',
-    version: '1.6.0',
+    version: '1.7.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
