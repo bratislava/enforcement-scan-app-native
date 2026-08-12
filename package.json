@@ -4,7 +4,6 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
     "postinstall": "patch-package",
     "local-android": "expo start --android --localhost -c",
     "ts:check": "tsc",
