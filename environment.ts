@@ -22,4 +22,8 @@ export const environment = {
   deployment: assertEnv('EXPO_PUBLIC_DEPLOYMENT', process.env.EXPO_PUBLIC_DEPLOYMENT),
   sentryDns: assertEnv('EXPO_PUBLIC_SENTRY_DNS', process.env.EXPO_PUBLIC_SENTRY_DNS),
   minioBucket: assertEnv('EXPO_PUBLIC_MINIO_BUCKET', process.env.EXPO_PUBLIC_MINIO_BUCKET),
+  staticArcgisUrl: assertEnv(
+    'EXPO_PUBLIC_STATIC_ARCGIS_URL',
+    process.env.EXPO_PUBLIC_STATIC_ARCGIS_URL,
+  ),
 }
