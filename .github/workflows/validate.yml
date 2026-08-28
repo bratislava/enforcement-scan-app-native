@@ -9,6 +9,7 @@ jobs:
     with:
       directory: '.'
       typescript-directory: '.'
+      node: '22'
 
   typescript-check:
     runs-on: ubuntu-latest
@@ -17,7 +18,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '22'
 
       - run: yarn --frozen-lockfile
 

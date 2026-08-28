@@ -15,13 +15,13 @@ jobs:
       - name: 🚛 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: yarn
 
       - name: 🚧 Setup EAS
         uses: expo/expo-github-action@v8
         with:
-          eas-version: latest
+          eas-version: 22.6.0
           token: ${{ secrets.EXPO_BUILD_TOKEN }}
 
       - name: 📦 Install dependencies
