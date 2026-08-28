@@ -9,6 +9,7 @@ jobs:
     with:
       directory: '.'
       typescript-directory: '.'
+      node: '22'
 
   typescript-check:
     runs-on: ubuntu-latest
