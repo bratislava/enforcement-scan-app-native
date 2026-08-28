@@ -2,6 +2,9 @@
   "name": "enforcement-scan-app",
   "version": "1.6.0",
   "main": "expo-router/entry",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
