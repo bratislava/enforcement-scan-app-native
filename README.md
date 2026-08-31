@@ -70,8 +70,13 @@ A `dev` tag builds a development build (.apk) against the dev backend. Install i
 
 ## OTA Update
 
-Whenever there is occurrence of changes that needs to be delivered ASAP the OTA update is best choice for that.
-In Github Releases create and start the tag with `ota` (`ota-prod1.2.1` or `ota-staging1.2.1`).
+Whenever there is occurrence of changes that needs to be delivered ASAP the OTA update is best choice for that. Only javascript changes can be delivered this way — anything touching native code needs a full build.
+
+OTA updates are wired up **for production only**. In Github Releases create a tag that starts with `prod` and contains `ota` (`prod1.2.1-ota`). The tag has to start with `prod`, otherwise the workflow does not run at all.
+
+There is no OTA path for staging or dev — those tags always run a full build.
+
+The version in the tag has to match the version of the build you are updating. Updates are matched by runtime version, which follows the app version, so `prod1.2.1-ota` only reaches installs of `1.2.1`.
 
 ## Force update
 
