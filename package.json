@@ -1,6 +1,6 @@
 {
   "name": "enforcement-scan-app",
-  "version": "1.6.0",
+  "version": "0.0.0-dev",
   "main": "expo-router/entry",
   "engines": {
     "node": ">=22"
