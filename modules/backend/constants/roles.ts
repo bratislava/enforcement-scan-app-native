@@ -12,7 +12,6 @@ export type RoleItem = {
   description: string
   scanReason: ScanReasonEnum
   resolutionTypes?: ResolutionOffenceTypeEnum[]
-  offenceTypes?: string[]
   actions: { [key in ActionKeyType]?: boolean }
 }
 
@@ -28,7 +27,6 @@ export const ROLES: RoleItem[] = [
       scanCheck: true,
     },
     resolutionTypes: [ResolutionOffenceTypeEnum.JustRegistration],
-    offenceTypes: ['O', 'N', 'DZ'],
     scanReason: ScanReasonEnum.PaasParkingAuthorization,
   },
   {

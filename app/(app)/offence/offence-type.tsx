@@ -42,9 +42,9 @@ const Page = () => {
     return <ErrorScreen text={error?.message} />
   }
 
-  const filteredOffenceTypes = role?.offenceTypes
-    ? data.filter((offence) => role.offenceTypes?.includes(offence.offenceType))
-    : data
+  // PAAS controllers only see the types marked visible for them in backoffice, other roles see all
+  const filteredOffenceTypes =
+    role?.key === 'paas' ? data.filter((offence) => offence.paasVisible) : data
 
   const filteredOffenceOptions = filteredOffenceTypes.map(({ code: value, name }) => ({
     label: name,
