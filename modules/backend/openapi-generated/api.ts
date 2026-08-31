@@ -242,6 +242,12 @@ export interface OffenceTypesDto {
    * @memberof OffenceTypesDto
    */
   code: string
+  /**
+   * Whether the offence type is offered to parking controllers.
+   * @type {boolean}
+   * @memberof OffenceTypesDto
+   */
+  paasVisible: boolean
 }
 /**
  *
