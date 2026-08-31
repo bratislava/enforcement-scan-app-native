@@ -44,7 +44,9 @@ eas build --profile development --platform android
 
 ## Build and Release
 
-1. Go to github and create new release. For production the tag should start with `prod` (`prod1.2.1`) and for staging `staging` (`staging1.2.1`).
+1. Go to github and create new release. For production the tag should start with `prod` (`prod1.2.1`), for staging `staging` (`staging1.2.1`) and for a development build `dev` (`dev1.2.1`).
+
+The version number in the tag becomes the app version — tagging `prod1.8.0` builds version `1.8.0`. The Android version code is incremented automatically by EAS, so neither needs to be edited by hand before tagging.
 
 ### Play Store
 
@@ -59,6 +61,12 @@ Release to InTune needs to be built like .apk file which requires different buil
 3. Go to expo build and download it.
 
 4. Send the apk file to people responsible for distribution of InTune application
+
+### Testing builds
+
+A `staging` tag also builds a sideloadable .apk next to the .aab that goes to the Play Store. It uses the package name `com.bratislava.enforcement.staging`, so it installs alongside the Play version instead of clashing with it. Download it from the expo build page.
+
+A `dev` tag builds a development build (.apk) against the dev backend. Install it to use the dev client launcher with `yarn start`.
 
 ## OTA Update
 
