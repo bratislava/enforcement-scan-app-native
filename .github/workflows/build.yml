@@ -35,6 +35,10 @@ jobs:
             echo "::error::Tag '$GITHUB_REF_NAME' contains no x.y.z version"
             exit 1
           fi
+          case "$GITHUB_REF_NAME" in
+            staging*) VERSION="$VERSION-rc" ;;
+            dev*) VERSION="$VERSION-dev" ;;
+          esac
           npm version --no-git-tag-version --allow-same-version "$VERSION"
           echo "Building version $VERSION"
 

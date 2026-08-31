@@ -46,7 +46,15 @@ eas build --profile development --platform android
 
 1. Go to github and create new release. For production the tag should start with `prod` (`prod1.2.1`), for staging `staging` (`staging1.2.1`) and for a development build `dev` (`dev1.2.1`).
 
-The version number in the tag becomes the app version — tagging `prod1.8.0` builds version `1.8.0`. The Android version code is incremented automatically by EAS, so neither needs to be edited by hand before tagging.
+The version number in the tag becomes the app version. Staging and dev builds get a suffix so it is obvious they are not a production release:
+
+| tag | app version |
+| --- | --- |
+| `prod1.8.0` | `1.8.0` |
+| `staging1.8.0` | `1.8.0-rc` |
+| `dev1.8.0` | `1.8.0-dev` |
+
+The Android version code is incremented automatically by EAS, so neither needs to be edited by hand before tagging. The `version` in `package.json` is only a placeholder (`0.0.0-dev`) — the release workflow overwrites it from the tag, so it is never the version of a released build, only of a local one.
 
 ### Play Store
 
