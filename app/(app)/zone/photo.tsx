@@ -88,7 +88,6 @@ const ZonePhotoPage = () => {
             </View>
           </PressableStyled>
         )}
-        estimatedItemSize={100}
       />
     </ScreenView>
   )

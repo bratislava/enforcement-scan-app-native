@@ -32,7 +32,7 @@ export const addTextToImage = async ({
       watermarkTexts: [
         {
           text,
-          positionOptions: {
+          position: {
             position,
           },
           style: {
@@ -52,7 +52,7 @@ export const addTextToImage = async ({
       saveFormat: ImageFormat.jpg,
     })
 
-    return getPhotoUri(newUri)
+    return getPhotoUri(newUri.uri)
   } catch (error) {
     // No need to throw an error here, the image will be returned without the text
     console.error('Error adding text:', error)
