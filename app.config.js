@@ -60,6 +60,16 @@ module.exports = {
           url: 'https://sentry.io/',
         },
       ],
+      [
+        'expo-build-properties',
+        {
+          android: {
+            compileSdkVersion: 36,
+            targetSdkVersion: 36,
+            buildToolsVersion: '36.0.0',
+          },
+        },
+      ],
     ],
     extra: {
       eas: {
