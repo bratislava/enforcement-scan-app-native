@@ -56,7 +56,6 @@ const ScanLicencePlateInfoScreen = () => {
 
             <List
               onRefresh={refetch}
-              estimatedItemSize={78}
               refreshing={isRefetching}
               ItemSeparatorComponent={() => <View className="h-2" />}
               data={data.tickets}
@@ -71,7 +70,6 @@ const ScanLicencePlateInfoScreen = () => {
 
             <List
               onRefresh={refetch}
-              estimatedItemSize={102}
               refreshing={isRefetching}
               ItemSeparatorComponent={() => <View className="h-2" />}
               data={data.permitCards}

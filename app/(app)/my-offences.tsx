@@ -41,7 +41,6 @@ const MyOffences = () => {
         <List
           onRefresh={refetch}
           refreshing={isRefetching}
-          estimatedItemSize={104}
           ItemSeparatorComponent={() => <View className="h-2" />}
           data={data}
           renderItem={({ item }) => <OffenceTile {...item} />}

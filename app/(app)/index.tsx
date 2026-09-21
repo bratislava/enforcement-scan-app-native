@@ -66,7 +66,6 @@ const AppRoute = () => {
           renderItem={({ item }) => (
             <RoleTile {...item} id={item.key} key={item.key} onPress={handlePressRole(item)} />
           )}
-          estimatedItemSize={111}
         />
       </ScreenContent>
     </ScreenView>
