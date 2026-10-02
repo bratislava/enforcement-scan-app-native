@@ -5,7 +5,7 @@ on: [ pull_request ]
 jobs:
   validate:
     name: Validate typescript
-    uses: bratislava/github-actions/.github/workflows/validate-typescript-inhouse.yml@stable
+    uses: bratislava/github-actions/.github/workflows/validate-typescript-inhouse.yml@v2.4.0
     with:
       directory: '.'
       typescript-directory: '.'
