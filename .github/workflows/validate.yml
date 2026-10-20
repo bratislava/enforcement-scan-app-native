@@ -8,9 +8,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # Use the same Node version as EAS Build (eas.json is the single source of truth)
+      - name: Read Node version from eas.json
+        id: eas-node
+        run: echo "version=$(jq -r '.build.base.node' eas.json)" >> "$GITHUB_OUTPUT"
+
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: '22'
+          node-version: ${{ steps.eas-node.outputs.version }}
           cache: npm
 
       # Node 22 bundles npm 10, which ignores min-release-age (.npmrc) and is
@@ -21,11 +26,6 @@ jobs:
 
       - name: Typescript check
         run: npm run ts:check
- 
-      - name: ESlint check
-        uses: sibiraj-s/action-eslint@5af82bfa2a6b0cc7cba3208d6274724977caefbd # v2.2.1
-        with:
-          eslint-args: '--ignore-path=.gitignore --quiet'
-          extensions: 'md,ts,tsx'
-          annotations: true
 
+      - name: ESlint check
+        run: npm run lint -- --ignore-path .gitignore --quiet

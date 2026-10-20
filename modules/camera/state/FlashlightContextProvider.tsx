@@ -1,3 +1,4 @@
+// eslint-disable-next-line unicorn/no-unnecessary-polyfills -- the rule checks Node engines from package.json, but this code runs on Hermes
 import 'core-js/stable/atob'
 
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useState } from 'react'
