@@ -2,21 +2,24 @@
   "name": "enforcement-scan-app",
   "version": "0.0.0-dev",
   "main": "expo-router/entry",
+  "packageManager": "npm@12.2.0",
   "engines": {
-    "node": ">=22"
+    "node": ">=22",
+    "npm": ">=11.10.0"
   },
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
     "postinstall": "patch-package",
+    "eas-build-pre-install": "npm install -g npm@12.2.0",
     "local-android": "expo start --android --localhost -c",
     "ts:check": "tsc",
     "lint": "eslint --color --ext .md,.ts,.tsx ./",
-    "lint:fix": "yarn eslint --fix",
+    "lint:fix": "eslint --fix",
     "doctor": "expo install --check",
     "doctor:fix": "expo install --fix",
     "generate-client-enforcement-scan-app": "openapi-generator-cli generate -i https://enforcement-scan-app-backend.staging.bratislava.sk/api-json -g typescript-axios -o modules/backend/openapi-generated && node ./modules/backend/utils/fix-client.js && prettier --write modules/backend/openapi-generated",
-    "generate-clients": "yarn generate-client-enforcement-scan-app",
+    "generate-clients": "npm run generate-client-enforcement-scan-app",
     "ios": "expo run:ios"
   },
   "dependencies": {
@@ -128,5 +131,19 @@
       }
     }
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "react-dom": "$react",
+    "react-hook-form": {
+      "react": "$react"
+    }
+  },
+  "allowScripts": {
+    "@nestjs/core": false,
+    "@openapitools/openapi-generator-cli": false,
+    "@sentry/cli": false,
+    "core-js": false,
+    "esbuild": false,
+    "fsevents": false
+  }
 }
