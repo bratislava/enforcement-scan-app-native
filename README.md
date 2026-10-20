@@ -29,11 +29,11 @@ Quick reference:
 
 ```bash
 # you'll want eas-cli installed globally
-# install local packages
-yarn
+# install local packages (requires npm >= 11.10, see engines in package.json)
+npm ci
 
 # local development once you have build installed and are changing only javascript
-yarn start
+npm start
 
 # list existing builds (most of the time, you'll install the latest matching from here)
 east build:list
@@ -74,7 +74,7 @@ Release to InTune needs to be built like .apk file which requires different buil
 
 A `staging` tag also builds a sideloadable .apk next to the .aab that goes to the Play Store. It uses the package name `com.bratislava.enforcement.staging`, so it installs alongside the Play version instead of clashing with it. Download it from the expo build page.
 
-A `dev` tag builds a development build (.apk) against the dev backend. Install it to use the dev client launcher with `yarn start`.
+A `dev` tag builds a development build (.apk) against the dev backend. Install it to use the dev client launcher with `npm start`.
 
 ## OTA Update
 
