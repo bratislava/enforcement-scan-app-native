@@ -45,7 +45,8 @@ const OffencePage = () => {
   const [touched, setTouched] = useState(false)
   const [shownModal, setShownModal] = useState<ModalType>(null)
 
-  const { isOutsideZone, isOutsideOriginalZone, hasEmptyFields } = useOffenceValidation()
+  const { isOutsideZone, isOutsideOriginalZone, hasEmptyFields, isOffenceTypeMissing } =
+    useOffenceValidation()
 
   const getOffenceTypeLabel = useOffenceTypeLabel()
 
@@ -154,11 +155,11 @@ const OffencePage = () => {
 
             <Field
               label={t('offence.offenceType')}
-              errorMessage={touched && !offenceType ? t('offence.required') : undefined}
+              errorMessage={touched && isOffenceTypeMissing ? t('offence.required') : undefined}
             >
               <Link asChild href="/offence/offence-type">
                 <SelectButton
-                  hasError={touched && !offenceType}
+                  hasError={touched && isOffenceTypeMissing}
                   value={getOffenceTypeLabel(offenceType)}
                   placeholder={t('offence.offenceTypePlaceholder')}
                 />

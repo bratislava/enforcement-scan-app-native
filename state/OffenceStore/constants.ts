@@ -9,8 +9,9 @@ export const defaultOffenceState: OffenceState = {
 
 // TODO: Add default values for other roles when needed
 export const defaultValuesForRoles: { [key in RoleKeyType]: Partial<OffenceState> } = {
+  // offenceType is intentionally not preset - offence codes change over time (e.g. O -> NX) and a stale
+  // default would be submitted without the controller noticing, so it must always be picked explicitly
   paas: {
-    offenceType: 'O',
     resolutionType: ResolutionOffenceTypeEnum.JustRegistration,
   },
   'municipal-police': {},
