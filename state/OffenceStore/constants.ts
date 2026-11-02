@@ -1,4 +1,4 @@
-import { RoleKeyType } from '@/modules/backend/constants/roles'
+import { RoleKey, RoleKeyType } from '@/modules/backend/constants/roles'
 import { ResolutionOffenceTypeEnum } from '@/modules/backend/openapi-generated'
 import { OffenceState } from '@/state/OffenceStore/OffenceStoreProvider'
 
@@ -11,9 +11,9 @@ export const defaultOffenceState: OffenceState = {
 export const defaultValuesForRoles: { [key in RoleKeyType]: Partial<OffenceState> } = {
   // offenceType is intentionally not preset - offence codes change over time (e.g. O -> NX) and a stale
   // default would be submitted without the controller noticing, so it must always be picked explicitly
-  paas: {
+  [RoleKey.Paas]: {
     resolutionType: ResolutionOffenceTypeEnum.JustRegistration,
   },
-  'municipal-police': {},
-  research: {},
+  [RoleKey.MunicipalPolice]: {},
+  [RoleKey.Research]: {},
 }

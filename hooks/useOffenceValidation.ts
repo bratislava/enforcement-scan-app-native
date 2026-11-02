@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { useIsOffenceAllowedOutsideZone } from '@/hooks/useIsOffenceAllowedOutsideZone'
 import { getOffenceTypes } from '@/modules/backend/constants/queryOptions'
-import { getRoleByKey } from '@/modules/backend/constants/roles'
+import { getRoleByKey, RoleKey } from '@/modules/backend/constants/roles'
 import { findContainingFeature } from '@/modules/map/utils/findContainingFeature'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
@@ -47,7 +47,7 @@ export const useOffenceValidation = (): ValidationResult => {
   const isOffenceTypeMissing = useMemo(
     () =>
       !offenceTypes?.some(
-        (option) => option.code === offenceType && (roleKey !== 'paas' || option.paasVisible),
+        (option) => option.code === offenceType && (roleKey !== RoleKey.Paas || option.paasVisible),
       ),
     [offenceTypes, offenceType, roleKey],
   )
