@@ -5,9 +5,6 @@ import { calculateDistance } from '@/modules/map/utils/calculateDistance'
 import { signStyles } from '@/modules/map/utils/layer-styles/visitors'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 
-// Pins are hidden when zoomed out to avoid clutter
-const SIGNS_MIN_ZOOM = 15
-
 // Pins closer than this are treated as one place (e.g. two signs on one pole), zooming in would not separate them
 const SAME_PLACE_DISTANCE_M = 3
 
@@ -15,8 +12,7 @@ const SAME_PLACE_DISTANCE_M = 3
 const SIGN_TYPE_FILTER = ['in', ['get', 'typ_znacky'], ['literal', ['zona', 'rezidenti']]]
 
 type Props = {
-  /** When set, pins are bigger, always visible and can be tapped */
-  onSignPress?: (globalId: string) => void
+  onSignPress: (globalId: string) => void
   /** Called instead of onSignPress when one tap covers several pins that are not at the same place */
   onSignsClusterPress?: (coordinates: Position[]) => void
   selectedSignId?: string
@@ -41,14 +37,12 @@ const getMaxSpreadInMeters = (features: Feature<Point>[]) => {
 }
 
 /**
- * Renders zone sign points from ArcGIS as pins on the map
+ * Renders zone sign points from ArcGIS as tappable pins on the map
  */
 const MapSigns = ({ onSignPress, onSignsClusterPress, selectedSignId }: Props) => {
   const { signData } = useArcgisStoreContext()
 
   if (!signData?.features?.length) return null
-
-  const isSelectable = !!onSignPress
 
   const handlePress = (features: Feature[], tap: { latitude: number; longitude: number }) => {
     const pointFeatures = getPointFeatures(features)
@@ -74,14 +68,14 @@ const MapSigns = ({ onSignPress, onSignsClusterPress, selectedSignId }: Props) =
       .sort((a, b) => a.distance - b.distance)[0]?.feature
 
     const globalId: unknown = nearest?.properties?.GlobalID
-    if (typeof globalId === 'string') onSignPress?.(globalId)
+    if (typeof globalId === 'string') onSignPress(globalId)
   }
 
   return (
     <ShapeSource
       id="signSource"
       shape={signData}
-      onPress={isSelectable ? (event) => handlePress(event.features, event.coordinates) : undefined}
+      onPress={(event) => handlePress(event.features, event.coordinates)}
     >
       {/* The ring is drawn below the pins, so it never covers a neighbouring sign.
           ShapeSource does not accept null children, without a selected sign this layer matches nothing. */}
@@ -94,9 +88,8 @@ const MapSigns = ({ onSignPress, onSignsClusterPress, selectedSignId }: Props) =
       <CircleLayer
         id="signCircles"
         aboveLayerID="signCircleSelected"
-        minZoomLevel={isSelectable ? undefined : SIGNS_MIN_ZOOM}
         filter={SIGN_TYPE_FILTER}
-        style={isSelectable ? signStyles.circleSelectable : signStyles.circle}
+        style={signStyles.circle}
       />
     </ShapeSource>
   )
