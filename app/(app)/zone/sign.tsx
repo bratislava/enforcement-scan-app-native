@@ -25,7 +25,8 @@ import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
-const ZONE_PHOTO_CAMERA_ROUTE = '/zone/photo-camera'
+// existing photos of the selected sign, the list redirects to the camera when there are none
+const ZONE_PHOTO_ROUTE = '/zone/photo'
 
 const BOUNDS_PADDING = { paddingTop: 40, paddingBottom: 40, paddingLeft: 30, paddingRight: 30 }
 // top, right, bottom, left
@@ -214,7 +215,7 @@ const ZoneSignScreen = () => {
         <ContinueButton
           testID="confirmZoneSign"
           disabled={!selectedSignId}
-          onPress={() => router.push(ZONE_PHOTO_CAMERA_ROUTE)}
+          onPress={() => router.push(ZONE_PHOTO_ROUTE)}
         />
       </View>
     </ScreenView>

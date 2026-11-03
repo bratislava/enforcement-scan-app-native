@@ -1,4 +1,5 @@
 import { Redirect, router } from 'expo-router'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, View } from 'react-native'
 
@@ -14,6 +15,7 @@ import Typography from '@/components/shared/Typography'
 import { useQueryWithFocusRefetch } from '@/hooks/useQueryWithFocusRefetch'
 import { getZoneSignPhotosOptions } from '@/modules/backend/constants/queryOptions'
 import { ResponseZoneSignPhotoPropertiesDto } from '@/modules/backend/openapi-generated'
+import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
@@ -25,13 +27,22 @@ const ZonePhotoPage = () => {
 
   const { data, isPending, isError, error } = useQueryWithFocusRefetch(getZoneSignPhotosOptions())
   const { setOffenceState } = useSetOffenceState()
+  const selectedSignId = useOffenceStoreContext((state) => state.zoneSignGlobalId)
+
+  // the sign is chosen on the previous screen, only photos of that sign can be reused
+  const signPhotos = useMemo(
+    () => data?.photos.filter((photo) => photo.globalId === selectedSignId) ?? [],
+    [data, selectedSignId],
+  )
 
   const redirectToCamera = (zonePhoto?: ResponseZoneSignPhotoPropertiesDto) => {
-    // a new photo starts without a sign so the sign screen preselects the nearest one again,
-    // a retake of an existing photo keeps the sign of the photo it replaces
-    setOffenceState({ zonePhoto, zoneSignGlobalId: zonePhoto?.globalId ?? undefined })
-    // an existing photo is already linked to a sign, a new photo needs a sign to be selected first
-    router.push(zonePhoto ? ZONE_PHOTO_CAMERA_ROUTE : ZONE_SIGN_ROUTE)
+    setOffenceState({ zonePhoto })
+    router.push(ZONE_PHOTO_CAMERA_ROUTE)
+  }
+
+  // the sign screen comes first, without a sign there is nothing to show here
+  if (!selectedSignId) {
+    return <Redirect href={ZONE_SIGN_ROUTE} />
   }
 
   if (isPending) {
@@ -47,8 +58,8 @@ const ZonePhotoPage = () => {
     )
   }
 
-  if (data.photos.length === 0) {
-    return <Redirect href={ZONE_SIGN_ROUTE} />
+  if (signPhotos.length === 0) {
+    return <Redirect href={ZONE_PHOTO_CAMERA_ROUTE} />
   }
 
   return (
@@ -68,7 +79,7 @@ const ZonePhotoPage = () => {
     >
       <List
         className="h-full w-full flex-1"
-        data={data.photos}
+        data={signPhotos}
         ItemSeparatorComponent={() => <View className="h-2" />}
         renderItem={({ item }) => (
           <PressableStyled
