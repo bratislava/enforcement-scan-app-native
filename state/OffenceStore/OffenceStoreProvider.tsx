@@ -37,6 +37,8 @@ export type OffenceState = {
   // zone data
   zone?: MapUdrZoneWithTranslationProps
   zonePhoto?: ZonePhoto
+  /** GlobalID of the zone sign selected on the map, the new zone photo is linked to it */
+  zoneSignGlobalId?: string
 
   // vehicle data
   vehicleId?: number

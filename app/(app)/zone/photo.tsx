@@ -18,6 +18,7 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 import { createUrlFromImageObject } from '@/utils/createUrlFromImageObject'
 
 const ZONE_PHOTO_CAMERA_ROUTE = '/zone/photo-camera'
+const ZONE_SIGN_ROUTE = '/zone/sign'
 
 const ZonePhotoPage = () => {
   const { t } = useTranslation()
@@ -27,7 +28,8 @@ const ZonePhotoPage = () => {
 
   const redirectToCamera = (zonePhoto?: ResponseZoneSignPhotoPropertiesDto) => {
     setOffenceState({ zonePhoto })
-    router.push(ZONE_PHOTO_CAMERA_ROUTE)
+    // an existing photo is already linked to a sign, a new photo needs a sign to be selected first
+    router.push(zonePhoto ? ZONE_PHOTO_CAMERA_ROUTE : ZONE_SIGN_ROUTE)
   }
 
   if (isPending) {
@@ -44,7 +46,7 @@ const ZonePhotoPage = () => {
   }
 
   if (data.photos.length === 0) {
-    return <Redirect href={ZONE_PHOTO_CAMERA_ROUTE} />
+    return <Redirect href={ZONE_SIGN_ROUTE} />
   }
 
   return (

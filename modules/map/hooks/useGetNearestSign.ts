@@ -1,5 +1,6 @@
 import * as Location from 'expo-location'
 import { Feature, Point } from 'geojson'
+import { useCallback } from 'react'
 
 import { Arcgis } from '@/modules/arcgis/types'
 import { calculateDistance } from '@/modules/map/utils/calculateDistance'
@@ -10,38 +11,38 @@ type NearestSignType = Feature<Point, Arcgis.SignPoint> | null
 export const useGetNearestSign = () => {
   const { signData } = useArcgisStoreContext()
 
-  const getNearestSign = (
-    coords?: Location.LocationObjectCoords,
-    udrId?: string,
-  ): NearestSignType => {
-    if (!(signData && coords)) return null
+  const getNearestSign = useCallback(
+    (coords?: Location.LocationObjectCoords, udrId?: string): NearestSignType => {
+      if (!(signData && coords)) return null
 
-    const udrSigns = signData?.features?.filter((feature) =>
-      udrId === '0'
-        ? feature.properties.typ_znacky === 'rezidenti'
-        : feature.properties.typ_znacky === 'zona',
-    )
+      const udrSigns = signData?.features?.filter((feature) =>
+        udrId === '0'
+          ? feature.properties.typ_znacky === 'rezidenti'
+          : feature.properties.typ_znacky === 'zona',
+      )
 
-    let nearestSign: NearestSignType = null
-    let minDistance = Infinity
+      let nearestSign: NearestSignType = null
+      let minDistance = Infinity
 
-    udrSigns.forEach((feature) => {
-      const [signLongitude, signLatitude] = feature.geometry.coordinates
-      const distance = calculateDistance([
-        signLatitude,
-        signLongitude,
-        coords.latitude,
-        coords.longitude,
-      ])
+      udrSigns.forEach((feature) => {
+        const [signLongitude, signLatitude] = feature.geometry.coordinates
+        const distance = calculateDistance([
+          signLatitude,
+          signLongitude,
+          coords.latitude,
+          coords.longitude,
+        ])
 
-      if (distance < minDistance) {
-        minDistance = distance
-        nearestSign = feature
-      }
-    })
+        if (distance < minDistance) {
+          minDistance = distance
+          nearestSign = feature
+        }
+      })
 
-    return nearestSign
-  }
+      return nearestSign
+    },
+    [signData],
+  )
 
   return { getNearestSign }
 }

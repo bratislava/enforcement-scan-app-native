@@ -24,6 +24,7 @@ const MapZoneBottomSheetPanel = ({ selectedZone }: Props) => {
       setOffenceState({
         zone: selectedZone,
         zonePhoto: undefined,
+        zoneSignGlobalId: undefined,
         offenceType: selectedZone?.udrId === '0' ? 'N01' : 'O',
       })
     }

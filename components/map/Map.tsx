@@ -24,6 +24,7 @@ import CompassButton from '@/components/map/CompassButton'
 import { UserMapIndicator } from '@/components/map/location-map/UserMapIndicator'
 import MapCamera from '@/components/map/MapCamera'
 import MapPin from '@/components/map/MapPin'
+import MapSigns from '@/components/map/MapSigns'
 import MapZones from '@/components/map/MapZones'
 import { useCameraChangeHandler } from '@/modules/map/hooks/useCameraChangeHandler'
 import { getMapPadding } from '@/modules/map/hooks/useMapCenter'
@@ -132,6 +133,8 @@ const Map = forwardRef<MapRef, Props>(({ onZoneChange, onMapPinVisibilityChange 
           <FillLayer id="highlight" style={udrStyles.zoneFillSelected} />
           <LineLayer id="highlight-lines" style={udrStyles.lineSelected} />
         </ShapeSource>
+
+        <MapSigns />
 
         <UserMapIndicator />
       </MapView>

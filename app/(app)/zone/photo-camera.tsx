@@ -25,6 +25,7 @@ const AppRoute = () => {
   const { setOffenceState } = useSetOffenceState()
   const zonePhoto = useOffenceStoreContext((state) => state.zonePhoto)
   const udr = useOffenceStoreContext((state) => state.zone?.udrId)
+  const selectedSignId = useOffenceStoreContext((state) => state.zoneSignGlobalId)
 
   const { getNearestSign } = useGetNearestSign()
 
@@ -58,7 +59,8 @@ const AppRoute = () => {
     const { coords } = await getCurrentPositionAsync({
       accuracy: Location.Accuracy.Highest,
     })
-    const zoneSignGlobalId = getNearestSign(coords, udr)?.properties.GlobalID
+    // the sign selected on the map wins, the nearest sign to GPS is only a fallback
+    const zoneSignGlobalId = selectedSignId ?? getNearestSign(coords, udr)?.properties.GlobalID
     const locationString = coords ? `${coordsToString(coords.latitude, coords.longitude)}; ` : ''
 
     const capturedPhoto = await ref.current?.takePhoto()
