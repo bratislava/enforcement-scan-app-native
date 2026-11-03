@@ -78,6 +78,8 @@ export namespace Arcgis {
     OBJECTID: number
     zona: string
     typ_znacky: 'zona' | 'rezidenti' | 'skola'
+    /** Resident area code (e.g. "RP24"), set only for resident signs */
+    rezidenti?: string | null
     GlobalID: string
   }
 

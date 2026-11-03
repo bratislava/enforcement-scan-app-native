@@ -34,22 +34,59 @@ export const udrStyles = {
   },
 }
 
+// image names registered by <Images> in MapSigns
+const signIconImage = ['match', ['get', 'typ_znacky'], 'rezidenti', 'signRezidenti', 'signZona']
+
+// zone code under the icon, hidden by Mapbox when it would collide with another label
+const signLabel = {
+  textField: ['get', 'label'],
+  textSize: 11,
+  textAnchor: 'top',
+  textOffset: [0, 1.3],
+  textColor: colors.dark,
+  textHaloColor: colors.white,
+  textHaloWidth: 1.5,
+  textOptional: true,
+}
+
 export const signStyles = {
-  circle: {
-    // sign color matches the color of the zone type it belongs to
-    circleColor: ['match', ['get', 'typ_znacky'], 'rezidenti', colors.lightBlue, colors.green],
-    circleRadius: ['interpolate', ['linear'], ['zoom'], 12, 5, 18, 10],
-    circleStrokeColor: colors.white,
-    circleStrokeWidth: 2,
-  },
-  // dark ring drawn below the selected pin: visible on the orange zone highlight and in sunlight,
-  // and it does not hide neighbouring pins, which are drawn on top of it
-  circleSelected: {
+  cluster: {
     circleColor: colors.dark,
-    circleOpacity: 0.25,
-    circleRadius: ['interpolate', ['linear'], ['zoom'], 12, 11, 18, 18],
+    circleRadius: ['step', ['get', 'point_count'], 14, 5, 17, 10, 20],
+    circleStrokeColor: colors.white,
+    circleStrokeWidth: 2.5,
+  },
+  clusterCount: {
+    textField: ['get', 'point_count_abbreviated'],
+    textSize: 13,
+    textColor: colors.white,
+    textAllowOverlap: true,
+    textIgnorePlacement: true,
+  },
+  icon: {
+    ...signLabel,
+    iconImage: signIconImage,
+    iconSize: ['interpolate', ['linear'], ['zoom'], 12, 0.75, 17, 1],
+    // icons stay visible and tappable, clusters already keep them apart
+    iconAllowOverlap: true,
+    iconIgnorePlacement: true,
+  },
+  // dark frame under the selected icon: visible on the orange zone highlight and in sunlight
+  selectedFrame: {
+    circleColor: colors.dark,
+    circleOpacity: 0.2,
+    circleRadius: 24,
     circleStrokeColor: colors.dark,
     circleStrokeWidth: 3,
+  },
+  selectedIcon: {
+    ...signLabel,
+    iconImage: signIconImage,
+    iconSize: 1.25,
+    iconAllowOverlap: true,
+    iconIgnorePlacement: true,
+    textOffset: [0, 1.9],
+    textAllowOverlap: true,
   },
 }
 

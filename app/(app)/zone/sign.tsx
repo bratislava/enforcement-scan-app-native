@@ -29,8 +29,6 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 const ZONE_PHOTO_ROUTE = '/zone/photo'
 
 const BOUNDS_PADDING = { paddingTop: 40, paddingBottom: 40, paddingLeft: 30, paddingRight: 30 }
-// top, right, bottom, left
-const CLUSTER_ZOOM_PADDING = [80, 60, 80, 60]
 const CLUSTER_ZOOM_DURATION_MS = 500
 
 // A selected sign further away than this gets a warning, the inspector may have tapped the wrong one
@@ -77,17 +75,14 @@ const ZoneSignScreen = () => {
     }
   }, [getNearestSign, selectedSignId, setOffenceState, userCoords, zone?.udrId])
 
-  // Several pins under one tap: zoom in on them, so each one can be tapped on its own
-  const handleSignsClusterPress = useCallback((coordinates: Position[]) => {
-    const longitudes = coordinates.map(([lon]) => lon)
-    const latitudes = coordinates.map(([, lat]) => lat)
-
-    camera.current?.fitBounds(
-      [Math.max(...longitudes), Math.max(...latitudes)],
-      [Math.min(...longitudes), Math.min(...latitudes)],
-      CLUSTER_ZOOM_PADDING,
-      CLUSTER_ZOOM_DURATION_MS,
-    )
+  // A cluster tap zooms in until the cluster splits, so each sign can be tapped on its own
+  const handleClusterPress = useCallback((center: Position, zoomLevel: number) => {
+    camera.current?.setCamera({
+      centerCoordinate: center,
+      zoomLevel,
+      animationMode: 'easeTo',
+      animationDuration: CLUSTER_ZOOM_DURATION_MS,
+    })
   }, [])
 
   const selectedSign = useMemo(
@@ -159,7 +154,7 @@ const ZoneSignScreen = () => {
         <MapSigns
           selectedSignId={selectedSignId}
           onSignPress={(globalId) => setOffenceState({ zoneSignGlobalId: globalId })}
-          onSignsClusterPress={handleSignsClusterPress}
+          onClusterPress={handleClusterPress}
         />
 
         <UserMapIndicator />

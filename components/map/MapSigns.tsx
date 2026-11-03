@@ -1,65 +1,88 @@
-import { CircleLayer, ShapeSource } from '@rnmapbox/maps'
-import { Feature, Point, Position } from 'geojson'
+import { CircleLayer, Images, ShapeSource, SymbolLayer } from '@rnmapbox/maps'
+import { Feature, FeatureCollection, Point, Position } from 'geojson'
+import { useMemo, useRef } from 'react'
 
+import signRezidentiImage from '@/assets/map/sign-rezidenti.png'
+import signZonaImage from '@/assets/map/sign-zona.png'
+import { Arcgis } from '@/modules/arcgis/types'
 import { calculateDistance } from '@/modules/map/utils/calculateDistance'
 import { signStyles } from '@/modules/map/utils/layer-styles/visitors'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 
-// Pins closer than this are treated as one place (e.g. two signs on one pole), zooming in would not separate them
-const SAME_PLACE_DISTANCE_M = 3
+// only zone and resident signs are relevant, other types (e.g. 'skola') are left out
+const SIGN_TYPES = new Set<Arcgis.SignPoint['typ_znacky']>(['zona', 'rezidenti'])
 
-// only zone and resident signs are relevant, other types (e.g. 'skola') are hidden
-const SIGN_TYPE_FILTER = ['in', ['get', 'typ_znacky'], ['literal', ['zona', 'rezidenti']]]
+// signs closer than this on screen are merged into one bubble with a count
+const CLUSTER_RADIUS_PX = 40
+// from this zoom on every sign is shown on its own, even when two signs stand on one pole
+const CLUSTER_MAX_ZOOM = 18
+
+// names used by `iconImage` in signStyles
+const SIGN_IMAGES = { signZona: signZonaImage, signRezidenti: signRezidentiImage }
+
+export type SignFeature = Feature<Point, Arcgis.SignPoint & { label: string }>
 
 type Props = {
-  onSignPress: (globalId: string) => void
-  /** Called instead of onSignPress when one tap covers several pins that are not at the same place */
-  onSignsClusterPress?: (coordinates: Position[]) => void
   selectedSignId?: string
-}
-
-const getPointFeatures = (features: Feature[]) =>
-  features.flatMap((feature) =>
-    feature.geometry.type === 'Point' ? [feature as Feature<Point>] : [],
-  )
-
-const getMaxSpreadInMeters = (features: Feature<Point>[]) => {
-  let maxDistance = 0
-  features.forEach((a, index) => {
-    features.slice(index + 1).forEach((b) => {
-      const [lonA, latA] = a.geometry.coordinates
-      const [lonB, latB] = b.geometry.coordinates
-      maxDistance = Math.max(maxDistance, calculateDistance([latA, lonA, latB, lonB]) * 1000)
-    })
-  })
-
-  return maxDistance
+  onSignPress: (globalId: string) => void
+  /** Called with the cluster position and the zoom at which the cluster splits into signs */
+  onClusterPress: (center: Position, zoomLevel: number) => void
 }
 
 /**
- * Renders zone sign points from ArcGIS as tappable pins on the map
+ * Text under the sign icon: the zone code, or the resident area code for resident signs
  */
-const MapSigns = ({ onSignPress, onSignsClusterPress, selectedSignId }: Props) => {
+const getSignLabel = (sign: Arcgis.SignPoint) =>
+  ((sign.typ_znacky === 'rezidenti' ? sign.rezidenti : null) ?? sign.zona ?? '').trim()
+
+const toCollection = (features: SignFeature[]): FeatureCollection<Point> => ({
+  type: 'FeatureCollection',
+  features,
+})
+
+/**
+ * Renders zone and resident signs as tappable sign icons, close signs are merged into clusters
+ */
+const MapSigns = ({ selectedSignId, onSignPress, onClusterPress }: Props) => {
   const { signData } = useArcgisStoreContext()
+  const clusterSource = useRef<ShapeSource>(null)
 
-  if (!signData?.features?.length) return null
+  const signs = useMemo(
+    () =>
+      (signData?.features ?? [])
+        .filter((feature) => SIGN_TYPES.has(feature.properties.typ_znacky))
+        .map(
+          (feature): SignFeature => ({
+            ...feature,
+            properties: { ...feature.properties, label: getSignLabel(feature.properties) },
+          }),
+        ),
+    [signData],
+  )
 
-  const handlePress = (features: Feature[], tap: { latitude: number; longitude: number }) => {
-    const pointFeatures = getPointFeatures(features)
+  // the selected sign is drawn from its own source, so it is never hidden inside a cluster
+  const { clustered, selected } = useMemo(
+    () => ({
+      clustered: toCollection(signs.filter((sign) => sign.properties.GlobalID !== selectedSignId)),
+      selected: toCollection(signs.filter((sign) => sign.properties.GlobalID === selectedSignId)),
+    }),
+    [signs, selectedSignId],
+  )
 
-    // the touch area covers several pins: zoom in so the inspector can tap the right one
-    if (
-      onSignsClusterPress &&
-      pointFeatures.length > 1 &&
-      getMaxSpreadInMeters(pointFeatures) > SAME_PLACE_DISTANCE_M
-    ) {
-      onSignsClusterPress(pointFeatures.map((feature) => feature.geometry.coordinates))
+  if (signs.length === 0) return null
+
+  const handlePress = async (features: Feature[], tap: { latitude: number; longitude: number }) => {
+    const cluster = features.find((feature) => feature.properties?.cluster)
+    if (cluster && cluster.geometry.type === 'Point') {
+      const zoomLevel = await clusterSource.current?.getClusterExpansionZoom(cluster)
+      if (zoomLevel !== undefined) onClusterPress(cluster.geometry.coordinates, zoomLevel)
 
       return
     }
 
-    // otherwise pick the pin closest to the tap
-    const nearest = pointFeatures
+    // icons can still touch at high zoom, pick the one closest to the tap
+    const nearest = features
+      .flatMap((feature) => (feature.geometry.type === 'Point' ? [feature as Feature<Point>] : []))
       .map((feature) => {
         const [lon, lat] = feature.geometry.coordinates
 
@@ -72,26 +95,43 @@ const MapSigns = ({ onSignPress, onSignsClusterPress, selectedSignId }: Props) =
   }
 
   return (
-    <ShapeSource
-      id="signSource"
-      shape={signData}
-      onPress={(event) => handlePress(event.features, event.coordinates)}
-    >
-      {/* The ring is drawn below the pins, so it never covers a neighbouring sign.
-          ShapeSource does not accept null children, without a selected sign this layer matches nothing. */}
-      <CircleLayer
-        id="signCircleSelected"
-        filter={['==', ['get', 'GlobalID'], selectedSignId ?? '']}
-        style={signStyles.circleSelected}
-      />
+    <>
+      <Images images={SIGN_IMAGES} />
 
-      <CircleLayer
-        id="signCircles"
-        aboveLayerID="signCircleSelected"
-        filter={SIGN_TYPE_FILTER}
-        style={signStyles.circle}
-      />
-    </ShapeSource>
+      <ShapeSource
+        ref={clusterSource}
+        id="signSource"
+        shape={clustered}
+        cluster
+        clusterRadius={CLUSTER_RADIUS_PX}
+        clusterMaxZoomLevel={CLUSTER_MAX_ZOOM}
+        onPress={(event) => {
+          // the promise only moves the camera, a failed lookup leaves the map as it is
+          handlePress(event.features, event.coordinates).catch(() => {})
+        }}
+      >
+        <CircleLayer id="signClusters" filter={['has', 'point_count']} style={signStyles.cluster} />
+        <SymbolLayer
+          id="signClusterCount"
+          filter={['has', 'point_count']}
+          style={signStyles.clusterCount}
+        />
+        <SymbolLayer
+          id="signIcons"
+          filter={['!', ['has', 'point_count']]}
+          style={signStyles.icon}
+        />
+      </ShapeSource>
+
+      <ShapeSource id="signSelectedSource" shape={selected}>
+        <CircleLayer id="signSelectedFrame" style={signStyles.selectedFrame} />
+        <SymbolLayer
+          id="signSelectedIcon"
+          aboveLayerID="signSelectedFrame"
+          style={signStyles.selectedIcon}
+        />
+      </ShapeSource>
+    </>
   )
 }
 
