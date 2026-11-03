@@ -8,7 +8,7 @@ import LoadingScreen from '@/components/screen-layout/LoadingScreen'
 import ScreenContent from '@/components/screen-layout/ScreenContent'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { getOffenceTypes } from '@/modules/backend/constants/queryOptions'
-import { getRoleByKey } from '@/modules/backend/constants/roles'
+import { getRoleByKey, RoleKey } from '@/modules/backend/constants/roles'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 
@@ -44,7 +44,7 @@ const Page = () => {
 
   // PAAS controllers only see the types marked visible for them in backoffice, other roles see all
   const filteredOffenceTypes =
-    role?.key === 'paas' ? data.filter((offence) => offence.paasVisible) : data
+    role?.key === RoleKey.Paas ? data.filter((offence) => offence.paasVisible) : data
 
   const filteredOffenceOptions = filteredOffenceTypes.map(({ code: value, name }) => ({
     label: name,

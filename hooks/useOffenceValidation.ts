@@ -1,13 +1,16 @@
+import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
 import { useIsOffenceAllowedOutsideZone } from '@/hooks/useIsOffenceAllowedOutsideZone'
-import { getRoleByKey } from '@/modules/backend/constants/roles'
+import { getOffenceTypes } from '@/modules/backend/constants/queryOptions'
+import { getRoleByKey, RoleKey } from '@/modules/backend/constants/roles'
 import { findContainingFeature } from '@/modules/map/utils/findContainingFeature'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 import { useOffenceStoreContext } from '@/state/OffenceStore/useOffenceStoreContext'
 
 export interface ValidationResult {
   hasEmptyFields: boolean
+  isOffenceTypeMissing: boolean
   isOutsideZone?: boolean
   isOutsideOriginalZone?: boolean
 }
@@ -19,6 +22,7 @@ export const useOffenceValidation = (): ValidationResult => {
     useOffenceStoreContext((state) => state)
   const isRoleWithZone = getRoleByKey(roleKey)?.actions.zone
   const isOffenceAllowedOutsideZone = useIsOffenceAllowedOutsideZone()
+  const { data: offenceTypes } = useQuery(getOffenceTypes())
 
   const gpsZone = useMemo(
     () =>
@@ -39,13 +43,23 @@ export const useOffenceValidation = (): ValidationResult => {
     [isRoleWithZone, isOffenceAllowedOutsideZone, offenceType, zone?.id, gpsZone?.properties.id],
   )
 
+  // Treat codes missing from the current offence type list (e.g. deprecated ones) as not selected
+  const isOffenceTypeMissing = useMemo(
+    () =>
+      !offenceTypes?.some(
+        (option) => option.code === offenceType && (roleKey !== RoleKey.Paas || option.paasVisible),
+      ),
+    [offenceTypes, offenceType, roleKey],
+  )
+
   const hasEmptyFields = useMemo(
-    () => !ecv || !offenceType || (isObjectiveResponsibility ? false : !resolutionType),
-    [ecv, offenceType, isObjectiveResponsibility, resolutionType],
+    () => !ecv || isOffenceTypeMissing || (isObjectiveResponsibility ? false : !resolutionType),
+    [ecv, isOffenceTypeMissing, isObjectiveResponsibility, resolutionType],
   )
 
   return {
     hasEmptyFields,
+    isOffenceTypeMissing,
     isOutsideZone,
     isOutsideOriginalZone,
   }
