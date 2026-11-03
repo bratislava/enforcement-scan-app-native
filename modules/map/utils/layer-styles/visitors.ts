@@ -52,10 +52,19 @@ export const signStyles = {
     circleRadius: ['interpolate', ['linear'], ['zoom'], 12, 5, 18, 10],
     circleStrokeWidth: 2,
   },
+  // dark ring drawn below the selected pin: visible on the orange zone highlight and in sunlight,
+  // and it does not hide neighbouring pins, which are drawn on top of it
   circleSelected: {
-    ...signCircleBase,
-    circleRadius: ['interpolate', ['linear'], ['zoom'], 12, 9, 18, 15],
-    circleStrokeColor: colors.orange,
-    circleStrokeWidth: 4,
+    circleColor: colors.dark,
+    circleOpacity: 0.25,
+    circleRadius: ['interpolate', ['linear'], ['zoom'], 12, 11, 18, 18],
+    circleStrokeColor: colors.dark,
+    circleStrokeWidth: 3,
   },
+}
+
+// lighter zone highlight for the sign select screen, so the pins stay readable on top of it
+export const zoneHighlightStyles = {
+  fill: { fillColor: colors.orange, fillOpacity: 0.15 },
+  line: { ...udrStyles.lineSelected, lineOpacity: 0.8 },
 }
