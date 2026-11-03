@@ -1,5 +1,6 @@
 import { Feature, FeatureCollection, MultiPolygon, Polygon, Position } from 'geojson'
 
+import { MapZoneStatusEnum } from '@/modules/map/constants'
 import { MapUdrZoneWithTranslationProps } from '@/modules/map/types'
 
 type ZoneFeatureCollection = FeatureCollection<
@@ -33,9 +34,15 @@ export const getZoneArea = (
 ): ZoneArea | null => {
   const zoneCode = zone.code?.trim()
 
-  const features = udrData.features.filter((feature) =>
-    zoneCode ? feature.properties.code?.trim() === zoneCode : feature.properties.id === zone.id,
-  )
+  const features = udrData.features.filter((feature) => {
+    if (feature.properties.id === zone.id) return true
+    if (!zoneCode || feature.properties.code?.trim() !== zoneCode) return false
+
+    // only segments that are drawn on the map (same rule as MapZones), planned ones are skipped
+    return (
+      feature.properties.status === MapZoneStatusEnum.active || feature.properties.udrId === '0'
+    )
+  })
 
   if (features.length === 0) return null
 

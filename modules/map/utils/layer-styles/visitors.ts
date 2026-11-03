@@ -34,23 +34,26 @@ export const udrStyles = {
   },
 }
 
+const signCircleBase = {
+  // sign color matches the color of the zone type it belongs to
+  circleColor: ['match', ['get', 'typ_znacky'], 'rezidenti', colors.lightBlue, colors.green],
+  circleStrokeColor: colors.white,
+}
+
 export const signStyles = {
   circle: {
-    // sign color matches the color of the zone type it belongs to
-    circleColor: ['match', ['get', 'typ_znacky'], 'rezidenti', colors.lightBlue, colors.green],
+    ...signCircleBase,
     circleRadius: ['interpolate', ['linear'], ['zoom'], 15, 3, 20, 7],
-    circleStrokeColor: colors.white,
     circleStrokeWidth: 1.5,
   },
   // bigger pins for the sign select screen, so they are easy to tap
   circleSelectable: {
-    circleColor: ['match', ['get', 'typ_znacky'], 'rezidenti', colors.lightBlue, colors.green],
+    ...signCircleBase,
     circleRadius: ['interpolate', ['linear'], ['zoom'], 12, 5, 18, 10],
-    circleStrokeColor: colors.white,
     circleStrokeWidth: 2,
   },
   circleSelected: {
-    circleColor: ['match', ['get', 'typ_znacky'], 'rezidenti', colors.lightBlue, colors.green],
+    ...signCircleBase,
     circleRadius: ['interpolate', ['linear'], ['zoom'], 12, 9, 18, 15],
     circleStrokeColor: colors.orange,
     circleStrokeWidth: 4,

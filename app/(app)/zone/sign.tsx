@@ -1,7 +1,7 @@
 import { Camera, FillLayer, LineLayer, MapView, ShapeSource } from '@rnmapbox/maps'
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
@@ -39,7 +39,6 @@ const ZoneSignScreen = () => {
   const { getNearestSign } = useGetNearestSign()
 
   const [userCoords, setUserCoords] = useState<Location.LocationObjectCoords | null>(null)
-  const isPreselected = useRef(false)
 
   const zoneArea = useMemo(
     () => (udrData && zone ? getZoneArea(udrData, zone) : null),
@@ -55,11 +54,10 @@ const ZoneSignScreen = () => {
 
   // Preselect the sign nearest to the user, the user can change it by tapping another pin
   useEffect(() => {
-    if (isPreselected.current || selectedSignId || !userCoords) return
+    if (selectedSignId || !userCoords) return
 
     const nearestSign = getNearestSign(userCoords, zone?.udrId)
     if (nearestSign) {
-      isPreselected.current = true
       setOffenceState({ zoneSignGlobalId: nearestSign.properties.GlobalID })
     }
   }, [getNearestSign, selectedSignId, setOffenceState, userCoords, zone?.udrId])
@@ -141,6 +139,7 @@ const ZoneSignScreen = () => {
         </Typography>
 
         <ContinueButton
+          testID="confirmZoneSign"
           disabled={!selectedSignId}
           onPress={() => router.push(ZONE_PHOTO_CAMERA_ROUTE)}
         />

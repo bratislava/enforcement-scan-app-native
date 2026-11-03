@@ -27,7 +27,9 @@ const ZonePhotoPage = () => {
   const { setOffenceState } = useSetOffenceState()
 
   const redirectToCamera = (zonePhoto?: ResponseZoneSignPhotoPropertiesDto) => {
-    setOffenceState({ zonePhoto })
+    // a new photo starts without a sign so the sign screen preselects the nearest one again,
+    // a retake of an existing photo keeps the sign of the photo it replaces
+    setOffenceState({ zonePhoto, zoneSignGlobalId: zonePhoto?.globalId ?? undefined })
     // an existing photo is already linked to a sign, a new photo needs a sign to be selected first
     router.push(zonePhoto ? ZONE_PHOTO_CAMERA_ROUTE : ZONE_SIGN_ROUTE)
   }

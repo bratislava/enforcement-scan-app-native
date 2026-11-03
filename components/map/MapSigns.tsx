@@ -1,4 +1,5 @@
 import { CircleLayer, ShapeSource } from '@rnmapbox/maps'
+import { Point } from 'geojson'
 
 import { signStyles } from '@/modules/map/utils/layer-styles/visitors'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
@@ -32,7 +33,18 @@ const MapSigns = ({ onSignPress, selectedSignId }: Props) => {
       onPress={
         onSignPress
           ? (event) => {
-              const globalId: unknown = event.features[0]?.properties?.GlobalID
+              const { latitude, longitude } = event.coordinates
+              // the touch area can cover several pins, pick the one closest to the tap
+              const nearest = event.features
+                .filter((feature) => feature.geometry.type === 'Point')
+                .map((feature) => {
+                  const [lon, lat] = (feature.geometry as Point).coordinates
+
+                  return { feature, distance: (lon - longitude) ** 2 + (lat - latitude) ** 2 }
+                })
+                .sort((a, b) => a.distance - b.distance)[0]?.feature
+
+              const globalId: unknown = nearest?.properties?.GlobalID
               if (typeof globalId === 'string') onSignPress(globalId)
             }
           : undefined
