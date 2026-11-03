@@ -29,7 +29,7 @@ Quick reference:
 
 ```bash
 # you'll want eas-cli installed globally
-# install local packages (requires npm >= 11.10, see engines in package.json)
+# install local packages (requires npm >= 12.2, see engines in package.json)
 npm ci
 
 # local development once you have build installed and are changing only javascript

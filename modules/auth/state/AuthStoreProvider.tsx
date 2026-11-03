@@ -1,4 +1,4 @@
-// eslint-disable-next-line unicorn/no-unnecessary-polyfills -- the rule checks Node engines from package.json, but this code runs on Hermes
+// eslint-disable-next-line unicorn/no-unnecessary-polyfills -- the rule checks Node engines from package.json, but the polyfill likely is not needed either way: Hermes ships atob natively since RN 0.74
 import 'core-js/stable/atob'
 
 import { TokenResponse } from 'expo-auth-session'
