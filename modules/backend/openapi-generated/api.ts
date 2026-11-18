@@ -1377,6 +1377,12 @@ export interface ResponseZoneSignPhotoDto {
    */
   long?: number | null
   /**
+   * Flag indicating whether the inspector marked the image as a passport photo of the zone sign. Defaults to false.
+   * @type {boolean}
+   * @memberof ResponseZoneSignPhotoDto
+   */
+  isPassportPhoto?: boolean
+  /**
    *
    * @type {string}
    * @memberof ResponseZoneSignPhotoDto
@@ -1413,6 +1419,12 @@ export interface ResponseZoneSignPhotoPropertiesDto {
    * @memberof ResponseZoneSignPhotoPropertiesDto
    */
   long?: number | null
+  /**
+   * Flag indicating whether the inspector marked the image as a passport photo of the zone sign. Defaults to false.
+   * @type {boolean}
+   * @memberof ResponseZoneSignPhotoPropertiesDto
+   */
+  isPassportPhoto?: boolean
   /**
    *
    * @type {string}
@@ -3330,6 +3342,7 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
      * @param {string | null} [tag] Arbitrary info about image, e.g. UDR number.
      * @param {number | null} [lat] Latitude of image.
      * @param {number | null} [_long] Longitude of image.
+     * @param {boolean} [isPassportPhoto] Flag indicating whether the inspector marked the image as a passport photo of the zone sign. Defaults to false.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3339,6 +3352,7 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
       tag?: string | null,
       lat?: number | null,
       _long?: number | null,
+      isPassportPhoto?: boolean,
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'file' is not null or undefined
@@ -3374,6 +3388,10 @@ export const ScansAndOffencesApiAxiosParamCreator = function (configuration?: Co
 
       if (_long !== undefined) {
         localVarFormParams.append('long', _long as any)
+      }
+
+      if (isPassportPhoto !== undefined) {
+        localVarFormParams.append('isPassportPhoto', isPassportPhoto as any)
       }
 
       if (file !== undefined) {
@@ -3789,6 +3807,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
      * @param {string | null} [tag] Arbitrary info about image, e.g. UDR number.
      * @param {number | null} [lat] Latitude of image.
      * @param {number | null} [_long] Longitude of image.
+     * @param {boolean} [isPassportPhoto] Flag indicating whether the inspector marked the image as a passport photo of the zone sign. Defaults to false.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -3798,6 +3817,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
       tag?: string | null,
       lat?: number | null,
       _long?: number | null,
+      isPassportPhoto?: boolean,
       options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ResponseZoneSignPhotoDto>
@@ -3808,6 +3828,7 @@ export const ScansAndOffencesApiFp = function (configuration?: Configuration) {
         tag,
         lat,
         _long,
+        isPassportPhoto,
         options,
       )
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0
@@ -4077,6 +4098,7 @@ export const ScansAndOffencesApiFactory = function (
      * @param {string | null} [tag] Arbitrary info about image, e.g. UDR number.
      * @param {number | null} [lat] Latitude of image.
      * @param {number | null} [_long] Longitude of image.
+     * @param {boolean} [isPassportPhoto] Flag indicating whether the inspector marked the image as a passport photo of the zone sign. Defaults to false.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4086,10 +4108,19 @@ export const ScansAndOffencesApiFactory = function (
       tag?: string | null,
       lat?: number | null,
       _long?: number | null,
+      isPassportPhoto?: boolean,
       options?: RawAxiosRequestConfig,
     ): AxiosPromise<ResponseZoneSignPhotoDto> {
       return localVarFp
-        .scanControllerCreateZoneSignPhoto(file, globalId, tag, lat, _long, options)
+        .scanControllerCreateZoneSignPhoto(
+          file,
+          globalId,
+          tag,
+          lat,
+          _long,
+          isPassportPhoto,
+          options,
+        )
         .then((request) => request(axios, basePath))
     },
     /**
@@ -4261,6 +4292,7 @@ export class ScansAndOffencesApi extends BaseAPI {
    * @param {string | null} [tag] Arbitrary info about image, e.g. UDR number.
    * @param {number | null} [lat] Latitude of image.
    * @param {number | null} [_long] Longitude of image.
+   * @param {boolean} [isPassportPhoto] Flag indicating whether the inspector marked the image as a passport photo of the zone sign. Defaults to false.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ScansAndOffencesApi
@@ -4271,10 +4303,11 @@ export class ScansAndOffencesApi extends BaseAPI {
     tag?: string | null,
     lat?: number | null,
     _long?: number | null,
+    isPassportPhoto?: boolean,
     options?: RawAxiosRequestConfig,
   ) {
     return ScansAndOffencesApiFp(this.configuration)
-      .scanControllerCreateZoneSignPhoto(file, globalId, tag, lat, _long, options)
+      .scanControllerCreateZoneSignPhoto(file, globalId, tag, lat, _long, isPassportPhoto, options)
       .then((request) => request(this.axios, this.basePath))
   }
 

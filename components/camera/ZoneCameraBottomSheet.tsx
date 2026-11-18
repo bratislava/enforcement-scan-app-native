@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
+import PassportPill from '@/components/camera/PassportPill'
 import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAttachment'
 import TextInput from '@/components/inputs/TextInput'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
@@ -15,10 +16,20 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 type Props = {
   isLoading: boolean
   hasPhoto: boolean
+  /** before the photo: state of the passport switch; after the photo: the flag saved by the backend */
+  isPassportPhoto: boolean
   takePicture: (tag: string) => Promise<void>
+  /** called before the current photo is discarded by "Odfotiť znova" */
+  onRetake?: () => void
 }
 
-const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
+const ZoneCameraBottomSheet = ({
+  hasPhoto,
+  isLoading,
+  isPassportPhoto,
+  takePicture,
+  onRetake,
+}: Props) => {
   const { setOffenceState } = useSetOffenceState()
   const { t } = useTranslation()
   const router = useRouter()
@@ -31,6 +42,7 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
   const selectPicture = () => router.push('/scan/licence-plate-camera')
 
   const retakePicture = () => {
+    onRetake?.()
     setTag('')
     setOffenceState({ zonePhoto: undefined })
   }
@@ -52,6 +64,8 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
             <>
               <Typography variant="h2">{t('zone.confirmTitle')}</Typography>
 
+              {isPassportPhoto ? <PassportPill /> : null}
+
               {zonePhotoTag ? (
                 <Typography>{t('zone.tag', { tag: zonePhotoTag })}</Typography>
               ) : null}
@@ -63,6 +77,8 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
           ) : (
             <>
               <Typography variant="h2">{t('zone.takePictureTitle')}</Typography>
+
+              {isPassportPhoto ? <PassportPill /> : null}
 
               <TextInput
                 value={tag}
