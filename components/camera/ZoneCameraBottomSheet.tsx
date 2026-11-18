@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSharedValue } from 'react-native-reanimated'
 
+import PassportPill from '@/components/camera/PassportPill'
 import PhotoBottomSheetAttachment from '@/components/camera/PhotoBottomSheetAttachment'
 import TextInput from '@/components/inputs/TextInput'
 import BottomSheetContent from '@/components/screen-layout/BottomSheet/BottomSheetContent'
@@ -15,15 +16,18 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 type Props = {
   isLoading: boolean
   hasPhoto: boolean
+  /** state of the passport switch for the next photo, the confirm state reads the saved flag from the store */
+  isPassportPhoto: boolean
   takePicture: (tag: string) => Promise<void>
 }
 
-const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
+const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, isPassportPhoto, takePicture }: Props) => {
   const { setOffenceState } = useSetOffenceState()
   const { t } = useTranslation()
   const router = useRouter()
 
   const zonePhotoTag = useOffenceStoreContext((state) => state.zonePhoto?.tag)
+  const isSavedPassportPhoto = useOffenceStoreContext((state) => !!state.zonePhoto?.isPassportPhoto)
   const [tag, setTag] = useState('')
 
   const animatedPosition = useSharedValue(0)
@@ -52,6 +56,8 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
             <>
               <Typography variant="h2">{t('zone.confirmTitle')}</Typography>
 
+              {isSavedPassportPhoto ? <PassportPill /> : null}
+
               {zonePhotoTag ? (
                 <Typography>{t('zone.tag', { tag: zonePhotoTag })}</Typography>
               ) : null}
@@ -63,6 +69,8 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, takePicture }: Props) => {
           ) : (
             <>
               <Typography variant="h2">{t('zone.takePictureTitle')}</Typography>
+
+              {isPassportPhoto ? <PassportPill /> : null}
 
               <TextInput
                 value={tag}

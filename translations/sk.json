@@ -101,6 +101,8 @@
   "zone.confirm": "Potvrdiť",
   "zone.confirmTitle": "Potvrďte, že fotka je v poriadku.",
   "zone.notSelected": "Nie je zvolená zóna",
+  "zone.passport.label": "Pasport",
+  "zone.passport.pill": "Pasportná fotka",
   "zone.photo.new": "Nová fotka",
   "zone.photo.title": "Vyberte fotku značky",
   "zone.sign.chooser.close": "Zavrieť",

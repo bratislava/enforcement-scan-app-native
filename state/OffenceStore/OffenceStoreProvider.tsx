@@ -12,6 +12,8 @@ export type ZonePhoto = {
   id: number
   photoUrl?: string | null
   tag?: string | null
+  /** set by the backend, true when the inspector marked the photo as the passport photo of the zone sign */
+  isPassportPhoto?: boolean
 }
 
 export type PositionObject = {
