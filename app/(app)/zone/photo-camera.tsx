@@ -59,7 +59,8 @@ const AppRoute = () => {
     const { coords } = await getCurrentPositionAsync({
       accuracy: Location.Accuracy.Highest,
     })
-    // the sign selected on the map wins, the nearest sign to GPS is only a fallback
+    // the sign screen always sets the selected sign before opening the camera,
+    // the nearest sign to GPS is only a defensive fallback that the normal flow does not reach
     const zoneSignGlobalId = selectedSignId ?? getNearestSign(coords, udr)?.properties.GlobalID
     const locationString = coords ? `${coordsToString(coords.latitude, coords.longitude)}; ` : ''
 

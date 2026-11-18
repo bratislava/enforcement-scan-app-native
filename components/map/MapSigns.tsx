@@ -35,7 +35,7 @@ type Props = {
 /**
  * Text under the sign icon: the zone code, or the resident area code for resident signs
  */
-const getSignLabel = (sign: Arcgis.SignPoint) =>
+export const getSignLabel = (sign: Arcgis.SignPoint) =>
   ((sign.typ_znacky === 'rezidenti' ? sign.rezidenti : null) ?? sign.zona ?? '').trim()
 
 const toCollection = (features: SignFeature[]): FeatureCollection<Point> => ({

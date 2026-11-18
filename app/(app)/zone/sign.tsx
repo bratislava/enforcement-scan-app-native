@@ -8,7 +8,7 @@ import { Image, View } from 'react-native'
 
 import ZoneBadge from '@/components/info/ZoneBadge'
 import { UserMapIndicator } from '@/components/map/location-map/UserMapIndicator'
-import MapSigns, { SIGNS_UNCLUSTERED_ZOOM } from '@/components/map/MapSigns'
+import MapSigns, { getSignLabel, SIGNS_UNCLUSTERED_ZOOM } from '@/components/map/MapSigns'
 import MapZones from '@/components/map/MapZones'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenView from '@/components/screen-layout/ScreenView'
@@ -83,7 +83,8 @@ const SelectedSignSummary = ({
         <Typography variant="default-bold" numberOfLines={1}>
           {t('zone.sign.selected', {
             type: t(`zone.sign.type.${sign.properties.typ_znacky}`),
-            zone: sign.properties.zona?.trim(),
+            // same code as the label under the map pin (resident area code for resident signs)
+            zone: getSignLabel(sign.properties),
           })}
         </Typography>
         {distanceText ? <Typography numberOfLines={1}>{distanceText}</Typography> : null}
@@ -159,7 +160,9 @@ const ZoneSignScreen = () => {
   )
 
   // the inspector's own photos from today (the backend returns only those), latest one of the selected sign
-  const { data: todayPhotos } = useQueryWithFocusRefetch(getZoneSignPhotosOptions())
+  const { data: todayPhotos, isPending: isTodayPhotosPending } = useQueryWithFocusRefetch(
+    getZoneSignPhotosOptions(),
+  )
   const todaySignPhoto = useMemo(
     () =>
       todayPhotos?.photos
@@ -299,7 +302,9 @@ const ZoneSignScreen = () => {
         ) : (
           <ContinueButton
             testID="confirmZoneSign"
-            disabled={!selectedSignId}
+            // wait for today's photos, otherwise a photo of a sign taken today can be taken again
+            // before the "Použiť fotku" option appears (a failed request stops pending and allows Continue)
+            disabled={!selectedSignId || isTodayPhotosPending}
             onPress={() => goToCamera()}
           />
         )}
