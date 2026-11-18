@@ -2,10 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import * as Location from 'expo-location'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image } from 'react-native'
+import { Image, View } from 'react-native'
 import { Camera } from 'react-native-vision-camera'
 
 import FullScreenCamera from '@/components/camera/FullScreenCamera'
+import PassportPhotoSwitch from '@/components/camera/PassportPhotoSwitch'
 import ZoneCameraBottomSheet from '@/components/camera/ZoneCameraBottomSheet'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import { clientApi } from '@/modules/backend/client-api'
@@ -31,6 +32,8 @@ const AppRoute = () => {
 
   const ref = useRef<Camera>(null)
   const [loading, setLoading] = useState(false)
+  // off by default, reset after every successful upload
+  const [isPassportPhoto, setIsPassportPhoto] = useState(false)
 
   const queryClient = useQueryClient()
 
@@ -41,13 +44,15 @@ const AppRoute = () => {
       tag,
       lat,
       long,
+      isPassportPhoto: isPassport,
     }: {
       file: File
       globalId: string
       tag: string
       lat: number
       long: number
-    }) => clientApi.scanControllerCreateZoneSignPhoto(file, globalId, tag, lat, long),
+      isPassportPhoto: boolean
+    }) => clientApi.scanControllerCreateZoneSignPhoto(file, globalId, tag, lat, long, isPassport),
     onSuccess: async () => {
       await queryClient.resetQueries({ queryKey: getZoneSignPhotosOptions().queryKey })
     },
@@ -96,9 +101,11 @@ const AppRoute = () => {
         globalId: zoneSignGlobalId,
         lat: coords?.latitude,
         long: coords?.longitude,
+        isPassportPhoto,
       })
 
       setOffenceState({ zonePhoto: photoResponse.data })
+      setIsPassportPhoto(false)
     } catch (error) {
       console.log(error)
     }
@@ -110,7 +117,23 @@ const AppRoute = () => {
 
   return (
     <FlashlightContextProvider>
-      <ScreenView hasBackButton title={t('zone.zonePicture')} className="h-full">
+      <ScreenView
+        hasBackButton
+        title={t('zone.zonePicture')}
+        className="h-full"
+        options={{
+          // the flag is saved with the photo, so the switch is shown only before the upload
+          headerRight: zonePhoto
+            ? undefined
+            : () => (
+                <PassportPhotoSwitch
+                  value={isPassportPhoto}
+                  onValueChange={setIsPassportPhoto}
+                  disabled={loading}
+                />
+              ),
+        }}
+      >
         {zonePhoto ? (
           <Image
             source={{ uri: createUrlFromImageObject(zonePhoto) }}
@@ -118,12 +141,22 @@ const AppRoute = () => {
             style={{ flex: 1 }}
           />
         ) : (
-          <FullScreenCamera ref={ref} />
+          <View className="relative">
+            <FullScreenCamera ref={ref} />
+            {isPassportPhoto ? (
+              <View
+                testID="passportFrame"
+                pointerEvents="none"
+                className="absolute inset-0 border-4 border-info"
+              />
+            ) : null}
+          </View>
         )}
 
         <ZoneCameraBottomSheet
           hasPhoto={!!zonePhoto}
           isLoading={loading}
+          isPassportPhoto={isPassportPhoto}
           takePicture={takePicture}
         />
       </ScreenView>
