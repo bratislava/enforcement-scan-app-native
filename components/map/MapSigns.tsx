@@ -23,7 +23,7 @@ export const SIGNS_UNCLUSTERED_ZOOM = CLUSTER_MAX_ZOOM + 1
 // names used by `iconImage` in signStyles
 const SIGN_IMAGES = { signZona: signZonaImage, signRezidenti: signRezidentiImage }
 
-export type SignFeature = Feature<Point, Arcgis.SignPoint & { label: string }>
+type SignFeature = Feature<Point, Arcgis.SignPoint & { label: string }>
 
 type Props = {
   selectedSignId?: string

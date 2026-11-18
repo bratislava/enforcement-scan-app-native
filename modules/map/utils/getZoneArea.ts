@@ -8,7 +8,7 @@ type ZoneFeatureCollection = FeatureCollection<
   MapUdrZoneWithTranslationProps
 >
 
-export type ZoneArea = {
+type ZoneArea = {
   featureCollection: ZoneFeatureCollection
   bounds: { ne: Position; sw: Position }
 }
