@@ -8,7 +8,7 @@ import { Image, View } from 'react-native'
 
 import ZoneBadge from '@/components/info/ZoneBadge'
 import { UserMapIndicator } from '@/components/map/location-map/UserMapIndicator'
-import MapSigns from '@/components/map/MapSigns'
+import MapSigns, { CLUSTER_MAX_ZOOM } from '@/components/map/MapSigns'
 import MapZones from '@/components/map/MapZones'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenView from '@/components/screen-layout/ScreenView'
@@ -135,6 +135,13 @@ const ZoneSignScreen = () => {
     const nearestSign = getNearestSign(userCoords, zone?.udrId)
     if (nearestSign) {
       setOffenceState({ zoneSignGlobalId: nearestSign.properties.GlobalID })
+      // zoom in on the preselected sign, at this zoom no signs are merged into clusters
+      camera.current?.setCamera({
+        centerCoordinate: nearestSign.geometry.coordinates,
+        zoomLevel: CLUSTER_MAX_ZOOM,
+        animationMode: 'easeTo',
+        animationDuration: CLUSTER_ZOOM_DURATION_MS,
+      })
     }
   }, [getNearestSign, selectedSignId, setOffenceState, userCoords, zone?.udrId])
 
