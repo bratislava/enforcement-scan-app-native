@@ -22,7 +22,9 @@ const OffenceResultPage = () => {
   const { offenceResult } = useLocalSearchParams<OffenceResultSearchParams>()
 
   const { resetOffenceState } = useSetOffenceState()
-  const { roleKey, zonePhoto, zone, location } = useOffenceStoreContext((state) => state)
+  const { roleKey, zonePhoto, zone, zoneSignGlobalId, location } = useOffenceStoreContext(
+    (state) => state,
+  )
   const role = getRoleByKey(roleKey)
 
   const navigation = useNavigation()
@@ -38,11 +40,27 @@ const OffenceResultPage = () => {
       e.preventDefault()
 
       if (e.data.action.type === 'GO_BACK') {
-        resetOffenceState({ ...getDefaultOffenceStateByRole(role.key), zone, zonePhoto, location })
+        // keep the zone, its photo and the selected sign for the next offence in the same zone
+        resetOffenceState({
+          ...getDefaultOffenceStateByRole(role.key),
+          zone,
+          zonePhoto,
+          zoneSignGlobalId,
+          location,
+        })
         router.dismissTo('scan/licence-plate-camera')
       } else navigation.dispatch(e.data.action)
     })
-  }, [location, navigation, resetOffenceState, zone, zonePhoto, showErrorScreen, role?.key])
+  }, [
+    location,
+    navigation,
+    resetOffenceState,
+    zone,
+    zonePhoto,
+    zoneSignGlobalId,
+    showErrorScreen,
+    role?.key,
+  ])
 
   if (showErrorScreen) {
     return (
