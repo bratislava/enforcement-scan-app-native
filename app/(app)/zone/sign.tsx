@@ -124,7 +124,7 @@ const ZoneSignScreen = () => {
   )
 
   useEffect(() => {
-    getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced })
+    getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest })
       .then(({ coords }) => setUserCoords(coords))
       // without location there is no preselection, the user picks the sign manually
       .catch(() => {})
