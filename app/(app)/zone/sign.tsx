@@ -109,6 +109,8 @@ const ZoneSignScreen = () => {
   const { getNearestSign } = useGetNearestSign()
 
   const [userCoords, setUserCoords] = useState<Location.LocationObjectCoords | null>(null)
+  // set once when the nearest sign is preselected, the camera then zooms in on it
+  const [preselectedSignCoordinate, setPreselectedSignCoordinate] = useState<Position | null>(null)
 
   const zoneArea = useMemo(
     () => (udrData && zone ? getZoneArea(udrData, zone) : null),
@@ -135,13 +137,9 @@ const ZoneSignScreen = () => {
     const nearestSign = getNearestSign(userCoords, zone?.udrId)
     if (nearestSign) {
       setOffenceState({ zoneSignGlobalId: nearestSign.properties.GlobalID })
-      // zoom in on the preselected sign, at this zoom no signs are merged into clusters
-      camera.current?.setCamera({
-        centerCoordinate: nearestSign.geometry.coordinates,
-        zoomLevel: CLUSTER_MAX_ZOOM,
-        animationMode: 'easeTo',
-        animationDuration: CLUSTER_ZOOM_DURATION_MS,
-      })
+      // passed to <Camera> as props: an imperative setCamera right after mount is ignored by Mapbox
+      // when the map is not ready yet (the emulator answers GPS immediately)
+      setPreselectedSignCoordinate(nearestSign.geometry.coordinates)
     }
   }, [getNearestSign, selectedSignId, setOffenceState, userCoords, zone?.udrId])
 
@@ -214,11 +212,18 @@ const ZoneSignScreen = () => {
       >
         <Camera
           ref={camera}
-          animationMode="none"
           maxBounds={CITY_BOUNDS}
-          {...(cameraBounds
-            ? { bounds: cameraBounds }
-            : { centerCoordinate: MAP_CENTER, zoomLevel: 14 })}
+          {...(preselectedSignCoordinate
+            ? // close to the preselected sign: at this zoom no signs are merged into clusters
+              {
+                centerCoordinate: preselectedSignCoordinate,
+                zoomLevel: CLUSTER_MAX_ZOOM,
+                animationMode: 'easeTo',
+                animationDuration: CLUSTER_ZOOM_DURATION_MS,
+              }
+            : cameraBounds
+              ? { bounds: cameraBounds, animationMode: 'none' }
+              : { centerCoordinate: MAP_CENTER, zoomLevel: 14, animationMode: 'none' })}
         />
 
         <MapZones />
