@@ -3,11 +3,12 @@ import { Feature, FeatureCollection, Point, Position } from 'geojson'
 import { useMemo, useRef } from 'react'
 
 import signRezidentiImage from '@/assets/map/sign-rezidenti.png'
-import signSelectedFrameImage from '@/assets/map/sign-selected-frame.png'
+import signRezidentiSelectedImage from '@/assets/map/sign-rezidenti-selected.png'
 import signZonaImage from '@/assets/map/sign-zona.png'
+import signZonaSelectedImage from '@/assets/map/sign-zona-selected.png'
 import { Arcgis } from '@/modules/arcgis/types'
 import { calculateDistance } from '@/modules/map/utils/calculateDistance'
-import { signStyles } from '@/modules/map/utils/layer-styles/visitors'
+import { signDimmedStyle, signStyles } from '@/modules/map/utils/layer-styles/visitors'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
 
 // only zone and resident signs are relevant, other types (e.g. 'skola') are left out
@@ -25,7 +26,8 @@ export const SIGNS_UNCLUSTERED_ZOOM = CLUSTER_MAX_ZOOM + 1
 const SIGN_IMAGES = {
   signZona: signZonaImage,
   signRezidenti: signRezidentiImage,
-  signSelectedFrame: signSelectedFrameImage,
+  signZonaSelected: signZonaSelectedImage,
+  signRezidentiSelected: signRezidentiSelectedImage,
 }
 
 type SignFeature = Feature<Point, Arcgis.SignPoint & { label: string }>
@@ -136,17 +138,12 @@ const MapSigns = ({ selectedSignId, onSignPress, onSignsPress, onClusterPress }:
             ['!', ['has', 'point_count']],
             ['!=', ['get', 'GlobalID'], selectedSignId ?? ''],
           ]}
-          style={signStyles.icon}
+          style={selectedSignId ? signDimmedStyle : signStyles.icon}
         />
       </ShapeSource>
 
       <ShapeSource id="signSelectedSource" shape={selected}>
-        <SymbolLayer id="signSelectedFrame" style={signStyles.selectedFrame} />
-        <SymbolLayer
-          id="signSelectedIcon"
-          aboveLayerID="signSelectedFrame"
-          style={signStyles.selectedIcon}
-        />
+        <SymbolLayer id="signSelectedIcon" style={signStyles.selectedIcon} />
       </ShapeSource>
     </>
   )

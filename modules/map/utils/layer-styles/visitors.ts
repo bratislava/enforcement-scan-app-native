@@ -71,22 +71,30 @@ export const signStyles = {
     iconAllowOverlap: true,
     iconIgnorePlacement: true,
   },
-  // green rounded square under the selected icon: a different shape and colour than the
-  // dark round cluster bubbles, so the selection is not mistaken for a cluster
-  selectedFrame: {
-    iconImage: 'signSelectedFrame',
-    iconAllowOverlap: true,
-    iconIgnorePlacement: true,
-  },
+  // the selected sign stays exactly where it is, as a raised plate: one thick blue border,
+  // white halo and soft shadow baked into the image (no extra layer, so no double border)
   selectedIcon: {
     ...signLabel,
-    iconImage: signIconImage,
-    iconSize: 1.25,
+    iconImage: [
+      'match',
+      ['get', 'typ_znacky'],
+      'rezidenti',
+      'signRezidentiSelected',
+      'signZonaSelected',
+    ],
     iconAllowOverlap: true,
     iconIgnorePlacement: true,
-    textOffset: [0, 1.9],
+    // below the plate (half of the 46 px plate plus its halo)
+    textOffset: [0, 2.4],
     textAllowOverlap: true,
   },
+}
+
+// other signs while one is selected: slightly faded so the pin stands out, still easy to tap
+export const signDimmedStyle = {
+  ...signStyles.icon,
+  iconOpacity: 0.6,
+  textOpacity: 0.6,
 }
 
 // lighter zone highlight for the sign select screen, so the pins stay readable on top of it
