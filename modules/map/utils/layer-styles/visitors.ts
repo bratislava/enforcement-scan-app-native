@@ -71,13 +71,12 @@ export const signStyles = {
     iconAllowOverlap: true,
     iconIgnorePlacement: true,
   },
-  // dark frame under the selected icon: visible on the orange zone highlight and in sunlight
+  // green rounded square under the selected icon: a different shape and colour than the
+  // dark round cluster bubbles, so the selection is not mistaken for a cluster
   selectedFrame: {
-    circleColor: colors.dark,
-    circleOpacity: 0.2,
-    circleRadius: 24,
-    circleStrokeColor: colors.dark,
-    circleStrokeWidth: 3,
+    iconImage: 'signSelectedFrame',
+    iconAllowOverlap: true,
+    iconIgnorePlacement: true,
   },
   selectedIcon: {
     ...signLabel,

@@ -103,6 +103,8 @@
   "zone.notSelected": "Nie je zvolená zóna",
   "zone.photo.new": "Nová fotka",
   "zone.photo.title": "Vyberte fotku značky",
+  "zone.sign.chooser.close": "Zavrieť",
+  "zone.sign.chooser.title": "Na tomto mieste je viac značiek",
   "zone.sign.changeHint": "Ťuknutím na inú značku na mape výber zmeníte.",
   "zone.sign.distance": "{{distance}} m od vás",
   "zone.sign.distanceKm": "{{distance}} km od vás",

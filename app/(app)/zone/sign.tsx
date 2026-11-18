@@ -2,6 +2,7 @@ import { Camera, FillLayer, LineLayer, MapView, ShapeSource } from '@rnmapbox/ma
 import * as Location from 'expo-location'
 import { router } from 'expo-router'
 import { Feature, Point, Position } from 'geojson'
+import { TFunction } from 'i18next'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Image, View } from 'react-native'
@@ -10,6 +11,7 @@ import ZoneBadge from '@/components/info/ZoneBadge'
 import { UserMapIndicator } from '@/components/map/location-map/UserMapIndicator'
 import MapSigns, { getSignLabel, SIGNS_UNCLUSTERED_ZOOM } from '@/components/map/MapSigns'
 import MapZones from '@/components/map/MapZones'
+import SignChooserModal, { SignChoice } from '@/components/map/SignChooserModal'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenView from '@/components/screen-layout/ScreenView'
 import Button from '@/components/shared/Button'
@@ -24,6 +26,7 @@ import { CITY_BOUNDS, MAP_CENTER, MAP_STYLE_URL } from '@/modules/map/constants'
 import { useGetNearestSign } from '@/modules/map/hooks/useGetNearestSign'
 import { calculateDistance } from '@/modules/map/utils/calculateDistance'
 import { getCurrentPositionAsync } from '@/modules/map/utils/getCurrentPositionAsync'
+import { getExpectedSignType } from '@/modules/map/utils/getExpectedSignType'
 import { getZoneArea } from '@/modules/map/utils/getZoneArea'
 import { zoneHighlightStyles } from '@/modules/map/utils/layer-styles/visitors'
 import { useArcgisStoreContext } from '@/state/ArcgisStore/useArcgisStoreContext'
@@ -39,9 +42,43 @@ const CLUSTER_ZOOM_DURATION_MS = 500
 // A selected sign further away than this gets a warning, the inspector may have tapped the wrong one
 const FAR_SIGN_DISTANCE_M = 150
 
+type SignPointFeature = Feature<Point, Arcgis.SignPoint>
+
+/**
+ * Sign name as shown in the panel and the chooser, with the same code as the label under the pin
+ */
+const getSignTitle = (t: TFunction, sign: SignPointFeature) =>
+  t('zone.sign.selected', {
+    type: t(`zone.sign.type.${sign.properties.typ_znacky}`),
+    // resident area code for resident signs, zone code otherwise
+    zone: getSignLabel(sign.properties),
+  })
+
+/**
+ * Distance text in metres, or kilometres from 1 km on
+ */
+const getDistanceText = (t: TFunction, distanceM: number | null) =>
+  distanceM === null
+    ? null
+    : distanceM >= 1000
+      ? t('zone.sign.distanceKm', { distance: (distanceM / 1000).toFixed(1) })
+      : t('zone.sign.distance', { distance: distanceM })
+
+/**
+ * Distance from the user to the sign in whole metres, null without a position
+ */
+const getSignDistance = (sign: SignPointFeature, coords: Location.LocationObjectCoords | null) => {
+  if (!coords) return null
+  const [longitude, latitude] = sign.geometry.coordinates
+
+  return Math.round(
+    calculateDistance([latitude, longitude, coords.latitude, coords.longitude]) * 1000,
+  )
+}
+
 type SelectedSignSummaryProps = {
   isLoading: boolean
-  sign?: Feature<Point, Arcgis.SignPoint>
+  sign?: SignPointFeature
   distance: number | null
   todayPhoto?: ResponseZoneSignPhotoPropertiesDto
 }
@@ -60,12 +97,7 @@ const SelectedSignSummary = ({
   if (isLoading) return <Typography>{t('zone.sign.loading')}</Typography>
   if (!sign) return <Typography>{t('zone.sign.hint')}</Typography>
 
-  const distanceText =
-    distance === null
-      ? null
-      : distance >= 1000
-        ? t('zone.sign.distanceKm', { distance: (distance / 1000).toFixed(1) })
-        : t('zone.sign.distance', { distance })
+  const distanceText = getDistanceText(t, distance)
 
   return (
     // announce the selection change to screen readers
@@ -80,12 +112,8 @@ const SelectedSignSummary = ({
       ) : null}
 
       <View className="flex-1">
-        <Typography variant="default-bold" numberOfLines={1}>
-          {t('zone.sign.selected', {
-            type: t(`zone.sign.type.${sign.properties.typ_znacky}`),
-            // same code as the label under the map pin (resident area code for resident signs)
-            zone: getSignLabel(sign.properties),
-          })}
+        <Typography testID="selectedZoneSign" variant="default-bold" numberOfLines={1}>
+          {getSignTitle(t, sign)}
         </Typography>
         {distanceText ? <Typography numberOfLines={1}>{distanceText}</Typography> : null}
         {todayPhoto ? (
@@ -112,6 +140,10 @@ const ZoneSignScreen = () => {
   const [userCoords, setUserCoords] = useState<Location.LocationObjectCoords | null>(null)
   // set once when the nearest sign is preselected, the camera then zooms in on it
   const [preselectedSignCoordinate, setPreselectedSignCoordinate] = useState<Position | null>(null)
+  // true once the inspector pans, zooms or taps a cluster: a late GPS fix then must not move the map
+  const userMovedMap = useRef(false)
+  // signs hit by one tap, shown in a chooser
+  const [signChoiceIds, setSignChoiceIds] = useState<string[]>([])
 
   const zoneArea = useMemo(
     () => (udrData && zone ? getZoneArea(udrData, zone) : null),
@@ -135,17 +167,19 @@ const ZoneSignScreen = () => {
   useEffect(() => {
     if (selectedSignId || !userCoords) return
 
-    const nearestSign = getNearestSign(userCoords, zone?.udrId)
+    // a sign of the segment's own zone is preferred when it is close enough
+    const nearestSign = getNearestSign(userCoords, zone?.udrId, zone?.code)
     if (nearestSign) {
       setOffenceState({ zoneSignGlobalId: nearestSign.properties.GlobalID })
       // passed to <Camera> as props: an imperative setCamera right after mount is ignored by Mapbox
       // when the map is not ready yet (the emulator answers GPS immediately)
-      setPreselectedSignCoordinate(nearestSign.geometry.coordinates)
+      if (!userMovedMap.current) setPreselectedSignCoordinate(nearestSign.geometry.coordinates)
     }
-  }, [getNearestSign, selectedSignId, setOffenceState, userCoords, zone?.udrId])
+  }, [getNearestSign, selectedSignId, setOffenceState, userCoords, zone?.udrId, zone?.code])
 
   // A cluster tap zooms in until the cluster splits, so each sign can be tapped on its own
   const handleClusterPress = useCallback((center: Position, zoomLevel: number) => {
+    userMovedMap.current = true
     camera.current?.setCamera({
       centerCoordinate: center,
       zoomLevel,
@@ -177,22 +211,40 @@ const ZoneSignScreen = () => {
     router.push(ZONE_PHOTO_CAMERA_ROUTE)
   }
 
-  const selectedSignDistance = useMemo(() => {
-    if (!(selectedSign && userCoords)) return null
+  const selectedSignDistance = useMemo(
+    () => (selectedSign ? getSignDistance(selectedSign, userCoords) : null),
+    [selectedSign, userCoords],
+  )
 
-    const [longitude, latitude] = selectedSign.geometry.coordinates
+  const signChoices = useMemo(
+    (): SignChoice[] =>
+      signChoiceIds.flatMap((globalId) => {
+        const sign = signData?.features.find((feature) => feature.properties.GlobalID === globalId)
 
-    return Math.round(
-      calculateDistance([latitude, longitude, userCoords.latitude, userCoords.longitude]) * 1000,
-    )
-  }, [selectedSign, userCoords])
+        return sign
+          ? [
+              {
+                globalId,
+                title: getSignTitle(t, sign),
+                distanceText: getDistanceText(t, getSignDistance(sign, userCoords)),
+              },
+            ]
+          : []
+      }),
+    [signChoiceIds, signData, t, userCoords],
+  )
+
+  const selectSign = (globalId: string) => {
+    setSignChoiceIds([])
+    setOffenceState({ zoneSignGlobalId: globalId })
+  }
 
   const warnings = useMemo(() => {
     if (!(selectedSign && zone)) return []
 
     const signZone = selectedSign.properties.zona?.trim()
     const zoneCode = zone.code?.trim()
-    const expectedType = zone.udrId === '0' ? 'rezidenti' : 'zona'
+    const expectedType = getExpectedSignType(zone.udrId)
 
     return [
       selectedSignDistance !== null && selectedSignDistance > FAR_SIGN_DISTANCE_M
@@ -212,6 +264,9 @@ const ZoneSignScreen = () => {
         styleURL={MAP_STYLE_URL}
         scaleBarEnabled={false}
         pitchEnabled={false}
+        onCameraChanged={(state) => {
+          if (state.gestures.isGestureActive) userMovedMap.current = true
+        }}
       >
         <Camera
           ref={camera}
@@ -240,7 +295,8 @@ const ZoneSignScreen = () => {
 
         <MapSigns
           selectedSignId={selectedSignId}
-          onSignPress={(globalId) => setOffenceState({ zoneSignGlobalId: globalId })}
+          onSignPress={selectSign}
+          onSignsPress={setSignChoiceIds}
           onClusterPress={handleClusterPress}
         />
 
@@ -309,6 +365,12 @@ const ZoneSignScreen = () => {
           />
         )}
       </View>
+
+      <SignChooserModal
+        choices={signChoices}
+        onSelect={selectSign}
+        onClose={() => setSignChoiceIds([])}
+      />
     </ScreenView>
   )
 }
