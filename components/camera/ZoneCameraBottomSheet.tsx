@@ -16,18 +16,25 @@ import { useSetOffenceState } from '@/state/OffenceStore/useSetOffenceState'
 type Props = {
   isLoading: boolean
   hasPhoto: boolean
-  /** state of the passport switch for the next photo, the confirm state reads the saved flag from the store */
+  /** before the photo: state of the passport switch; after the photo: the flag saved by the backend */
   isPassportPhoto: boolean
   takePicture: (tag: string) => Promise<void>
+  /** called before the current photo is discarded by "Odfotiť znova" */
+  onRetake?: () => void
 }
 
-const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, isPassportPhoto, takePicture }: Props) => {
+const ZoneCameraBottomSheet = ({
+  hasPhoto,
+  isLoading,
+  isPassportPhoto,
+  takePicture,
+  onRetake,
+}: Props) => {
   const { setOffenceState } = useSetOffenceState()
   const { t } = useTranslation()
   const router = useRouter()
 
   const zonePhotoTag = useOffenceStoreContext((state) => state.zonePhoto?.tag)
-  const isSavedPassportPhoto = useOffenceStoreContext((state) => !!state.zonePhoto?.isPassportPhoto)
   const [tag, setTag] = useState('')
 
   const animatedPosition = useSharedValue(0)
@@ -35,6 +42,7 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, isPassportPhoto, takePictu
   const selectPicture = () => router.push('/scan/licence-plate-camera')
 
   const retakePicture = () => {
+    onRetake?.()
     setTag('')
     setOffenceState({ zonePhoto: undefined })
   }
@@ -56,7 +64,7 @@ const ZoneCameraBottomSheet = ({ hasPhoto, isLoading, isPassportPhoto, takePictu
             <>
               <Typography variant="h2">{t('zone.confirmTitle')}</Typography>
 
-              {isSavedPassportPhoto ? <PassportPill /> : null}
+              {isPassportPhoto ? <PassportPill /> : null}
 
               {zonePhotoTag ? (
                 <Typography>{t('zone.tag', { tag: zonePhotoTag })}</Typography>

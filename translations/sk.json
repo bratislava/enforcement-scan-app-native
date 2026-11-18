@@ -112,6 +112,7 @@
   "zone.sign.distanceKm": "{{distance}} km od vás",
   "zone.sign.hint": "Ťuknite na značku, ktorú idete odfotiť.",
   "zone.sign.loading": "Načítavam značky…",
+  "zone.sign.missing": "Nepodarilo sa určiť značku. Vyberte ju na mape.",
   "zone.sign.newPhoto": "Nová fotka",
   "zone.sign.selected": "{{type}} {{zone}}",
   "zone.sign.title": "Vyberte značku",
