@@ -14,8 +14,11 @@ const SIGN_TYPES = new Set<Arcgis.SignPoint['typ_znacky']>(['zona', 'rezidenti']
 
 // signs closer than this on screen are merged into one bubble with a count
 const CLUSTER_RADIUS_PX = 40
+// highest zoom that still clusters; the source keeps its default maxZoomLevel of 18, so clusters
+// must stop below it, otherwise signs on one pole stay a bubble at every zoom
+const CLUSTER_MAX_ZOOM = 17
 // from this zoom on every sign is shown on its own, even when two signs stand on one pole
-export const CLUSTER_MAX_ZOOM = 18
+export const SIGNS_UNCLUSTERED_ZOOM = CLUSTER_MAX_ZOOM + 1
 
 // names used by `iconImage` in signStyles
 const SIGN_IMAGES = { signZona: signZonaImage, signRezidenti: signRezidentiImage }

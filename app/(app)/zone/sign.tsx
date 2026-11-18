@@ -8,7 +8,7 @@ import { Image, View } from 'react-native'
 
 import ZoneBadge from '@/components/info/ZoneBadge'
 import { UserMapIndicator } from '@/components/map/location-map/UserMapIndicator'
-import MapSigns, { CLUSTER_MAX_ZOOM } from '@/components/map/MapSigns'
+import MapSigns, { SIGNS_UNCLUSTERED_ZOOM } from '@/components/map/MapSigns'
 import MapZones from '@/components/map/MapZones'
 import ContinueButton from '@/components/navigation/ContinueButton'
 import ScreenView from '@/components/screen-layout/ScreenView'
@@ -217,7 +217,7 @@ const ZoneSignScreen = () => {
             ? // close to the preselected sign: at this zoom no signs are merged into clusters
               {
                 centerCoordinate: preselectedSignCoordinate,
-                zoomLevel: CLUSTER_MAX_ZOOM,
+                zoomLevel: SIGNS_UNCLUSTERED_ZOOM,
                 animationMode: 'easeTo',
                 animationDuration: CLUSTER_ZOOM_DURATION_MS,
               }
