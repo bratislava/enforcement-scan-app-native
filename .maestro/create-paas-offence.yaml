@@ -25,20 +25,27 @@ appId: com.bratislava.enforcement
     visible: Pokračovať
     timeout: 10000
 - tapOn: Pokračovať
-# Will wait for the preselected zone sign (Continue becomes enabled, or the today photo buttons appear)
+# Will check the sign screen and wait for the preselected zone sign
+- assertVisible: Vyberte značku
+- extendedWaitUntil:
+    visible:
+      id: selectedZoneSign
+    timeout: 10000
+# Will wait for today's photos (Continue becomes enabled, or the today photo buttons appear)
 - extendedWaitUntil:
     notVisible:
       id: confirmZoneSign
       enabled: false
     timeout: 10000
-# Sign already photographed today: take a new photo anyway
+# Sign already photographed today: reuse that photo
 - runFlow:
     when:
       visible:
-        id: addPhoto
+        id: useZonePhoto
     commands:
       - tapOn:
-          id: addPhoto
+          id: useZonePhoto
+# No photo of the sign today: open the camera
 - runFlow:
     when:
       visible:
@@ -46,9 +53,14 @@ appId: com.bratislava.enforcement
     commands:
       - tapOn:
           id: confirmZoneSign
-# Will add zone photo
-- tapOn:
-    id: takePicture
+# Will add zone photo (the reused photo is shown without the camera)
+- runFlow:
+    when:
+      visible:
+        id: takePicture
+    commands:
+      - tapOn:
+          id: takePicture
 - extendedWaitUntil:
     visible:
       id: confirmPicture
